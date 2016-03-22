@@ -94,7 +94,7 @@ void close1()
 {
 	//Deallocate surface
 	SDL_FreeSurface( gScott1 );
-	gXOut = NULL;
+	gScott1 = NULL;
 
 	//Destroy window
 	SDL_DestroyWindow( gWindow );
@@ -108,7 +108,7 @@ void close2()
 {
 	//Deallocate surface
 	SDL_FreeSurface( gScott2 );
-	gXOut = NULL;
+	gScott2 = NULL;
 
 	//Destroy window
 	SDL_DestroyWindow( gWindow );
@@ -170,13 +170,14 @@ int main( int argc, char* args[] )
 
 				//Delay
 				SDL_Delay( 2000 );
-				
+
 			}
 		}
 	}
 
 	//Free resources and close SDL
-	close();
+	close1();
+	close2();
 
 	return 0;
 }
