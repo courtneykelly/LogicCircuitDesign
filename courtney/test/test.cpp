@@ -4,8 +4,8 @@
 #include <SDL2/SDL_image.h>
 
 //Screen dimension constants
-const int SCREEN_WIDTH = 612;
-const int SCREEN_HEIGHT = 832;
+const int SCREEN_WIDTH = 294;
+const int SCREEN_HEIGHT = 409;
 
 //Starts up SDL and creates window
 bool init();
@@ -160,7 +160,7 @@ int main( int argc, char* args[] )
 				SDL_UpdateWindowSurface( gWindow );
 
 				//Delay
-				SDL_Delay( 2000 );
+				SDL_Delay( 1000 );
 
 				//Apply image2
 				SDL_BlitSurface( gScott2, NULL, gScreenSurface, NULL );
@@ -169,7 +169,7 @@ int main( int argc, char* args[] )
 				SDL_UpdateWindowSurface( gWindow );
 
 				//Delay
-				SDL_Delay( 2000 );
+				SDL_Delay( 1000 );
 
 			}
 		}
