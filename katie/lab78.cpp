@@ -1,10 +1,11 @@
-/*This source code copyrighted by Lazy Foo' Productions (2003-2015)
-and may not be redistributed without written permission.*/
+//Katie Schermerhorn
+//Lab 7 & 8
+//Practice displaying an image
 
-//Using SDL and standard IO
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <stdio.h>
+
 
 //Screen dimension constants
 const int SCREEN_WIDTH = 640;
@@ -21,12 +22,12 @@ void close();
 
 //The window we'll be rendering to
 SDL_Window* gWindow = NULL;
-	
+
 //The surface contained by the window
 SDL_Surface* gScreenSurface = NULL;
 
 //The image we will load and show on the screen
-SDL_Surface* gHelloWorld = NULL;
+SDL_Surface* gAndGate = NULL;
 
 bool init()
 {
@@ -36,7 +37,7 @@ bool init()
 	//Initialize SDL
 	if( SDL_Init( SDL_INIT_VIDEO ) < 0 )
 	{
-		printf( "SDL could not initialize! SDL_Error: %s\n", SDL_GetError() );
+		printf("SDL could not initialize! SDL Error: %s\n", SDL_GetError() );
 		success = false;
 	}
 	else
@@ -64,10 +65,10 @@ bool loadMedia()
 	bool success = true;
 
 	//Load splash image
-	gHelloWorld = SDL_LoadBMP( "hello_world.bmp" );
-	if( gHelloWorld == NULL )
+	gAndGate = SDL_LoadBMP( "gateAND.bmp" );
+	if( gAndGate == NULL )
 	{
-		printf( "Unable to load image %s! SDL Error: %s\n", "02_getting_an_image_on_the_screen/hello_world.bmp", SDL_GetError() );
+		printf( "Unable to load image %s! SDL Error: %s\n", "AndGate.bmp", SDL_GetError() );
 		success = false;
 	}
 
@@ -77,8 +78,8 @@ bool loadMedia()
 void close()
 {
 	//Deallocate surface
-	SDL_FreeSurface( gHelloWorld );
-	gHelloWorld = NULL;
+	SDL_FreeSurface( gAndGate );
+	gAndGate = NULL;
 
 	//Destroy window
 	SDL_DestroyWindow( gWindow );
@@ -105,18 +106,18 @@ int main( int argc, char* args[] )
 		else
 		{
 			//Apply the image
-			SDL_BlitSurface( gHelloWorld, NULL, gScreenSurface, NULL );
-			
+			SDL_BlitSurface( gAndGate, NULL, gScreenSurface, NULL );
+
 			//Update the surface
 			SDL_UpdateWindowSurface( gWindow );
 
 			//Wait two seconds
-			SDL_Delay( 2000 );
+			SDL_Delay( 5000 );
 		}
 	}
 
 	//Free resources and close SDL
 	close();
 
-	return -1;
+	return 0;
 }
