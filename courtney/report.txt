@@ -1,0 +1,16 @@
+Lab 7 & 8 Rubric
+Courtney Kelly, Kathleen Schermerhorn, Benjamin Dalgarn, Eric Krebs
+
++15 Watch SDL tutorials
+	I watched SDL tutorials 1-8, for a collective 4 hours. 
++10 Code compiles
+	I've submitted code written myself in the folder: test.
++10 One non-tutorial deliverable per group member - print shape to screen, click with mouse
+	It prints two images of Professor Scott to the screen, flashes between them, and enables the user to exit the window with a mouse lick. 
++5 Time log
+	3/8: Lab 5:00-5:50
+	3/15: Lab 5:00-5:50
+	3/19: Watched SDL tutorials for a collective 4 hours
+	3/21: Wrote a compilable program: 3 hours
+	
+Total /40
