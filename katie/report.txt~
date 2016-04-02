@@ -1,0 +1,28 @@
+Lab 8 Report
+Katie Schermerhorn
+
+Part 1
+======
+
+I submitted lab78.cpp and lab78mouse.cpp to both my repository and dropbox.  lab78.cpp displays a picture of an AND gate to the screen. lab78mouse.cpp allows you to interact with the image by rolling over and clicking with your mouse.
+
+Part 2
+======
+
+Internally, lab78.cpp uses functions to upload a .bmp image to the window.  It uses SDL2 to initialize the window we are rendering to, the surface contained by the window, and the image will load and show on the screen.  The init() function initializes SDL and creates the window where we display our image.  The loadMedia() function loads the AND gate image.  The close() function deallocates the surface and destroys the window.  Within the main function, the program applies the image using SDL_BlitSurface and updates the surface using SDL_UpdateWindowSurface.
+
+lab78mouse.cpp uses a class called LTexture that has 11 member functions and three data member.  It also contains a class that senses the mouse button called LButton which has 4 member functions and 2 data members.  lab78mouse uses the same functions as lab78.cpp to upload the image to the window.  The functions in the LTexture class load the image and create texture from surface pixels.  They set the blend mode and the alpha.  They also render the space and render to the screen.  The functions in the LButton function get the mouse position and set the sprite based on that position.  The main function sets up a while loop which keeps the screen open until the user quits.
+
+Time Log
+--------
+(Taken from our google doc)
+3/01/2016 5:00-5:50pm  Lab worktime
+3/14/2016 4:30-5:30pm  Worked with group 
+3/15/2016 5:00-5:50pm  2nd Lab worktime
+3/20/2016 5:00-7:00pm  Worked on SDL LazyFoo tutorials
+3/21/2016 8:00-12:00pm Made lab78.cpp and lab78mouse.cpp
+
+Part 3
+======
+
+I learned many interesting and important SDL implementations that will be crucial to the success of our project.  While doing SDL tutorials

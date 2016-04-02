@@ -1,0 +1,32 @@
+Lab 8 Report
+Katie Schermerhorn
+
+Part 1
+======
+
+I submitted lab78.cpp and lab78mouse.cpp to both my repository and dropbox.  lab78.cpp displays a picture of an AND gate to the screen. lab78mouse.cpp allows you to interact with the image by rolling over and clicking with your mouse.
+
+Part 2
+======
+
+Internally, lab78.cpp uses functions to upload a .bmp image to the window.  It uses SDL2 to initialize the window we are rendering to, the surface contained by the window, and the image will load and show on the screen.  The init() function initializes SDL and creates the window where we display our image.  The loadMedia() function loads the AND gate image.  The close() function deallocates the surface and destroys the window.  Within the main function, the program applies the image using SDL_BlitSurface and updates the surface using SDL_UpdateWindowSurface.
+
+lab78mouse.cpp uses a class called LTexture that has 11 member functions and three data member.  It also contains a class that senses the mouse button called LButton which has 4 member functions and 2 data members.  lab78mouse uses the same functions as lab78.cpp to upload the image to the window.  The functions in the LTexture class load the image and create texture from surface pixels.  They set the blend mode and the alpha.  They also render the space and render to the screen.  The functions in the LButton function get the mouse position and set the sprite based on that position.  The main function sets up a while loop which keeps the screen open until the user quits.
+
+Time Log
+--------
+(Taken from our google doc)
+3/01/2016 5:00-5:50pm  Lab worktime
+3/14/2016 4:30-5:30pm  Worked with group 
+3/15/2016 5:00-5:50pm  2nd Lab worktime
+3/20/2016 5:00-7:00pm  Worked on SDL LazyFoo tutorials
+3/21/2016 8:00-12:00pm Made lab78.cpp and lab78mouse.cpp
+
+Part 3
+======
+
+I learned many interesting and important SDL implementations that will be crucial to the success of our project.  While doing SDL tutorials, I learned how to use the basics of SDL. I went up to tutorial 17 and made sure to learn how to detect mouse position and clicks.  I also made sure to learn how to upload images to the window.  I was able to set my path and library path in the .cshrc file and use the correct flags when compiling. I got X11 to work and a window to pop up when using SDL.  This is very important for our project which will be utlizing the click and pop up feature with different types of logic gates.
+
+Also for this lab, my group was able to meet and start creating the interface for our project.  For a project of this magnitude, I think it is very important to plan everything out step by step to ensure efficiency and accuracy.  We decided to do a hierarcy of gates, having a different class for every gate.  Then, we will also have a wire class. 
+
+I completed the rubric I made a few labs ago by going through the SDL tutorials and creating something that compiles.
