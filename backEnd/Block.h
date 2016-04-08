@@ -10,18 +10,15 @@ using namespace std;
 
 class Block {
 
-	public:
+    public:
+	Block();	// constructor
+	~Block();	// deconstructor
+	virtual int getValue() = 0;          // print function
 
-		Block();	// constructor
-		~Block();	// deconstructor
 
-		virtual int getValue() = 0;          // print function
-
-		
 };
 
 
-// base class pointer
 Block::Block ()
 {
 

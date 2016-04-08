@@ -8,20 +8,20 @@ using namespace std;
 
 class Input : public Block
 {
-	public:
-		Input(int);    // constructor
-		~Input();   // deconstructor
-		virtual int getValue();
+    public:
+	Input(int);    // constructor
+	~Input();   // deconstructor
+	virtual int getValue();
 
-	private:
-		int value;
+    private:
+	int value;
 };
 
 
 // constructor
 Input::Input(int val)
 {
-	value = val;
+    value = val;
 }
 
 
@@ -34,7 +34,7 @@ Input::~Input()
 
 int Input::getValue()
 {
-	return value;
+    return value;
 }
 
 

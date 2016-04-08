@@ -10,8 +10,11 @@ using namespace std;
 
 int main()
 {
-	Input inputA(1);
-	Input inputB(1);
+	////////////////////////////////
+    	// user changes the following 2:	
+    	Input inputA(1);			
+    	Input inputB(1);			
+	////////////////////////////////
 
 	Gate and_gate(0);
 	Gate or_gate(1);
