@@ -5,7 +5,7 @@
 // contains all of the information for the window
 
 
-#include <SDL2/SDL.h>
+#include <SDL.h>
 #include <string>
 #include <iostream>
 #include <cmath>
@@ -90,10 +90,9 @@ int Window::init()
 void Window::draw()
 {
     SDL_RenderPresent(renderer);
-    SDL_Delay(200);
+    SDL_Delay(40);
 
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 
     SDL_RenderClear(renderer);
 }
-

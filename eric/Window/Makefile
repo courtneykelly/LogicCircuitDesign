@@ -9,7 +9,7 @@ CC = g++
 COMPILER_FLAGS = -w
 
 #LINKER_FLAGS specifies the libraries we're linking against
-LINKER_FLAGS = -lSDL2 #-lSDL2_image
+LINKER_FLAGS = -L/usr/local/lib -lSDL2 -I/usr/local/include/SDL2 -D_THREAD_SAFE
 
 #OBJ_NAME specifies the name of our exectuable
 OBJ_NAME = window
