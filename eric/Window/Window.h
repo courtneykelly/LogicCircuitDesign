@@ -76,7 +76,7 @@ int Window::init()
     }
 
     // set renderer resolution
-    SDL_RenderSetLogicalSize (renderer, screen_width/4, screen_height/4);
+    SDL_RenderSetLogicalSize (renderer, screen_width, screen_height);
 
     // set Background color?
     SDL_SetRenderDrawColor (renderer, 255, 255, 255, 255);
@@ -97,3 +97,11 @@ void Window::draw()
     SDL_RenderClear(renderer);
 }
 
+
+void Window::makeLine()
+{
+    SDL_GetMouseState
+
+
+
+}
