@@ -22,22 +22,13 @@ int main()
     {
 	// drawing functions go here!
 
-
-
+	screen.drawWires();
 
 	screen.draw(); // draws, delays, then clears
 
 	while (SDL_PollEvent( &e ) != 0 )
 	{
-	    switch(e.type)
-	    {
-		case SDL_QUIT:
-		    quit = true;
-		    break;
-		case SDL_MOUSEBUTTONDOWN:
-		    screen.drawLine();
-		    break;
-	    }
+		action(e);
 	}
     }
 
