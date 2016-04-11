@@ -12,25 +12,23 @@
 
 int main()
 {
-    Window screen;
+	Window screen;
+	bool quit = false;
+	SDL_Event e;
 
-    bool quit = false;
-
-    SDL_Event e;
-
-    while (!quit)
-    {
-	// drawing functions go here!
-
-	screen.drawWires();
-
-	screen.draw(); // draws, delays, then clears
-
-	while (SDL_PollEvent( &e ) != 0 )
+	while (!quit)
 	{
-		action(e);
-	}
-    }
+		// drawing functions go here!
 
-    return 0;
+		screen.drawWires();
+
+		screen.draw(); // draws, delays, then clears
+
+		while (SDL_PollEvent( &e ) != 0 )
+		{
+			quit = screen.eventHandler(e);
+		}
+	}
+
+	return 0;
 }

@@ -19,23 +19,25 @@
 
 class Window {
 
-    public:
-	Window();
-	~Window();
+	public:
+		Window();
+		~Window();
 
-	int init();
-	void draw();
+		int init();
+		void draw();
+		int eventHandler(SDL_Event);
 
-	void makeWire(int);
-	void drawWires();
+		void makeWire();
+		void moveWire();
+		void drawWires();
 
-    private:
-	int screen_width;
-	int screen_height;
-	SDL_Window* window;
-	SDL_Renderer* renderer;
-	vector<Wire*> wires;
-	int action; // 0=none, 1=drawing wires, ...
+	private:
+		int screen_width;
+		int screen_height;
+		SDL_Window* window;
+		SDL_Renderer* renderer;
+		vector<Wire*> wires;
+		int action; // 0=none, 1=drawing wires, ...
 };
 
 
@@ -106,49 +108,61 @@ void Window::draw()
 }
 
 
-void Window::action(SDL_Event e)
+// Conditionally call actions based on SDL event and variables
+int Window::eventHandler(SDL_Event e)
 {
 	switch(e.type)
 	{
 		case SDL_QUIT:
-			quit = true;
+			return 1; // quits
 			break;
 		case SDL_MOUSEBUTTONDOWN:
-			cout << "makeWire" << endl;
-			makeWire(1);
+			makeWire();
 			break;
 		case SDL_MOUSEBUTTONUP:
-			cout << "makeWire" << endl;
-			makeWire(0);
+			action = 0;
 			break;
 	}
+	
+	switch (action)
+	{
+		case 1:
+			moveWire();
+			break;
+		default:
+			break;
+	}
+
+	return 0; // continues
 }
 
 
-void Window::makeWire(int newWire)
+// Push back a new wire to vector wires
+void Window::makeWire()
 {
 	int x;
 	int y;
-    SDL_GetMouseState(&x, &y);
-	if (action != 1 && newWire)
-	{
-		Wire* ptr = new Wire(NULL, x, y); // call constructor
+	SDL_GetMouseState(&x, &y);
+	Wire* ptr = new Wire(NULL, x, y); // call constructor
 
-		wires.push_back(ptr);
-		action = 1;
-	}
-	else if (action == 1)
-	{
-		wires.back()->movePoint(x, y);
-		action = 0;
-	}
+	wires.push_back(ptr);
+	action = 1;
 }
+
+
+void Window::moveWire()
+{
+	int x;
+	int y;
+	SDL_GetMouseState(&x, &y);
+	wires.back()->movePoint(x, y);
+}
+
 
 void Window::drawWires()
 {
 	for (int i = 0; i < wires.size(); i++)
 	{
-		cout << "Drawing " << i << endl;
 		wires[i]->draw(renderer);
 	}
 }
