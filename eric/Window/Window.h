@@ -96,7 +96,7 @@ void Window::draw()
 
     SDL_RenderClear(renderer);
 }
-<<<<<<< HEAD
+
 
 
 void Window::makeLine()
@@ -106,5 +106,4 @@ void Window::makeLine()
 
 
 }
-=======
->>>>>>> 465d47be88a7949fa22d44a2d9b7a8c5523bbebf
+

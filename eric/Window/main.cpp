@@ -10,38 +10,36 @@
 #include <SDL.h>
 
 
-
-
 int main()
 {
     Window screen;
 
-	bool quit = false;
+    bool quit = false;
 
-	SDL_Event e;
+    SDL_Event e;
 
-	while (!quit)
+    while (!quit)
+    {
+	// drawing functions go here!
+
+
+
+
+	screen.draw(); // draws, delays, then clears
+
+	while (SDL_PollEvent( &e ) != 0 )
 	{
-		// drawing functions go here!
-
-
-
-
-		screen.draw(); // draws, delays, then clears
-
-		while (SDL_PollEvent( &e ) != 0 )
-		{
-			switch(e.type)
-			{
-				case SDL_QUIT:
-					quit = true;
-					break;
-				case SDL_MOUSEBUTTONDOWN:
-					screen.drawLine();
-					break;
-			}
-		}
+	    switch(e.type)
+	    {
+		case SDL_QUIT:
+		    quit = true;
+		    break;
+		case SDL_MOUSEBUTTONDOWN:
+		    screen.drawLine();
+		    break;
+	    }
 	}
+    }
 
     return 0;
 }
