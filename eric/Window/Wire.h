@@ -40,7 +40,7 @@ Wire::Wire(Block* ptr, int x, int y)
 	x2 = x;
 	y1 = y;
 	y2 = y;
-	cout << "constructor x1: " << x1 << endl;
+	cout << "constructor x1: " << x1 << "  y1: " << y1 << endl;
 }
 
 
@@ -78,7 +78,7 @@ void Wire::draw(SDL_Renderer* renderer)
 {
 	SDL_SetRenderDrawColor(renderer, 100, 100, 100, 255);
 	SDL_RenderDrawLine(renderer, x1, y1, x2, y2);
-
+	
 }
 
 

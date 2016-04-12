@@ -6,6 +6,7 @@
 
 
 #include <SDL.h>
+#include "SDL2_gfxPrimitives.h"
 #include <string>
 #include <iostream>
 #include <cmath>
@@ -29,6 +30,7 @@ class Window {
 
 		void makeWire();
 		void moveWire();
+		void drawBlocks();
 		void drawWires();
 
 	private:
@@ -36,6 +38,7 @@ class Window {
 		int screen_height;
 		SDL_Window* window;
 		SDL_Renderer* renderer;
+		vector<Block*> blocks;
 		vector<Wire*> wires;
 		int action; // 0=none, 1=drawing wires, ...
 };
@@ -44,8 +47,8 @@ class Window {
 // constructor
 Window::Window()
 {
-    screen_width = 640;
-    screen_height = 480;
+    screen_width = 1000;
+    screen_height = 600;
     window = NULL;
     renderer = NULL;
 	action = 0;
@@ -109,8 +112,10 @@ void Window::draw()
 
 
 // Conditionally call actions based on SDL event and variables
+// NEEDS REDESIGN TO WORK FOR LOTS OF THINGS!
 int Window::eventHandler(SDL_Event e)
 {
+	// cout << "e.type: " << e.type << endl;
 	switch(e.type)
 	{
 		case SDL_QUIT:
@@ -118,6 +123,7 @@ int Window::eventHandler(SDL_Event e)
 			break;
 		case SDL_MOUSEBUTTONDOWN:
 			makeWire();
+			cout << "makeWire" << endl;
 			break;
 		case SDL_MOUSEBUTTONUP:
 			action = 0;
@@ -159,11 +165,24 @@ void Window::moveWire()
 }
 
 
+// Draw blocks function!!!
+void Window::drawBlocks()
+{
+
+}
+
+
 void Window::drawWires()
 {
 	for (int i = 0; i < wires.size(); i++)
 	{
 		wires[i]->draw(renderer);
 	}
+
+	// how to store AND gate? (put this in the Gate class for AND gates?
+	short xPoints[9] = {100, 100, 150, 165, 170, 175, 170, 165, 150};
+	short yPoints[9] = {100, 160, 160, 150, 140, 130, 120, 110,	100};
+
+	filledPolygonRGBA(renderer, xPoints, yPoints, 9, 255, 0, 50, 255);
 }
 
