@@ -24,8 +24,15 @@ class Gate : public Block
 		Wire* in0;
 		Wire* in1;                // first element in the list
 
+		// for drawing:
+		short xCoord[10];
+		short yCoord[10];
+		short numPts;
+
+
 		// helper functions
 		int doMath(int, int);
+
 
 };
 
