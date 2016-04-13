@@ -20,10 +20,11 @@ int main()
 
     SDL_Event e;
 
+
     while (!quit)
     {
 	// drawing functions go here!
-
+	screen.drawAndGate();      
 
 
     

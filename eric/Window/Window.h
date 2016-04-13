@@ -21,6 +21,7 @@ class Window {
 	bool loadMedia();
 	void close();
 	void draw();
+	void drawAndGate();
 
     private:
 	int screen_width;
@@ -76,7 +77,7 @@ int Window::init()
     }
 
     // set renderer resolution
-    SDL_RenderSetLogicalSize (renderer, screen_width/4, screen_height/4);
+    SDL_RenderSetLogicalSize (renderer, screen_width, screen_height);
 
     // set Background color?
     SDL_SetRenderDrawColor (renderer, 255, 255, 255, 255);
@@ -97,3 +98,13 @@ void Window::draw()
     SDL_RenderClear(renderer);
 }
 
+void Window::drawAndGate()
+{
+	int x = 100;
+	int y = 100;
+
+	SDL_SetRenderDrawColor( renderer, 0, 0, 255,255 );
+      	SDL_RenderDrawLine( renderer, x-12, y-10, x+8, y-10);
+
+
+}
