@@ -9,7 +9,7 @@
 #include "Window.h"
 #include "Block.h"
 	#include "Gate.h"
-		// AndGate
+		#include "AndGate.h"
 		// OrGate
 	#include "Input.h"
 #include "Wire.h"
