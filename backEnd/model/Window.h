@@ -78,9 +78,8 @@ int Window::init()
     }
 
     // create window
-    window = SDL_CreateWindow("Logic Circuit Design", 
-	SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 
-	screen_width, screen_height, SDL_WINDOW_SHOWN);
+    window = SDL_CreateWindow("Logic Circuit Design", SDL_WINDOWPOS_UNDEFINED,
+	SDL_WINDOWPOS_UNDEFINED, screen_width, screen_height, SDL_WINDOW_SHOWN);
 
     // create renderer
     renderer = SDL_CreateRenderer(window, -1, 0);
@@ -93,9 +92,8 @@ int Window::init()
     // set renderer resolution
     SDL_RenderSetLogicalSize (renderer, screen_width, screen_height);
 
-    // set Background color?
+    // set Background color
     SDL_SetRenderDrawColor (renderer, 255, 255, 255, 255);
-
     SDL_RenderClear (renderer);
 
     return 1;

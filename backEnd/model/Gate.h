@@ -12,43 +12,18 @@ class Gate : public Block
 
 {
 	public:
-		Gate(int);    // constructor
-		~Gate();   // deconstructor
-		virtual int getValue();
+		virtual int getValue() = 0;
+		virtual void draw() = 0;
 		void setIn0(Wire *);
 		void setIn1(Wire *);
-
+		Wire* getIn0();
+		Wire* getIn1();
 
 	private:
-		int operation;
 		Wire* in0;
 		Wire* in1;                // first element in the list
 
-		// for drawing:
-		short xCoord[10];
-		short yCoord[10];
-		short numPts;
-
-
-		// helper functions
-		int doMath(int, int);
-
-
 };
-
-// constructor
-Gate::Gate(int op)
-{
-	operation = op;
-	in0 = NULL;
-	in1 = NULL;
-}
-
-// destructor
-Gate::~Gate()
-{
-
-}
 
 
 void Gate::setIn0(Wire *pointer)
@@ -56,32 +31,74 @@ void Gate::setIn0(Wire *pointer)
 	in0 = pointer;
 }
 
+
 void Gate::setIn1(Wire *pointer)
 {
 	in1 = pointer;
 }
 
-int Gate::getValue()
+Wire* Gate::getIn0()
+{
+
+	return in0;
+}
+
+Wire* Gate::getIn1()
+{
+	return in1;
+}
+
+
+
+// ------------------------------------------------------------------------- //
+
+class AndGate : public Gate
+{
+	public:
+		AndGate();    // constructor
+		~AndGate();   // deconstructor
+		virtual int getValue();
+		virtual void draw();
+		
+	private:
+		// for drawing:
+		short xCoord[10];
+		short yCoord[10];
+		short numPts;
+};
+
+
+// constructor
+AndGate::AndGate()
+{
+	setIn0(NULL);
+	setIn1(NULL);
+
+	numPts = 10;
+}
+
+// destructor
+AndGate::~AndGate()
+{
+}
+
+
+int AndGate::getValue()
 {
 	int left;
 	int right;
-	left = in0->getValue();
-	right = in1->getValue();
-
-	return doMath(left, right);
+	left = getIn0()->getValue();
+	right = getIn1()->getValue();
+	return (left > 0 && right > 0);
 }
 
-int Gate::doMath(int left, int right)
+void AndGate::draw()
 {
-	switch(operation)
-	{
-		case 0:
-			return (left > 0 && right > 0);
-		case 1:
-			return (left > 0 || right > 0);
-		default:
-			return -1;
-	}
+	
 }
+
+
+
+
 
 #endif
