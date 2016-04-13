@@ -12,20 +12,21 @@
 #include <cmath>
 #include <vector>
 #include "Block.h"
-#include "Gate.h"
-#include "Input.h"
-#include "Wire.h"
+	#include "Gate.h"
+	#include "Input.h"
+	#include "Wire.h"
 
 
 
-
-int init();
-bool loadMedia();
-void close();
-void draw();
-void drawAndGate();
-
+<<<<<<< HEAD
+	int init();
+	bool loadMedia();
+	void close();
+	void draw();
+	void drawAndGate();
+=======
 class Window {
+>>>>>>> 185647a3d0c78632742aa71662a5c5ae9d5cdca7
 
 	public:
 		Window();

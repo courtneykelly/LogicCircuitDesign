@@ -12,18 +12,11 @@
 #include <cmath>
 #include <vector>
 #include "Block.h"
-#include "Gate.h"
-#include "Input.h"
-#include "Wire.h"
+	#include "Gate.h"
+	#include "Input.h"
+	#include "Wire.h"
 
 
-
-
-int init();
-bool loadMedia();
-void close();
-void draw();
-void drawAndGate();
 
 class Window {
 
@@ -85,9 +78,8 @@ int Window::init()
     }
 
     // create window
-    window = SDL_CreateWindow("Logic Circuit Design", 
-	SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 
-	screen_width, screen_height, SDL_WINDOW_SHOWN);
+    window = SDL_CreateWindow("Logic Circuit Design", SDL_WINDOWPOS_UNDEFINED,
+	SDL_WINDOWPOS_UNDEFINED, screen_width, screen_height, SDL_WINDOW_SHOWN);
 
     // create renderer
     renderer = SDL_CreateRenderer(window, -1, 0);
@@ -100,9 +92,8 @@ int Window::init()
     // set renderer resolution
     SDL_RenderSetLogicalSize (renderer, screen_width, screen_height);
 
-    // set Background color?
+    // set Background color
     SDL_SetRenderDrawColor (renderer, 255, 255, 255, 255);
-
     SDL_RenderClear (renderer);
 
     return 1;
@@ -193,13 +184,3 @@ void Window::drawWires()
 	filledPolygonRGBA(renderer, xPoints, yPoints, 9, 255, 0, 50, 255);
 }
 
-void Window::drawAndGate()
-{
-	int x = 100;
-	int y = 100;
-
-	SDL_SetRenderDrawColor( renderer, 0, 0, 255,255 );
-      	SDL_RenderDrawLine( renderer, x-12, y-10, x+8, y-10);
-
-
-}
