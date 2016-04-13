@@ -12,6 +12,7 @@ class Input : public Block
 		Input(int);    // constructor
 		~Input();   // deconstructor
 		virtual int getValue();
+		virtual void draw();
 
 	private:
 		int value;
@@ -37,5 +38,9 @@ int Input::getValue()
 	return value;
 }
 
+void Input::draw()
+{
+
+}
 
 #endif

@@ -24,7 +24,7 @@ int main()
 
 	////////////////////////////////
     	// user changes the following 2:	
-    	Input inputA(1);			
+    	Input inputA(0);			
     	Input inputB(1);			
 	////////////////////////////////
 
@@ -37,8 +37,8 @@ int main()
 	Wire from_B0(&inputB, 1, 1);
 	//Wire from_B1(&inputB);
 
-	ptr->setIn0(&from_A0);
-	ptr->setIn1(&from_B0);
+	and_gate.setIn0(&from_A0);
+	and_gate.setIn1(&from_B0);
 
 	//or_gate.setIn0(&from_A1);
 	//or_gate.setIn1(&from_B1);
