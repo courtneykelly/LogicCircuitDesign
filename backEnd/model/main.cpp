@@ -10,7 +10,7 @@
 #include "Block.h"
 	#include "Gate.h"
 		#include "AndGate.h"
-		// OrGate
+		#include "OrGate.h"
 	#include "Input.h"
 #include "Wire.h"
 #include <SDL.h>
