@@ -18,7 +18,7 @@ class Wire
 		void setPointer(Block* blockPtr);
 		void movePoint(int, int);
 		void draw(SDL_Renderer*);
-		
+		void connect(Block*);	
 
 	private:
 		Block* blockPtr;

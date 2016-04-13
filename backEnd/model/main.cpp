@@ -56,6 +56,7 @@ int main()
 		// drawing functions go here!
 
 		screen.drawWires();
+		screen.drawBlocks();
 
 		screen.draw(); // draws, delays, then clears
 
