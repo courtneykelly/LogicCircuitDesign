@@ -9,8 +9,8 @@
 #include "Window.h"
 #include "Block.h"
 	#include "Gate.h"
-		// AndGate
-		// OrGate
+		#include "AndGate.h"
+		#include "OrGate.h"
 	#include "Input.h"
 #include "Wire.h"
 #include <SDL.h>
