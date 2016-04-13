@@ -18,15 +18,7 @@
 
 
 
-<<<<<<< HEAD
-	int init();
-	bool loadMedia();
-	void close();
-	void draw();
-	void drawAndGate();
-=======
 class Window {
->>>>>>> 185647a3d0c78632742aa71662a5c5ae9d5cdca7
 
 	public:
 		Window();
@@ -194,13 +186,3 @@ void Window::drawWires()
 	filledPolygonRGBA(renderer, xPoints, yPoints, 9, 255, 0, 50, 255);
 }
 
-void Window::drawAndGate()
-{
-	int x = 100;
-	int y = 100;
-
-	SDL_SetRenderDrawColor( renderer, 0, 0, 255,255 );
-      	SDL_RenderDrawLine( renderer, x-12, y-10, x+8, y-10);
-
-
-}
