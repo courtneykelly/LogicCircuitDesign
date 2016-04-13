@@ -82,4 +82,12 @@ void Wire::draw(SDL_Renderer* renderer)
 }
 
 
+// connect the wire to the block
+void Wire::connect(Block* ptr)
+{
+	
+	
+}
+
+
 #endif
