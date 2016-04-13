@@ -26,7 +26,7 @@ Input::Input(int val)
 }
 
 
-// destructor
+// deconstructor
 Input::~Input()
 {
 

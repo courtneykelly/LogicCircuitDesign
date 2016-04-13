@@ -17,6 +17,7 @@ class Block {
 
 		virtual int getValue() = 0;      // print function	
 		virtual void draw() = 0;
+		//virtual void moveBlock() = 0;
 
 };
 

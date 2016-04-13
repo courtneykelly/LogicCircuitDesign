@@ -3,7 +3,7 @@
 
 #include <iostream>   // for using cout
 #include "Block.h"
-	#include "Input.h"
+#include "Input.h"
 #include "Wire.h"
 
 using namespace std;
@@ -14,17 +14,17 @@ class Gate : public Block
 	public:
 		virtual int getValue() = 0;
 		virtual void draw() = 0;
+		//virtual void moveBlock(int,int);
 		void setIn0(Wire *);
 		void setIn1(Wire *);
 		Wire* getIn0();
 		Wire* getIn1();
-		void moveBlock(int,int);
 
 	private:
 		Wire* in0;
 		Wire* in1;                // first element in the list
 		
-		//block coordinates
+		//gate coordinates
 		int x;
 		int y;
 };
@@ -52,13 +52,13 @@ Wire* Gate::getIn1()
 	return in1;
 }
 
-void Gate::moveBlock(int x2,int y2)
+/*void Gate::moveBlock(int x2,int y2)
 {
 
   x = x2;
   y = y2;
 
-}
+}*/
 
 
 
@@ -107,10 +107,10 @@ int AndGate::getValue()
 void AndGate::draw()
 {
 
-  short xPoints[9] = {100, 100, 150, 165, 170, 175, 170, 165, 150};
-  short yPoints[9] = {100, 160, 160, 150, 140, 130, 120, 110,     100};
+  /*short xPoints[9] = {100, 100, 150, 165, 170, 175, 170, 165, 150};
+  short yPoints[9] = {100, 160, 160, 150, 140, 130, 120, 110, 100};
 
-  filledPolygonRGBA(renderer, xPoints, yPoints, 9, 255, 0, 50, 255);
+  filledPolygonRGBA(renderer, xPoints, yPoints, 9, 255, 0, 50, 255);*/
 	
 }
 
