@@ -1,5 +1,5 @@
-#ifndef GATE_H
-#define GATE_H
+#ifndef ANDGATE_H
+#define ANDGATE_H
 
 #include <iostream>   // for using cout
 #include "Block.h"
