@@ -3,8 +3,8 @@
 
 #include <iostream>   // for using cout
 #include "Block.h" // for pointers to objects
-	#include "Input.h"
-	#include "Gate.h"
+#include "Input.h"
+#include "Gate.h"
 
 using namespace std;
 

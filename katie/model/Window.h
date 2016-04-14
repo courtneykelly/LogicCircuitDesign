@@ -12,11 +12,14 @@
 #include <cmath>
 #include <vector>
 #include "Block.h"
-	#include "Gate.h"
-	#include "Input.h"
-	#include "Wire.h"
+#include "Gate.h"
+#include "Input.h"
+#include "Wire.h"
+#include "AndGate.h"
+#include "OrGate.h"
+#include "NotGate.h"
 
-
+#define PI 3.14159265
 
 class Window {
 
@@ -29,19 +32,35 @@ class Window {
 		int eventHandler(SDL_Event);
 
 		void makeWire();
+		void makeBlock(int);
 		void moveWire();
-		void moveBlocks();
+		//void moveBlocks();
 		void drawBlocks();
 		void drawWires();
+		bool andGateDetection( SDL_Event );
+		bool orGateDetection( SDL_Event );
+		bool notGateDetection( SDL_Event );
 
 	private:
-		int screen_width;
-		int screen_height;
+		double screen_width;
+		double screen_height;
 		SDL_Window* window;
 		SDL_Renderer* renderer;
 		vector<Block*> blocks;
 		vector<Wire*> wires;
 		int action; // 0=none, 1=drawing wires, ...
+		SDL_Rect viewController;
+		SDL_Rect logicCanvas;
+		SDL_Rect staticAND;
+		SDL_Rect staticOR;
+		SDL_Rect staticNOT;
+		int borderSize;
+		double staticGateWidth;
+		double staticGateHeight;
+		double staticLineLength;
+		double buffer;
+		double highlightBoxWidth;
+		double highlightBoxHeight; 
 };
 
 
@@ -53,6 +72,44 @@ Window::Window()
     window = NULL;
     renderer = NULL;
 	action = 0;
+	borderSize=10;
+	staticGateWidth=50;	
+	staticGateHeight=60;
+	staticLineLength=1;
+	buffer = 2;
+	highlightBoxWidth = (5/3)*staticGateWidth + (1/2)*staticGateHeight + 2*buffer;
+	highlightBoxHeight = staticGateHeight + 2*buffer;
+
+	// Initialize View Controller
+    viewController.x = screen_width - (screen_width/4);
+    viewController.y = screen_height/2;
+    viewController.w = screen_width/4 - borderSize;
+    viewController.h = screen_height/2 - borderSize;
+
+    // Initialize Logic Canvas
+    logicCanvas.x = borderSize;
+    logicCanvas.y = screen_height/3;
+    logicCanvas.w = screen_width - (3*borderSize) - (viewController.w);
+    logicCanvas.h = 2*screen_height/3 - borderSize;
+
+    // Initlaize AND Gate in View Controller
+    staticAND.x = viewController.x + (viewController.w / 2) - (staticGateWidth/2);
+    staticAND.y = viewController.y + (viewController.h / 6) - (staticGateHeight/2);
+    staticAND.w = staticGateWidth;
+    staticAND.h = staticGateHeight;
+
+    // Initialize OR Gate in View Controller
+    staticOR.x = viewController.x + (viewController.w / 2) - (staticGateWidth/2);
+    staticOR.y = viewController.y + (3*viewController.h / 6) - (staticGateHeight/2);
+    staticOR.w = staticGateWidth;
+    staticOR.h = staticGateHeight;
+
+    // Initialize NOT Gate in View Controller
+    staticNOT.x = viewController.x + (viewController.w / 2) - (staticGateWidth/2);
+    staticNOT.y = viewController.y + (5*viewController.h / 6) - (staticGateHeight/2);
+    staticNOT.w = staticGateWidth;
+    staticNOT.h = staticGateHeight;
+
     init();
 }
 
@@ -103,6 +160,38 @@ int Window::init()
 
 void Window::draw()
 {
+	 // Change color to blue
+    SDL_SetRenderDrawColor( renderer, 0, 0, 255, 255 );
+
+    // Draw Static Gates
+    
+    //AND gate
+    double x = viewController.x + (viewController.w / 2) - (staticGateWidth+(staticGateHeight/2))/2;
+	double y = viewController.y + (viewController.h / 6) - (staticGateHeight/2);
+	
+	Block* ptr = new AndGate(x,y);
+	ptr -> draw(renderer);
+
+	//OR gate
+	int x1 = viewController.x + (viewController.w / 2) - (staticGateWidth+(staticGateHeight/2))/2;
+	int y1 = viewController.y + (3*viewController.h / 6) - (staticGateHeight/2);
+
+	ptr = new OrGate(x1,y1);
+	ptr -> draw(renderer);
+
+	//Not gate
+	int x2 = viewController.x + (viewController.w / 2) - (staticGateWidth/3);
+	int y2 = viewController.y + (5*viewController.h / 6) - (staticGateHeight/2);
+	
+	ptr = new NotGate(x2,y2);
+	ptr -> draw(renderer);
+
+    // Draw Rectangle for View Controller
+    SDL_SetRenderDrawColor( renderer, 0, 0, 0, 255 );     // Change Color to Black
+    SDL_RenderDrawRect( renderer, &viewController );
+    SDL_RenderDrawRect( renderer, &logicCanvas );
+
+
     SDL_RenderPresent(renderer); // draws it
     SDL_Delay(40); // 40 default
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
@@ -123,25 +212,26 @@ int Window::eventHandler(SDL_Event e)
 		case SDL_MOUSEBUTTONDOWN:
 
 		  //get mouse position
-		  int x,y,blockNum;
+		  int x,y;
 		  SDL_GetMouseState(&x, &y);
 
-		  //check if mouse is inside a gate
-		  bool inside = true;
-		  
-		  for(int i = 0; i < blocks.size(); i++)
-		    {
-		      if( x < blocks[i].x && x > (blocks[i].x+ 100) && y < blocks[i].y &&  y > (blocks[i].y + 100)) {
-			action=2;
-			blockNum = i;
-			break;
-		      }
+		  //check if mouse is inside a selection
+		  	if (andGateDetection( e )) {
+                makeBlock(0); //0 = AND
+            }
+            else if (orGateDetection( e )) {
+              	makeBlock(1); //1 = OR
+            }
+            else if (notGateDetection( e )) {
+                makeBlock(2); //2 = NOT
+            }
+	
+		    if(x>logicCanvas.x && x<(logicCanvas.x+logicCanvas.w) && y>logicCanvas.y && y<(logicCanvas.y+logicCanvas.h)) {
+		    	makeWire();
+		    	cout << "makeWire" << endl;
+		    	break;
 		    }
-		  else {
-		    makeWire();
-		    cout << "makeWire" << endl;
-		    break;
-		  }
+		    			
 		case SDL_MOUSEBUTTONUP:
 			action = 0;
 			break;
@@ -152,9 +242,9 @@ int Window::eventHandler(SDL_Event e)
 	  case 1:
 	    moveWire();
 	    break;
-	  case 2:
-	    moveGate(blockNum);
-	    break;
+	  /*case 2:
+	    moveBlock(blockNum);
+	    break;*/
 	  default:
 	    break;
 	  }
@@ -175,6 +265,45 @@ void Window::makeWire()
 	action = 1;
 }
 
+void Window::makeBlock(int i)
+{
+	SDL_Event e;
+	int x,y;
+
+
+	while(SDL_WaitEvent(&e) >= 0 ){
+		if(e.type = SDL_MOUSEBUTTONUP){
+			if(e.type = SDL_MOUSEBUTTONDOWN){
+				SDL_GetMouseState(&x, &y);
+				if(x>logicCanvas.x && x<(logicCanvas.x+logicCanvas.w) && y>logicCanvas.y && y<(logicCanvas.y+logicCanvas.h)){
+					break;
+				}
+			}
+		}		
+
+	}
+
+	Block* Bptr;
+
+	if( i == 0 ){
+		Bptr = new AndGate(x,y);
+	}
+	else if(i == 1){
+		
+		Bptr = new OrGate(x,y);
+	}
+	else if(i == 2){
+		
+		Bptr = new NotGate(x,y);
+	}
+	
+	
+	
+	
+	blocks.push_back(Bptr);
+	action = 0;
+}
+
 
 void Window::moveWire()
 {
@@ -184,13 +313,13 @@ void Window::moveWire()
 	wires.back()->movePoint(x, y);
 }
 
-void Window::moveGate(int i)
+/*void Window::moveBlock(int i)
 {
   int x;
   int y;
   SDL_GetMouseState(&x,&y);
   blocks[i]->moveBlock(x, y);
-}
+}*/
 
 // Draw blocks function!!!
 void Window::drawBlocks()
@@ -210,9 +339,41 @@ void Window::drawWires()
 		wires[i]->draw(renderer);
 	}
 
-	short xPoints[9] = {100, 100, 150, 165, 170, 175, 170, 165, 150};
-	short yPoints[9] = {100, 160, 160, 150, 140, 130, 120, 110, 100};
-
-	filledPolygonRGBA(renderer, xPoints, yPoints, 9, 255, 0, 50, 255);
 }
 
+bool Window::andGateDetection( SDL_Event event) 
+{
+	 if ( (event.motion.x>staticAND.x) && (event.motion.x<(staticAND.x+staticAND.w)) ) {
+        if ( (event.motion.y>staticAND.y) && (event.motion.y<(staticAND.y+staticAND.h)) ) {
+            return true;
+        }
+    }
+    return false;
+	/*double xBound = x - (highlightBoxWidth/2);
+	double yBound = y - (highlightBoxHeight/2);
+    if ( (event.motion.x>xBound) && (event.motion.x<(xBound+highlightBoxWidth)) ) {
+        if ( (event.motion.y>yBound) && (event.motion.y<(yBound+highlightBoxHeight)) ) {
+            return true;
+        }
+    }
+    return false;*/
+}
+bool Window::orGateDetection( SDL_Event event ) 
+{
+    if ( (event.motion.x>staticOR.x) && (event.motion.x<(staticOR.x+staticOR.w)) ) {
+        if ( (event.motion.y>staticOR.y) && (event.motion.y<(staticOR.y+staticOR.h)) ) {
+            return true;
+        }
+    }
+    return false;
+}
+bool Window::notGateDetection( SDL_Event event ) 
+{
+
+    if ( (event.motion.x>staticNOT.x) && (event.motion.x<(staticNOT.x+staticNOT.w)) ) {
+        if ( (event.motion.y>staticNOT.y) && (event.motion.y<(staticNOT.y+staticNOT.h)) ) {
+            return true;
+        }
+    }
+    return false;
+}

@@ -12,7 +12,7 @@ class Input : public Block
 		Input(int);    // constructor
 		~Input();   // deconstructor
 		virtual int getValue();
-		virtual void draw();
+		virtual void draw(SDL_Renderer*);
 
 	private:
 		int value;
@@ -26,7 +26,7 @@ Input::Input(int val)
 }
 
 
-// destructor
+// deconstructor
 Input::~Input()
 {
 
@@ -38,7 +38,7 @@ int Input::getValue()
 	return value;
 }
 
-void Input::draw()
+void Input::draw(SDL_Renderer* renderer)
 {
 
 }

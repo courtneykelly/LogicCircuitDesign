@@ -28,7 +28,7 @@ int main()
     	Input inputB(1);			
 	////////////////////////////////
 
-	AndGate and_gate;
+	/*AndGate and_gate;
 	//Gate or_gate(1);
 	Block* ptr = &and_gate;
 
@@ -49,13 +49,14 @@ int main()
 
 	// evaluate
 	cout << "AND=" << from_and.getValue() << endl;
-	//cout << "OR=" << from_or.getValue() << endl;
+	//cout << "OR=" << from_or.getValue() << endl;*/
 
 	while (!quit)
 	{
 		// drawing functions go here!
 
 		screen.drawWires();
+		screen.drawBlocks();
 
 		screen.draw(); // draws, delays, then clears
 
