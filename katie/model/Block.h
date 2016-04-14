@@ -25,7 +25,7 @@ class Block {
 // base class pointer
 Block::Block ()
 {
-
+cout << "hi";
 }
 
 Block::~Block ()

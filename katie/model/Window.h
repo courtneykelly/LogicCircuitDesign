@@ -32,10 +32,14 @@ class Window {
 		int eventHandler(SDL_Event);
 
 		void makeWire();
+		void makeBlock(int);
 		void moveWire();
 		//void moveBlocks();
 		void drawBlocks();
 		void drawWires();
+		bool andGateDetection( SDL_Event );
+		bool orGateDetection( SDL_Event );
+		bool notGateDetection( SDL_Event );
 
 	private:
 		double screen_width;
@@ -53,7 +57,10 @@ class Window {
 		int borderSize;
 		double staticGateWidth;
 		double staticGateHeight;
-		double staticLineLength; 
+		double staticLineLength;
+		double buffer;
+		double highlightBoxWidth;
+		double highlightBoxHeight; 
 };
 
 
@@ -69,6 +76,9 @@ Window::Window()
 	staticGateWidth=50;	
 	staticGateHeight=60;
 	staticLineLength=1;
+	buffer = 2;
+	highlightBoxWidth = (5/3)*staticGateWidth + (1/2)*staticGateHeight + 2*buffer;
+	highlightBoxHeight = staticGateHeight + 2*buffer;
 
 	// Initialize View Controller
     viewController.x = screen_width - (screen_width/4);
@@ -156,19 +166,19 @@ void Window::draw()
     // Draw Static Gates
     
     //AND gate
-    double x = viewController.x + (viewController.w / 2) - (staticGateWidth/2);
+    double x = viewController.x + (viewController.w / 2) - (staticGateWidth+(staticGateHeight/2))/2;
 	double y = viewController.y + (viewController.h / 6) - (staticGateHeight/2);
 	
 	drawAND(x,y);
 
 	//OR gate
-	int x1 = viewController.x + (viewController.w / 2) - (staticGateWidth/2);
+	int x1 = viewController.x + (viewController.w / 2) - (staticGateWidth+(staticGateHeight/2))/2;
 	int y1 = viewController.y + (3*viewController.h / 6) - (staticGateHeight/2);
 
 	drawOR(x1, y1);
 
 	//Not gate
-	int x2 = viewController.x + (viewController.w / 2) - (staticGateWidth/2);
+	int x2 = viewController.x + (viewController.w / 2) - (staticGateWidth/3);
 	int y2 = viewController.y + (5*viewController.h / 6) - (staticGateHeight/2);
 	
 	drawNOT(x2, y2);
@@ -199,18 +209,20 @@ int Window::eventHandler(SDL_Event e)
 		case SDL_MOUSEBUTTONDOWN:
 
 		  //get mouse position
-		  int x,y,blockNum;
+		  int x,y;
 		  SDL_GetMouseState(&x, &y);
 
-		  //check if mouse is inside a gate
-		  /*for(int i = 0; i < blocks.size(); i++)
-		    {
-		      if( x < blocks[i].x && x > (blocks[i].x+ 100) && y < blocks[i].y &&  y > (blocks[i].y + 100)) {
-				action=2;
-				blockNum = i;
-				break;
-		      }
-		    }*/
+		  //check if mouse is inside a selection
+		  	if (andGateDetection( e )) {
+                //makeBlock(0); //0 = AND
+            }
+            else if (orGateDetection( e )) {
+              	//makeBlock(1); //1 = OR
+            }
+            else if (notGateDetection( e )) {
+                //makeBlock(2); //2 = NOT
+            }
+	
 		    if(x>logicCanvas.x && x<(logicCanvas.x+logicCanvas.w) && y>logicCanvas.y && y<(logicCanvas.y+logicCanvas.h)) {
 		    	makeWire();
 		    	cout << "makeWire" << endl;
@@ -248,6 +260,28 @@ void Window::makeWire()
 
 	wires.push_back(ptr);
 	action = 1;
+}
+
+void Window::makeBlock(int i)
+{
+	SDL_Event e;
+	int x,y;
+	int run = 1;
+
+	while(run){
+		switch(e.type){
+			case SDL_MOUSEBUTTONDOWN:
+				SDL_GetMouseState(&x, &y);
+				if(x>logicCanvas.x && x<(logicCanvas.x+logicCanvas.w) && y>logicCanvas.y && y<(logicCanvas.y+logicCanvas.h)){
+					run = 0;
+				}
+		}		
+
+	}
+	//Block* ptr = new Block();
+	drawAND(x,y);
+	//blocks.push_back(ptr);
+	action = 0;
 }
 
 
@@ -398,4 +432,41 @@ void Window::drawNOT(double x, double y)
     // draw triangle
 	filledTrigonRGBA( renderer, x, y+(staticGateHeight/4), x+(2*staticGateWidth/3), 
 		y+(staticGateHeight/2), x, y+(3*staticGateHeight/4), 255, 0, 50, 255);
+}
+
+bool Window::andGateDetection( SDL_Event event) 
+{
+	 if ( (event.motion.x>staticAND.x) && (event.motion.x<(staticAND.x+staticAND.w)) ) {
+        if ( (event.motion.y>staticAND.y) && (event.motion.y<(staticAND.y+staticAND.h)) ) {
+            return true;
+        }
+    }
+    return false;
+	/*double xBound = x - (highlightBoxWidth/2);
+	double yBound = y - (highlightBoxHeight/2);
+    if ( (event.motion.x>xBound) && (event.motion.x<(xBound+highlightBoxWidth)) ) {
+        if ( (event.motion.y>yBound) && (event.motion.y<(yBound+highlightBoxHeight)) ) {
+            return true;
+        }
+    }
+    return false;*/
+}
+bool Window::orGateDetection( SDL_Event event ) 
+{
+    if ( (event.motion.x>staticOR.x) && (event.motion.x<(staticOR.x+staticOR.w)) ) {
+        if ( (event.motion.y>staticOR.y) && (event.motion.y<(staticOR.y+staticOR.h)) ) {
+            return true;
+        }
+    }
+    return false;
+}
+bool Window::notGateDetection( SDL_Event event ) 
+{
+
+    if ( (event.motion.x>staticNOT.x) && (event.motion.x<(staticNOT.x+staticNOT.w)) ) {
+        if ( (event.motion.y>staticNOT.y) && (event.motion.y<(staticNOT.y+staticNOT.h)) ) {
+            return true;
+        }
+    }
+    return false;
 }
