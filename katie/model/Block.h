@@ -16,7 +16,7 @@ class Block {
 		~Block();	// deconstructor
 
 		virtual int getValue() = 0;      // print function	
-		virtual void draw() = 0;
+		virtual void draw(SDL_Renderer*) = 0;
 		//virtual void moveBlock() = 0;
 
 };
@@ -25,7 +25,7 @@ class Block {
 // base class pointer
 Block::Block ()
 {
-cout << "hi";
+
 }
 
 Block::~Block ()

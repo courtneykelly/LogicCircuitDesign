@@ -15,6 +15,9 @@
 #include "Gate.h"
 #include "Input.h"
 #include "Wire.h"
+#include "AndGate.h"
+#include "OrGate.h"
+#include "NotGate.h"
 
 #define PI 3.14159265
 
@@ -26,9 +29,6 @@ class Window {
 
 		int init();
 		void draw();
-		void drawAND(double, double);
-		void drawOR(double, double);
-		void drawNOT( double, double );
 		int eventHandler(SDL_Event);
 
 		void makeWire();
@@ -169,19 +169,22 @@ void Window::draw()
     double x = viewController.x + (viewController.w / 2) - (staticGateWidth+(staticGateHeight/2))/2;
 	double y = viewController.y + (viewController.h / 6) - (staticGateHeight/2);
 	
-	drawAND(x,y);
+	Block* ptr = new AndGate(x,y);
+	ptr -> draw(renderer);
 
 	//OR gate
 	int x1 = viewController.x + (viewController.w / 2) - (staticGateWidth+(staticGateHeight/2))/2;
 	int y1 = viewController.y + (3*viewController.h / 6) - (staticGateHeight/2);
 
-	drawOR(x1, y1);
+	ptr = new OrGate(x1,y1);
+	ptr -> draw(renderer);
 
 	//Not gate
 	int x2 = viewController.x + (viewController.w / 2) - (staticGateWidth/3);
 	int y2 = viewController.y + (5*viewController.h / 6) - (staticGateHeight/2);
 	
-	drawNOT(x2, y2);
+	ptr = new NotGate(x2,y2);
+	ptr -> draw(renderer);
 
     // Draw Rectangle for View Controller
     SDL_SetRenderDrawColor( renderer, 0, 0, 0, 255 );     // Change Color to Black
@@ -214,13 +217,13 @@ int Window::eventHandler(SDL_Event e)
 
 		  //check if mouse is inside a selection
 		  	if (andGateDetection( e )) {
-                //makeBlock(0); //0 = AND
+                makeBlock(0); //0 = AND
             }
             else if (orGateDetection( e )) {
-              	//makeBlock(1); //1 = OR
+              	makeBlock(1); //1 = OR
             }
             else if (notGateDetection( e )) {
-                //makeBlock(2); //2 = NOT
+                makeBlock(2); //2 = NOT
             }
 	
 		    if(x>logicCanvas.x && x<(logicCanvas.x+logicCanvas.w) && y>logicCanvas.y && y<(logicCanvas.y+logicCanvas.h)) {
@@ -266,21 +269,38 @@ void Window::makeBlock(int i)
 {
 	SDL_Event e;
 	int x,y;
-	int run = 1;
 
-	while(run){
-		switch(e.type){
-			case SDL_MOUSEBUTTONDOWN:
+
+	while(SDL_WaitEvent(&e) >= 0 ){
+		if(e.type = SDL_MOUSEBUTTONUP){
+			if(e.type = SDL_MOUSEBUTTONDOWN){
 				SDL_GetMouseState(&x, &y);
 				if(x>logicCanvas.x && x<(logicCanvas.x+logicCanvas.w) && y>logicCanvas.y && y<(logicCanvas.y+logicCanvas.h)){
-					run = 0;
+					break;
 				}
+			}
 		}		
 
 	}
-	//Block* ptr = new Block();
-	drawAND(x,y);
-	//blocks.push_back(ptr);
+
+	Block* Bptr;
+
+	if( i == 0 ){
+		Bptr = new AndGate(x,y);
+	}
+	else if(i == 1){
+		
+		Bptr = new OrGate(x,y);
+	}
+	else if(i == 2){
+		
+		Bptr = new NotGate(x,y);
+	}
+	
+	
+	
+	
+	blocks.push_back(Bptr);
 	action = 0;
 }
 
@@ -304,10 +324,10 @@ void Window::moveWire()
 // Draw blocks function!!!
 void Window::drawBlocks()
 {
-  /*for(int i = 0; i < blocks.size(); i++)
+  for(int i = 0; i < blocks.size(); i++)
     {
       blocks[i]->draw(renderer);
-    }*/
+    }
 
 }
 
@@ -319,119 +339,6 @@ void Window::drawWires()
 		wires[i]->draw(renderer);
 	}
 
-}
-
-void Window::drawAND(double x, double y)
-{
-	// Change color to blue
-    SDL_SetRenderDrawColor( renderer, 0, 0, 255, 255 );
-
-    // Set Trigonometry Values for drawing Half Circle
-	double step = 2;					// step size= 2 degrees
-	int numPoints = int(180/step + 3);	// number of points based on step size
-	short xPoints[numPoints];			
-	short yPoints[numPoints];
-
-	double theta = 270*PI/180;					// start theta=270 degrees and convert to radians
-	double xCenter = x + staticGateWidth;		// x value of center point for semi circle
-	double yCenter = y + staticGateHeight/2;	// y value of center point for semi circle
-	double radius = staticGateHeight/2;			// radius of semi circle
-		
-	for (int i=0; i<(180/step); i++) {				// loop through number of points
-		xPoints[i] = xCenter + radius*cos(theta);	// get x value based on theta, xCenter, and radius
-		yPoints[i] = yCenter + radius*sin(theta);	// get y value based on theta, yCenter, and radius
-		theta += step*PI/180;						// increment theta by step size, convert to radians
-	}
-
-	xPoints[numPoints-3] = x+staticGateWidth;		// these points are for the rectangle
-	yPoints[numPoints-3] = y+staticGateHeight;		// attached to the semi circle
-	xPoints[numPoints-2] = x;
-	yPoints[numPoints-2] = y+staticGateHeight;
-	xPoints[numPoints-1] = x;
-	yPoints[numPoints-1] = y;
-
-	// lines, to represent ports
-	boxRGBA(renderer, x, y+staticGateHeight/4-staticLineLength, x-staticGateWidth/3, 
-		y+staticGateHeight/4+staticLineLength, 255, 0, 50, 255);
-	boxRGBA(renderer, x, y+3*staticGateHeight/4-staticLineLength, x-staticGateWidth/3, 
-		y+3*staticGateHeight/4+staticLineLength, 255, 0, 50, 255);
-	boxRGBA(renderer, x+(staticGateWidth)+(staticGateHeight/2)+(staticGateWidth/3), 
-		y+(staticGateHeight/2)-(staticLineLength), x+(staticGateWidth)+(staticGateHeight/2),
-		y+(staticGateHeight/2)+(staticLineLength),255, 0, 50, 255);
-
-	// draw body of AND gate as a single polygon
-	filledPolygonRGBA(renderer, xPoints, yPoints, numPoints, 255, 0, 50, 255);
-}
-
-void Window::drawOR(double x, double y) 
-{
-	// Change color to blue
-    SDL_SetRenderDrawColor( renderer, 0, 0, 255, 255 );
-
-    // Set Trigonometry Values for drawing Half Circle
-	double step = 2;					// step size= 2 degrees
-	int numPoints = int(180/step*2 + 4);	// number of points based on step size
-	short xPoints[numPoints];			
-	short yPoints[numPoints];
-
-	double theta = 270*PI/180;					// start theta=270 degrees and convert to radians
-	double xCenter = x;							// x value of center point for semi circle
-	double yCenter = y + staticGateHeight/2;	// y value of center point for semi circle
-	double radius = staticGateHeight/2;			// radius of semi circle
-	
-	xPoints[0] = x;
-	yPoints[0] = y;	
-	for (int i=1; i<=(180/step); i++) {				// loop through number of points
-		xPoints[i] = xCenter + radius*cos(theta);	// get x value based on theta, xCenter, and radius
-		yPoints[i] = yCenter + radius*sin(theta);	// get y value based on theta, yCenter, and radius
-		theta += step*PI/180;						// increment theta by step size, convert to radians
-	}
-
-	xPoints[91] = x;							// these points are for the rectangle
-	yPoints[91] = y+staticGateHeight;			// attached to the semi circle
-	xPoints[92] = x+(staticGateWidth);
-	yPoints[92] = y+staticGateHeight;
-
-	theta = 270*PI/180;						// reset theta
-	xCenter = x + staticGateWidth;			// reset xCenter
-	yCenter = y + (staticGateHeight/2);		// reset yCenter
-	radius = staticGateHeight/2;			// reset radius
-
-	for (int i=(numPoints-2); i>(92); i--) {			// loop through number of points
-		xPoints[i] = xCenter + radius*cos(theta);		// get x value based on theta, xCenter, and radius
-		yPoints[i] = yCenter + radius*sin(theta);		// get y value based on theta, yCenter, and radius
-		theta += step*PI/180;							// increment theta by step size, convert to radians
-	}
-	
-	xPoints[numPoints-1] = x+(staticGateWidth);
-	yPoints[numPoints-1] = y;
-
-	// lines, to represent ports
-	boxRGBA(renderer, x+12, y, x-staticGateWidth/3, 
-		y+2*staticLineLength, 255, 0, 50, 255);
-	boxRGBA(renderer, x+12, y+staticGateHeight-2*staticLineLength, x-staticGateWidth/3, 
-		y+staticGateHeight, 255, 0, 50, 255);
-	boxRGBA(renderer, x + staticGateWidth + radius + (staticGateWidth/3), 
-		y+(staticGateHeight/2)-(staticLineLength), x + staticGateWidth + radius,
-		y+(staticGateHeight/2)+(staticLineLength),255, 0, 50, 255);
-
-	// draw body of OR gate as a single polygon
-	filledPolygonRGBA(renderer, xPoints, yPoints, numPoints, 255, 0, 50, 255);
-}
-
-void Window::drawNOT(double x, double y) 
-{
-	// Change color to blue
-    SDL_SetRenderDrawColor( renderer, 0, 0, 255, 255 );
-
-    // draw lines
-    	boxRGBA( renderer, x, y+(staticGateHeight/2-staticLineLength), x-staticGateWidth/3, 
-    		y+(staticGateHeight/2)+staticLineLength, 255, 0, 50, 255 );
-    	boxRGBA( renderer, x+(2*staticGateWidth/3)+(staticGateWidth/3)-5, y+(staticGateHeight/2-staticLineLength), 
-    		x+(2*staticGateWidth/3)-10, y+(staticGateHeight/2)+staticLineLength, 255, 0, 50, 255 );
-    // draw triangle
-	filledTrigonRGBA( renderer, x, y+(staticGateHeight/4), x+(2*staticGateWidth/3), 
-		y+(staticGateHeight/2), x, y+(3*staticGateHeight/4), 255, 0, 50, 255);
 }
 
 bool Window::andGateDetection( SDL_Event event) 

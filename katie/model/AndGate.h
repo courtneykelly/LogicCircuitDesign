@@ -3,35 +3,46 @@
 
 #include <iostream>   // for using cout
 #include "Block.h"
-    #include "Input.h"
-    #include "Wire.h"
+#include "Input.h"
+#include "Wire.h"
 
-    using namespace std;
+#define PI 3.14159265
+
+using namespace std;
 
 
 class AndGate : public Gate
 {
 	public:
-		AndGate();    // constructor
+		AndGate(double,double);    // constructor
 		~AndGate();   // deconstructor
 		virtual int getValue();
-		virtual void drawAND(double,double);
+		virtual void draw(SDL_Renderer*);
 		
 	private:
 		// for drawing:
-		short xCoord[10];
-		short yCoord[10];
-		short numPts;
+		double x;
+		double y;
+		double staticGateWidth;
+		double staticGateHeight;
+		double staticLineLength;
+	
 };
 
 
 // constructor
-AndGate::AndGate()
+AndGate::AndGate(double xCenter, double yCenter) : Gate()
 {
 	setIn0(NULL);
 	setIn1(NULL);
+	staticGateWidth=50;	
+	staticGateHeight=60;
+	staticLineLength=1;
 
-	numPts = 10;
+	x = xCenter;
+	y = yCenter;
+
+	
 }
 
 // destructor
@@ -49,7 +60,7 @@ int AndGate::getValue()
 	return (left > 0 && right > 0);
 }
 
-void drawAND(double x, double y)
+void AndGate::draw(SDL_Renderer* renderer)
 {
 	// Change color to blue
     SDL_SetRenderDrawColor( renderer, 0, 0, 255, 255 );
