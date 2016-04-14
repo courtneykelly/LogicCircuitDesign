@@ -26,6 +26,9 @@ class Window {
 
 		int init();
 		void draw();
+		void drawAND(double, double);
+		void drawOR(double, double);
+		void drawNOT( double, double );
 		int eventHandler(SDL_Event);
 
 		void makeWire();
@@ -49,7 +52,8 @@ class Window {
 		SDL_Rect staticNOT;
 		int borderSize;
 		double staticGateWidth;
-		double staticGateHeight; 
+		double staticGateHeight;
+		double staticLineLength; 
 };
 
 
@@ -62,8 +66,10 @@ Window::Window()
     renderer = NULL;
 	action = 0;
 	borderSize=10;
-	staticGateWidth=60;
-	staticGateHeight=40;
+	staticGateWidth=50;	
+	staticGateHeight=60;
+	staticLineLength=1;
+
 	// Initialize View Controller
     viewController.x = screen_width - (screen_width/4);
     viewController.y = screen_height/2;
@@ -148,67 +154,24 @@ void Window::draw()
     SDL_SetRenderDrawColor( renderer, 0, 0, 255, 255 );
 
     // Draw Static Gates
-    double w=50;
-    double h=60;
+    
     //AND gate
     double x = viewController.x + (viewController.w / 2) - (staticGateWidth/2);
 	double y = viewController.y + (viewController.h / 6) - (staticGateHeight/2);
-	double step = 15;
-	int numPoints = int(180/step + 2);
-	short xPoints[numPoints];
-	short yPoints[numPoints];
-
-	double theta = 270*PI/180;
-	double xCenter = x + w;
-	double yCenter = y + h/2;
-	double radius = h/2;
 	
-	for (int i=0; i<(180/step); i++) {
-		xPoints[i] = xCenter + radius*cos(theta);
-		yPoints[i] = yCenter + radius*sin(theta);
-		theta += step*PI/180;
-	}
+	drawAND(x,y);
 
-	xPoints[numPoints-2] = x;
-	yPoints[numPoints-2] = y+h;
-	xPoints[numPoints-1] = x;
-	yPoints[numPoints-1] = y;
-	xPoints[numPoints] = xCenter + radius*cos(270*PI/180);
-	yPoints[numPoints] = yCenter + radius*sin(270*PI/180);
-
-	/*double xstart = x + w;
-	double ystart = y + h;
-	for( int i = 0; i < (w/2); i++ ){
-		xPoints[i] = xstart + i;
-		yPoints[i] = ystart - (h/w) * i;
-	}
-	int count = 0;
-	for( int i = w/2; i < w; i++){
-		xPoints[i] = x + (1.5*w) - count;
-		yPoints[i] = y + (h/2) - (h/w)*count;
-		count++;
-	}
-	xPoints[int(w+1)] = x;
-	yPoints[int(w+1)] = y;
-	xPoints[int(w+2)] = x;
-	yPoints[int(w+2)] = y+h;*/
-	filledPolygonRGBA(renderer, xPoints, yPoints, numPoints, 255, 0, 50, 255);
 	//OR gate
 	int x1 = viewController.x + (viewController.w / 2) - (staticGateWidth/2);
 	int y1 = viewController.y + (3*viewController.h / 6) - (staticGateHeight/2);
-	short x1Points[9] = {x1,x1,x1+50,x1+65,x1+70,x1+75,x1+70,x1+65,x1+50};
-	short y1Points[9] = {y1,y1+60,y1+60,y1+50,y1+40,y1+30,y1+20,y1+10,y1};
-	filledPolygonRGBA(renderer, x1Points, y1Points, 9, 255, 0, 50, 255);
+
+	drawOR(x1, y1);
+
 	//Not gate
 	int x2 = viewController.x + (viewController.w / 2) - (staticGateWidth/2);
 	int y2 = viewController.y + (5*viewController.h / 6) - (staticGateHeight/2);
-	short x2Points[9] = {x2,x2,x2+50,x2+65,x2+70,x2+75,x2+70,x2+65,x2+50};
-	short y2Points[9] = {y2,y2+60,y2+60,y2+50,y2+40,y2+30,y2+20,y2+10,y2};
-	filledPolygonRGBA(renderer, x2Points, y2Points, 9, 255, 0, 50, 255);
-
-    /*SDL_RenderFillRect( renderer, &staticAND );
-    SDL_RenderFillRect( renderer, &staticOR );
-    SDL_RenderFillRect( renderer, &staticNOT );*/
+	
+	drawNOT(x2, y2);
 
     // Draw Rectangle for View Controller
     SDL_SetRenderDrawColor( renderer, 0, 0, 0, 255 );     // Change Color to Black
@@ -324,3 +287,115 @@ void Window::drawWires()
 
 }
 
+void Window::drawAND(double x, double y)
+{
+	// Change color to blue
+    SDL_SetRenderDrawColor( renderer, 0, 0, 255, 255 );
+
+    // Set Trigonometry Values for drawing Half Circle
+	double step = 2;					// step size= 2 degrees
+	int numPoints = int(180/step + 3);	// number of points based on step size
+	short xPoints[numPoints];			
+	short yPoints[numPoints];
+
+	double theta = 270*PI/180;					// start theta=270 degrees and convert to radians
+	double xCenter = x + staticGateWidth;		// x value of center point for semi circle
+	double yCenter = y + staticGateHeight/2;	// y value of center point for semi circle
+	double radius = staticGateHeight/2;			// radius of semi circle
+		
+	for (int i=0; i<(180/step); i++) {				// loop through number of points
+		xPoints[i] = xCenter + radius*cos(theta);	// get x value based on theta, xCenter, and radius
+		yPoints[i] = yCenter + radius*sin(theta);	// get y value based on theta, yCenter, and radius
+		theta += step*PI/180;						// increment theta by step size, convert to radians
+	}
+
+	xPoints[numPoints-3] = x+staticGateWidth;		// these points are for the rectangle
+	yPoints[numPoints-3] = y+staticGateHeight;		// attached to the semi circle
+	xPoints[numPoints-2] = x;
+	yPoints[numPoints-2] = y+staticGateHeight;
+	xPoints[numPoints-1] = x;
+	yPoints[numPoints-1] = y;
+
+	// lines, to represent ports
+	boxRGBA(renderer, x, y+staticGateHeight/4-staticLineLength, x-staticGateWidth/3, 
+		y+staticGateHeight/4+staticLineLength, 255, 0, 50, 255);
+	boxRGBA(renderer, x, y+3*staticGateHeight/4-staticLineLength, x-staticGateWidth/3, 
+		y+3*staticGateHeight/4+staticLineLength, 255, 0, 50, 255);
+	boxRGBA(renderer, x+(staticGateWidth)+(staticGateHeight/2)+(staticGateWidth/3), 
+		y+(staticGateHeight/2)-(staticLineLength), x+(staticGateWidth)+(staticGateHeight/2),
+		y+(staticGateHeight/2)+(staticLineLength),255, 0, 50, 255);
+
+	// draw body of AND gate as a single polygon
+	filledPolygonRGBA(renderer, xPoints, yPoints, numPoints, 255, 0, 50, 255);
+}
+
+void Window::drawOR(double x, double y) 
+{
+	// Change color to blue
+    SDL_SetRenderDrawColor( renderer, 0, 0, 255, 255 );
+
+    // Set Trigonometry Values for drawing Half Circle
+	double step = 2;					// step size= 2 degrees
+	int numPoints = int(180/step*2 + 4);	// number of points based on step size
+	short xPoints[numPoints];			
+	short yPoints[numPoints];
+
+	double theta = 270*PI/180;					// start theta=270 degrees and convert to radians
+	double xCenter = x;							// x value of center point for semi circle
+	double yCenter = y + staticGateHeight/2;	// y value of center point for semi circle
+	double radius = staticGateHeight/2;			// radius of semi circle
+	
+	xPoints[0] = x;
+	yPoints[0] = y;	
+	for (int i=1; i<=(180/step); i++) {				// loop through number of points
+		xPoints[i] = xCenter + radius*cos(theta);	// get x value based on theta, xCenter, and radius
+		yPoints[i] = yCenter + radius*sin(theta);	// get y value based on theta, yCenter, and radius
+		theta += step*PI/180;						// increment theta by step size, convert to radians
+	}
+
+	xPoints[91] = x;							// these points are for the rectangle
+	yPoints[91] = y+staticGateHeight;			// attached to the semi circle
+	xPoints[92] = x+(staticGateWidth);
+	yPoints[92] = y+staticGateHeight;
+
+	theta = 270*PI/180;						// reset theta
+	xCenter = x + staticGateWidth;			// reset xCenter
+	yCenter = y + (staticGateHeight/2);		// reset yCenter
+	radius = staticGateHeight/2;			// reset radius
+
+	for (int i=(numPoints-2); i>(92); i--) {			// loop through number of points
+		xPoints[i] = xCenter + radius*cos(theta);		// get x value based on theta, xCenter, and radius
+		yPoints[i] = yCenter + radius*sin(theta);		// get y value based on theta, yCenter, and radius
+		theta += step*PI/180;							// increment theta by step size, convert to radians
+	}
+	
+	xPoints[numPoints-1] = x+(staticGateWidth);
+	yPoints[numPoints-1] = y;
+
+	// lines, to represent ports
+	boxRGBA(renderer, x+12, y, x-staticGateWidth/3, 
+		y+2*staticLineLength, 255, 0, 50, 255);
+	boxRGBA(renderer, x+12, y+staticGateHeight-2*staticLineLength, x-staticGateWidth/3, 
+		y+staticGateHeight, 255, 0, 50, 255);
+	boxRGBA(renderer, x + staticGateWidth + radius + (staticGateWidth/3), 
+		y+(staticGateHeight/2)-(staticLineLength), x + staticGateWidth + radius,
+		y+(staticGateHeight/2)+(staticLineLength),255, 0, 50, 255);
+
+	// draw body of OR gate as a single polygon
+	filledPolygonRGBA(renderer, xPoints, yPoints, numPoints, 255, 0, 50, 255);
+}
+
+void Window::drawNOT(double x, double y) 
+{
+	// Change color to blue
+    SDL_SetRenderDrawColor( renderer, 0, 0, 255, 255 );
+
+    // draw lines
+    	boxRGBA( renderer, x, y+(staticGateHeight/2-staticLineLength), x-staticGateWidth/3, 
+    		y+(staticGateHeight/2)+staticLineLength, 255, 0, 50, 255 );
+    	boxRGBA( renderer, x+(2*staticGateWidth/3)+(staticGateWidth/3)-5, y+(staticGateHeight/2-staticLineLength), 
+    		x+(2*staticGateWidth/3)-10, y+(staticGateHeight/2)+staticLineLength, 255, 0, 50, 255 );
+    // draw triangle
+	filledTrigonRGBA( renderer, x, y+(staticGateHeight/4), x+(2*staticGateWidth/3), 
+		y+(staticGateHeight/2), x, y+(3*staticGateHeight/4), 255, 0, 50, 255);
+}
