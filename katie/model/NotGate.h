@@ -16,6 +16,10 @@ class NotGate : public Gate
 	public:
 		NotGate(double,double);    // constructor
 		~NotGate();   // deconstructor
+		virtual double getx();
+		virtual double gety();
+		virtual void setx(double);
+		virtual void sety(double);
 		virtual int getValue();
 		virtual void draw(SDL_Renderer*);
 		
@@ -31,7 +35,7 @@ class NotGate : public Gate
 
 
 // constructor
-NotGate::NotGate(double xCenter, double yCenter) : Gate()
+NotGate::NotGate(double xTopLeft, double yTopLeft) : Gate()
 {
 	setIn0(NULL);
 	setIn1(NULL);
@@ -39,8 +43,8 @@ NotGate::NotGate(double xCenter, double yCenter) : Gate()
 	staticGateHeight=60;
 	staticLineLength=1;
 
-	x = xCenter;
-	y = yCenter;
+	x = xTopLeft;
+	y = yTopLeft;
 
 	
 }
@@ -50,6 +54,25 @@ NotGate::~NotGate()
 {
 }
 
+double NotGate::getx()
+{
+	return x;
+}
+
+double NotGate::gety()
+{
+	return y;
+}
+
+void NotGate::setx(double newX)
+{
+	x = newX;
+}
+
+void NotGate::sety(double newY)
+{
+	y = newY;
+}
 
 int NotGate::getValue()
 {

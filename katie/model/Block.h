@@ -17,7 +17,10 @@ class Block {
 
 		virtual int getValue() = 0;      // print function	
 		virtual void draw(SDL_Renderer*) = 0;
-		//virtual void moveBlock() = 0;
+		virtual double getx() = 0;
+		virtual double gety() = 0;
+		virtual void setx(double) = 0;
+		virtual void sety(double) = 0;
 
 };
 

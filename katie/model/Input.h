@@ -13,6 +13,10 @@ class Input : public Block
 		~Input();   // deconstructor
 		virtual int getValue();
 		virtual void draw(SDL_Renderer*);
+		virtual double getx();
+		virtual double gety();
+		virtual void setx(double);
+		virtual void sety(double);
 
 	private:
 		int value;
@@ -39,6 +43,23 @@ int Input::getValue()
 }
 
 void Input::draw(SDL_Renderer* renderer)
+{
+
+}
+
+double Input::getx()
+{
+
+}
+double Input::gety()
+{
+
+}
+void Input::setx(double)
+{
+
+}
+void Input::sety(double) 
 {
 
 }
