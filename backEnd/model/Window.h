@@ -57,7 +57,19 @@ Window::Window()
 	action = 0;
     init();
 
+
+////////////////////
 	Block* ptr = new AndGate; // call constructor
+	blocks.push_back(ptr);
+	ptr->setOutPort(300, 200);
+	ptr->setInPort1(200, 150);
+	ptr->setInPort2(200, 250);
+
+	
+	ptr = new AndGate;
+	ptr->setOutPort(400, 400);
+	ptr->setInPort1(300, 350);
+	ptr->setInPort2(300, 450);
 	blocks.push_back(ptr);
 
 }
@@ -128,7 +140,6 @@ int Window::eventHandler(SDL_Event e)
 			break;
 		case SDL_MOUSEBUTTONDOWN:
 			makeWire();
-			cout << "makeWire" << endl;
 			break;
 		case SDL_MOUSEBUTTONUP:
 			action = 0;
@@ -174,9 +185,7 @@ void Window::moveWire()
 	if (action != 1)
 	{
 		// set wire
-		cout << "setting wire" << endl;
-
-		if (snapWire(x, y) < 0)
+		if (!snapWire(x, y))
 			cout << "think about deleting that wire." << endl;
 
 	}
@@ -186,97 +195,75 @@ void Window::moveWire()
 int Window::snapWire(int x, int y)
 {
 	int connections = 0; // number of snaps
-	int	port = -1;
+	int	port;  // -1 = none; 0 = output; 1,2,+ = input
+	int highPortNum;
 	short* point1;
-	int secondPort = -1; // -1 = none; 0 = output; 1,2,+ = input
-	int block1;
+
 	map<int, Block*> blockPorts;
 
+	// Step 1) find connections:
 	for (int i = 0; i < blocks.size(); i++)
 	{
 		port = blocks[i]->onPort(x, y);
 		if (port >= 0)
 		{
 			blockPorts[port]=blocks[i];
+			if (port > 0)
+				highPortNum = port;
 			break;
 		}
 	}
 	for (int i = 0; i < blocks.size(); i++)
 	{
 		point1 = wires.back()->getPointXY(1); // retrieve wire coordinates from pt 2
-
 		port = blocks[i]->onPort(point1[0], point1[1]);
 		if (port >= 0)
 		{
 			blockPorts[port]=blocks[i];
+			if (port > 0)
+				highPortNum = port;
 			break;
 		}
 	}
-
-	cout << "blockPorts.size(): " << blockPorts.size() << endl;
+	
+	// Step 2) stop connection errors:
 	if (blockPorts.size() != 2)
 	{
 		cout << "not enough connections or connected to same port" << endl;
-		return -1; // not 2 points on ports or 2 points on same port type
+		return 0; // not 2 points on ports or 2 points on same port type
 	}
-	else if (blockPorts.find(0) == blockPorts.end()) 
+	else if (blockPorts.count(0) <= 0) 
 	{
 		cout << "must connect to an outgoing port." << endl;
-		return -1;
-	}
-	else if (blockPorts.find(1) == blockPorts.end() && 
-	blockPorts.find(1) == blockPorts.end())
-	{
-		cout << "must connect to an incoming port." << endl;
-		return -1;
-	}
-	return 1;
-
-/*
-	if (firstPort < 0 || secondPort < 0) 
-		return -1;	// not on a port!
-	else if ((firstPort == 0 && secondPort == 0) || (firstPort > 0 && secondPort > 0))
-		return -1; // they are both from inputs or both from outputs
-	else if (second == first)
-		return -1; // they are connecting the same block!
-	else
-	{
-		wires.back()->movePoint2(blocks[i]->getPortXY(port)[0], 
-			blocks[i]->getPortXY(port)[1]);
-
-
-		cout << "Port # " << port << endl;
-		if (port >= 0)
-		{	
-			// snap them together
-			if (port == 0)
-			{
-				// point wire pointer backward to block address
-				wires.back()->setBackwardPtr(blocks[i]);
-				connections++;
-			}
-			else if (port == 1)
-			{
-				// point block pointer 1 backward to wire address
-				blocks[i]->setPortPtr(1, wires.back());
-				connections++;
-			}
-			else if (port == 2)
-			{
-				// point block pointer 2 to wire address
-				blocks[i]->setPortPtr(2, wires.back());
-				connections++;
-			}
-			break;
-		}
-	}
-	if (connections < 1) 
-	{
 		return 0;
 	}
-*/
+	else if (blockPorts.begin()->second == blockPorts.rbegin()->second)
+	{
+		cout << "must connect to different objects." << endl;
+		return 0;
+	}
+	else // wire connection is sound
+	{
+		// Step 3) connect visually
+		// move front of wire to outPort of Block
+		wires.back()->movePoint1(blockPorts[0]->getPortXY(0)[0], 
+			blockPorts[0]->getPortXY(0)[1]);
 
+		// move back of wire to correct inPort of Block
+		wires.back()->movePoint2(blockPorts[highPortNum]->getPortXY(highPortNum)[0], 
+			blockPorts[highPortNum]->getPortXY(highPortNum)[1]);
+
+		// Step 4) connect pointers
+		// point wire pointer backward to block address
+		wires.back()->setBackwardPtr(blockPorts[0]);
+		
+		// point block pointer (1 or 2) backward to wire address
+		blockPorts[highPortNum]->setPortPtr(highPortNum, wires.back());
+	}
+	return 1;
 }
+
+
 
 // Draw blocks function!!!
 void Window::drawBlocks()

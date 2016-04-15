@@ -25,11 +25,7 @@ class AndGate : public Gate
 		short yCoord[10];
 		short numPts;
 
-/*
-		short outPort[2]; // {x, y}
-		short inPort1[2];
-		short inPort2[2];
-*/
+
 };
 
 

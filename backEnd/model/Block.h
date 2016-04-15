@@ -22,6 +22,9 @@ class Block {
 		virtual short *getPortXY(int) = 0;
 		virtual void setPortPtr(int, Wire*) = 0;
 
+		virtual void setOutPort(short, short) = 0;
+		virtual void setInPort1(short, short) = 0;
+		virtual void setInPort2(short, short) = 0;
 
 };
 

@@ -42,7 +42,7 @@ Wire::Wire(int x, int y)
 	x2 = x;
 	y1 = y;
 	y2 = y;
-	cout << "constructor x1: " << x1 << "  y1: " << y1 << endl;
+	//cout << "constructor x1: " << x1 << "  y1: " << y1 << endl;
 }
 
 
