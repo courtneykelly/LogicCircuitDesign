@@ -267,33 +267,22 @@ void Window::makeWire()
 
 void Window::makeBlock(int i)
 {
-	SDL_Event e;
 	int x,y;
-
-
-	while(SDL_WaitEvent(&e) >= 0 ){
-		if(e.type = SDL_MOUSEBUTTONUP){
-			if(e.type = SDL_MOUSEBUTTONDOWN){
-				SDL_GetMouseState(&x, &y);
-				if(x>logicCanvas.x && x<(logicCanvas.x+logicCanvas.w) && y>logicCanvas.y && y<(logicCanvas.y+logicCanvas.h)){
-					break;
-				}
-			}
-		}		
-
-	}
-
 	Block* Bptr;
 
 	if( i == 0 ){
+		x = 100;
+		y = 300;
 		Bptr = new AndGate(x,y);
 	}
 	else if(i == 1){
-		
+		x = 100;
+		y = 400;
 		Bptr = new OrGate(x,y);
 	}
 	else if(i == 2){
-		
+		x = 100;
+		y = 500;
 		Bptr = new NotGate(x,y);
 	}
 	
