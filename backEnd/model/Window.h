@@ -14,6 +14,7 @@
 #include "Block.h"
 	#include "Gate.h"
 	#include "Input.h"
+	#include "AndGate.h"
 	#include "Wire.h"
 
 
@@ -53,6 +54,10 @@ Window::Window()
     renderer = NULL;
 	action = 0;
     init();
+
+	Block* ptr = new AndGate; // call constructor
+	blocks.push_back(ptr);
+
 }
 
 
@@ -125,6 +130,7 @@ int Window::eventHandler(SDL_Event e)
 			break;
 		case SDL_MOUSEBUTTONUP:
 			action = 0;
+			moveWire();
 			break;
 	}
 	
@@ -158,15 +164,47 @@ void Window::moveWire()
 {
 	int x;
 	int y;
+	int port; // -1 = none; 0 = output; 1,2,+ = input
+	int snapped = 0;
 	SDL_GetMouseState(&x, &y);
 	wires.back()->movePoint(x, y);
+
+	if (action != 1)
+	{
+		// set wire
+		cout << "setting wire" << endl;
+
+		for (int i = 0; i < blocks.size(); i++)
+		{
+			port = blocks[i]->onPort(x, y);
+			cout << "Port # " << port << endl;
+			if (port >= 0)
+			{
+				// snap them together
+
+				// if port = 0
+					// point wire pointer to block address
+				// if port = 1;
+					// point block pointer 1 to wire address
+				// if port = 2;
+					// point block pointer 2 to wire address
+
+				break;
+			}
+		}
+		// if (snapped == 0)
+			// delete wire
+	}
 }
 
 
 // Draw blocks function!!!
 void Window::drawBlocks()
 {
-
+	for (int i = 0; i < blocks.size(); i++)
+	{
+		blocks[i]->draw(renderer);
+	}
 }
 
 
