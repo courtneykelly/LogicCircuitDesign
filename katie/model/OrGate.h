@@ -14,8 +14,10 @@ class OrGate : public Gate
 	public:
 		OrGate(double,double);    // constructor
 		~OrGate();   // deconstructor
-		double getx();
-		double gety();
+		virtual double getx();
+		virtual double gety();
+		virtual void setx(double);
+		virtual void sety(double);
 		virtual int getValue();
 		virtual void draw(SDL_Renderer*);
 		
@@ -57,6 +59,16 @@ double OrGate::getx()
 double OrGate::gety()
 {
 	return y;
+}
+
+void OrGate::setx(double newX)
+{
+	x = newX;
+}
+
+void OrGate::sety(double newY)
+{
+	y = newY;
 }
 
 int OrGate::getValue()

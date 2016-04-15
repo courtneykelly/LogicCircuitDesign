@@ -16,8 +16,10 @@ class AndGate : public Gate
 	public:
 		AndGate(double,double);    // constructor
 		~AndGate();   // deconstructor
-		double getx();
-		double gety();
+		virtual double getx();
+		virtual double gety();
+		virtual void setx(double);
+		virtual void sety(double);
 		virtual int getValue();
 		virtual void draw(SDL_Renderer*);
 		
@@ -60,6 +62,16 @@ double AndGate::getx()
 double AndGate::gety()
 {
 	return y;
+}
+
+void AndGate::setx(double newX)
+{
+	x = newX;
+}
+
+void AndGate::sety(double newY)
+{
+	y = newY;
 }
 
 int AndGate::getValue()

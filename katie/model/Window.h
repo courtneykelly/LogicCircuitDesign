@@ -34,12 +34,13 @@ class Window {
 		void makeWire();
 		void makeBlock(int);
 		void moveWire();
-		//void moveBlocks();
+		void moveBlock(int);
 		void drawBlocks();
 		void drawWires();
-		bool andGateDetection( SDL_Event );
-		bool orGateDetection( SDL_Event );
-		bool notGateDetection( SDL_Event );
+		bool staticAndGateDetection( SDL_Event );
+		bool staticOrGateDetection( SDL_Event );
+		bool staticNotGateDetection( SDL_Event );
+		bool gateDetection( int, SDL_Event );
 
 	private:
 		double screen_width;
@@ -203,26 +204,26 @@ int Window::eventHandler(SDL_Event e)
 		  SDL_GetMouseState(&x, &y);
 
 		  //check if mouse is inside a selection
-		  	if (andGateDetection( e )) {
+		  	if (staticAndGateDetection( e )) {
                 makeBlock(0); //0 = AND
             }
-            else if (orGateDetection( e )) {
+            else if (staticOrGateDetection( e )) {
               	makeBlock(1); //1 = OR
             }
-            else if (notGateDetection( e )) {
+            else if (staticNotGateDetection( e )) {
                 makeBlock(2); //2 = NOT
             }
-            /*else {
-				if(x>logicCanvas.x && x<(logicCanvas.x+logicCanvas.w) && y>logicCanvas.y && y<(logicCanvas.y+logicCanvas.h)) {
-					for(int i = 0; i < blocks.size(); i++) {
-						blockX = blocks[i]->getx();
-						blockY = blocks[i]->gety();
+            else if(x>logicCanvas.x && x<(logicCanvas.x+logicCanvas.w) && y>logicCanvas.y && y<(logicCanvas.y+logicCanvas.h)) {
+				for(int i = 0; i < blocks.size(); i++) {
+					if(gateDetection(i,e)) {
+						moveBlock(i);
+						break;
 					}
-		    		makeWire();
-		    		cout << "makeWire" << endl;
-		    		break;
-		    	}
-			}*/
+				}
+		    	//makeWire();
+		    	//cout << "makeWire" << endl;
+		    	break;
+			}
 		    			
 		case SDL_MOUSEBUTTONUP:
 			action = 0;
@@ -283,6 +284,7 @@ void Window::makeBlock(int i)
 	
 	blocks.push_back(Bptr);
 	action = 0;
+	
 }
 
 
@@ -294,13 +296,24 @@ void Window::moveWire()
 	wires.back()->movePoint(x, y);
 }
 
-/*void Window::moveBlock(int i)
+void Window::moveBlock(int i)
 {
-  int x;
-  int y;
-  SDL_GetMouseState(&x,&y);
-  blocks[i]->moveBlock(x, y);
-}*/
+ 	SDL_Event e;
+ 	int x;
+ 	int y;
+ 	SDL_PollEvent( &e );
+ 	while( e.type != SDL_MOUSEBUTTONUP) {
+  		SDL_GetMouseState(&x,&y);
+ 		blocks[i]->setx(x);
+  		blocks[i]->sety(y);
+
+  		drawBlocks();
+  		//SDL_RenderPresent(renderer);
+  		blocks[i]->draw(renderer);
+  		SDL_PollEvent( &e );
+	}
+
+}
 
 // Draw blocks function!!!
 void Window::drawBlocks()
@@ -322,7 +335,7 @@ void Window::drawWires()
 
 }
 
-bool Window::andGateDetection( SDL_Event event) 
+bool Window::staticAndGateDetection( SDL_Event event) 
 {
 	 if ( (event.motion.x>staticANDx) && (event.motion.x<(staticANDx+highlightBoxWidth)) ) {
         if ( (event.motion.y>staticANDy) && (event.motion.y<(staticANDy+highlightBoxHeight)) ) {
@@ -330,16 +343,8 @@ bool Window::andGateDetection( SDL_Event event)
         }
     }
     return false;
-	/*double xBound = x - (highlightBoxWidth/2);
-	double yBound = y - (highlightBoxHeight/2);
-    if ( (event.motion.x>xBound) && (event.motion.x<(xBound+highlightBoxWidth)) ) {
-        if ( (event.motion.y>yBound) && (event.motion.y<(yBound+highlightBoxHeight)) ) {
-            return true;
-        }
-    }
-    return false;*/
 }
-bool Window::orGateDetection( SDL_Event event ) 
+bool Window::staticOrGateDetection( SDL_Event event ) 
 {
     if ( (event.motion.x>staticORx) && (event.motion.x<(staticORx+highlightBoxWidth)) ) {
         if ( (event.motion.y>staticORy) && (event.motion.y<(staticORy+highlightBoxHeight)) ) {
@@ -348,7 +353,7 @@ bool Window::orGateDetection( SDL_Event event )
     }
     return false;
 }
-bool Window::notGateDetection( SDL_Event event ) 
+bool Window::staticNotGateDetection( SDL_Event event ) 
 {
 
     if ( (event.motion.x>staticNOTx) && (event.motion.x<(staticNOTx+highlightBoxWidth)) ) {
@@ -357,4 +362,19 @@ bool Window::notGateDetection( SDL_Event event )
         }
     }
     return false;
+}
+
+bool Window::gateDetection( int blockNum, SDL_Event event )
+{
+	double blockX = blocks[blockNum]->getx();
+	double blockY = blocks[blockNum]->gety();
+
+	if((event.motion.x>blockX) && (event.motion.x<(blockX + highlightBoxWidth))){
+		if ( (event.motion.y>blockY) && (event.motion.y < (blockY + highlightBoxHeight))) {
+			return true;
+		}
+	}
+
+	return false;
+
 }
