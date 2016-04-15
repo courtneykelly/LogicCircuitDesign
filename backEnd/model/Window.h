@@ -11,6 +11,7 @@
 #include <iostream>
 #include <cmath>
 #include <vector>
+#include <map>
 #include "Block.h"
 	#include "Gate.h"
 	#include "Input.h"
@@ -31,6 +32,7 @@ class Window {
 
 		void makeWire();
 		void moveWire();
+		int snapWire(int, int);
 		void drawBlocks();
 		void drawWires();
 
@@ -153,7 +155,7 @@ void Window::makeWire()
 	int x;
 	int y;
 	SDL_GetMouseState(&x, &y);
-	Wire* ptr = new Wire(NULL, x, y); // call constructor
+	Wire* ptr = new Wire(x, y); // call constructor
 
 	wires.push_back(ptr);
 	action = 1;
@@ -164,39 +166,117 @@ void Window::moveWire()
 {
 	int x;
 	int y;
-	int port; // -1 = none; 0 = output; 1,2,+ = input
+	short pair[2];
 	int snapped = 0;
 	SDL_GetMouseState(&x, &y);
-	wires.back()->movePoint(x, y);
+	wires.back()->movePoint2(x, y);
 
 	if (action != 1)
 	{
 		// set wire
 		cout << "setting wire" << endl;
 
-		for (int i = 0; i < blocks.size(); i++)
-		{
-			port = blocks[i]->onPort(x, y);
-			cout << "Port # " << port << endl;
-			if (port >= 0)
-			{
-				// snap them together
+		if (snapWire(x, y) < 0)
+			cout << "think about deleting that wire." << endl;
 
-				// if port = 0
-					// point wire pointer to block address
-				// if port = 1;
-					// point block pointer 1 to wire address
-				// if port = 2;
-					// point block pointer 2 to wire address
-
-				break;
-			}
-		}
-		// if (snapped == 0)
-			// delete wire
 	}
 }
 
+
+int Window::snapWire(int x, int y)
+{
+	int connections = 0; // number of snaps
+	int	port = -1;
+	short* point1;
+	int secondPort = -1; // -1 = none; 0 = output; 1,2,+ = input
+	int block1;
+	map<int, Block*> blockPorts;
+
+	for (int i = 0; i < blocks.size(); i++)
+	{
+		port = blocks[i]->onPort(x, y);
+		if (port >= 0)
+		{
+			blockPorts[port]=blocks[i];
+			break;
+		}
+	}
+	for (int i = 0; i < blocks.size(); i++)
+	{
+		point1 = wires.back()->getPointXY(1); // retrieve wire coordinates from pt 2
+
+		port = blocks[i]->onPort(point1[0], point1[1]);
+		if (port >= 0)
+		{
+			blockPorts[port]=blocks[i];
+			break;
+		}
+	}
+
+	cout << "blockPorts.size(): " << blockPorts.size() << endl;
+	if (blockPorts.size() != 2)
+	{
+		cout << "not enough connections or connected to same port" << endl;
+		return -1; // not 2 points on ports or 2 points on same port type
+	}
+	else if (blockPorts.find(0) == blockPorts.end()) 
+	{
+		cout << "must connect to an outgoing port." << endl;
+		return -1;
+	}
+	else if (blockPorts.find(1) == blockPorts.end() && 
+	blockPorts.find(1) == blockPorts.end())
+	{
+		cout << "must connect to an incoming port." << endl;
+		return -1;
+	}
+	return 1;
+
+/*
+	if (firstPort < 0 || secondPort < 0) 
+		return -1;	// not on a port!
+	else if ((firstPort == 0 && secondPort == 0) || (firstPort > 0 && secondPort > 0))
+		return -1; // they are both from inputs or both from outputs
+	else if (second == first)
+		return -1; // they are connecting the same block!
+	else
+	{
+		wires.back()->movePoint2(blocks[i]->getPortXY(port)[0], 
+			blocks[i]->getPortXY(port)[1]);
+
+
+		cout << "Port # " << port << endl;
+		if (port >= 0)
+		{	
+			// snap them together
+			if (port == 0)
+			{
+				// point wire pointer backward to block address
+				wires.back()->setBackwardPtr(blocks[i]);
+				connections++;
+			}
+			else if (port == 1)
+			{
+				// point block pointer 1 backward to wire address
+				blocks[i]->setPortPtr(1, wires.back());
+				connections++;
+			}
+			else if (port == 2)
+			{
+				// point block pointer 2 to wire address
+				blocks[i]->setPortPtr(2, wires.back());
+				connections++;
+			}
+			break;
+		}
+	}
+	if (connections < 1) 
+	{
+		return 0;
+	}
+*/
+
+}
 
 // Draw blocks function!!!
 void Window::drawBlocks()
