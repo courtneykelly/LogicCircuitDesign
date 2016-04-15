@@ -12,7 +12,8 @@ class Input : public Block
 		Input(int);    // constructor
 		~Input();   // deconstructor
 		virtual int getValue();
-		virtual void draw();
+		virtual void draw(SDL_Renderer*);
+		virtual int onPort(int, int);
 
 	private:
 		int value;
@@ -38,9 +39,15 @@ int Input::getValue()
 	return value;
 }
 
-void Input::draw()
+void Input::draw(SDL_Renderer* renderer)
 {
 
+}
+
+int Input::onPort(int xMouse, int yMouse)
+{
+	
+	return -1;
 }
 
 #endif
