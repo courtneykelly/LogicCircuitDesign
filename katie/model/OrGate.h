@@ -14,6 +14,8 @@ class OrGate : public Gate
 	public:
 		OrGate(double,double);    // constructor
 		~OrGate();   // deconstructor
+		double getx();
+		double gety();
 		virtual int getValue();
 		virtual void draw(SDL_Renderer*);
 		
@@ -29,7 +31,7 @@ class OrGate : public Gate
 
 
 // constructor
-OrGate::OrGate(double xCenter, double yCenter) : Gate()
+OrGate::OrGate(double xTopLeft, double yTopLeft) : Gate()
 {
 	setIn0(NULL);
 	setIn1(NULL);
@@ -38,8 +40,8 @@ OrGate::OrGate(double xCenter, double yCenter) : Gate()
 	staticGateHeight=60;
 	staticLineLength=1;
 
-	x = xCenter;
-	y = yCenter;
+	x = xTopLeft;
+	y = yTopLeft;
 }
 
 // destructor
@@ -47,6 +49,15 @@ OrGate::~OrGate()
 {
 }
 
+double OrGate::getx()
+{
+	return x;
+}
+
+double OrGate::gety()
+{
+	return y;
+}
 
 int OrGate::getValue()
 {

@@ -16,6 +16,8 @@ class AndGate : public Gate
 	public:
 		AndGate(double,double);    // constructor
 		~AndGate();   // deconstructor
+		double getx();
+		double gety();
 		virtual int getValue();
 		virtual void draw(SDL_Renderer*);
 		
@@ -31,7 +33,7 @@ class AndGate : public Gate
 
 
 // constructor
-AndGate::AndGate(double xCenter, double yCenter) : Gate()
+AndGate::AndGate(double xTopLeft, double yTopLeft) : Gate()
 {
 	setIn0(NULL);
 	setIn1(NULL);
@@ -39,8 +41,8 @@ AndGate::AndGate(double xCenter, double yCenter) : Gate()
 	staticGateHeight=60;
 	staticLineLength=1;
 
-	x = xCenter;
-	y = yCenter;
+	x = xTopLeft;
+	y = yTopLeft;
 
 	
 }
@@ -50,6 +52,15 @@ AndGate::~AndGate()
 {
 }
 
+double AndGate::getx()
+{
+	return x;
+}
+
+double AndGate::gety()
+{
+	return y;
+}
 
 int AndGate::getValue()
 {
