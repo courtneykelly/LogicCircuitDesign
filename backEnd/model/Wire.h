@@ -20,10 +20,10 @@ class Wire
 		void movePoint2(int, int);
 		short *getPointXY(int);
 		void draw(SDL_Renderer*);
-		void connect(Block*);	
+		void deletePrep();
 
 	private:
-		Block* forwardPtr; // connects to port 1
+		Block* forwardPtr; // connects to port 1 or 2
 		Block* backwardPtr; // connects to port 0: used in computations
 		int value;
 
@@ -109,12 +109,26 @@ void Wire::draw(SDL_Renderer* renderer)
 }
 
 
-// connect the wire to the block
-void Wire::connect(Block* ptr)
+void Wire::deletePrep()
 {
-	
-	
+	if (forwardPtr != NULL && forwardPtr->getPortPtr(0) == this)
+	{
+		cout << "Setting reference within 'out' to forward pointer to NULL" << endl;
+		forwardPtr->setPortPtr(0, NULL);
+	}
+
+	if (backwardPtr != NULL && backwardPtr->getPortPtr(1) == this)
+	{
+		cout << "Setting reference to backward pointer within 'in1' to NULL" << endl;
+		backwardPtr->setPortPtr(1, NULL);
+	}
+	else if (backwardPtr != NULL && backwardPtr->getPortPtr(2) == this)
+	{
+		cout << "Setting reference to backward pointer within 'in2' to NULL" << endl;
+		backwardPtr->setPortPtr(2, NULL);
+	}
 }
+
 
 
 #endif

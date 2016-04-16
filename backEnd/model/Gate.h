@@ -20,9 +20,10 @@ class Gate : public Block
 		Wire* getIn1();
 		Wire* getIn2();
 
+		Wire *getPortPtr(int);
 		void setPortPtr(int, Wire*);
-		short *getPortXY(int);
 
+		short *getPortXY(int);
 		void setOutPort(short, short);
 		void setInPort1(short, short);
 		void setInPort2(short, short);
@@ -67,6 +68,23 @@ Wire* Gate::getIn2()
 }
 
 
+Wire *Gate::getPortPtr(int port)
+{
+	switch (port)
+	{
+		case 0:
+			return out; break;
+		case 1:
+			return in1; break;
+		case 2:
+			return in2; break;	
+		default:
+			cout << "Invalid port call to getPortPtr" << endl;
+			return NULL;
+	}
+}	
+
+
 void Gate::setPortPtr(int port, Wire* ptr)
 {
 	switch (port)
@@ -76,7 +94,9 @@ void Gate::setPortPtr(int port, Wire* ptr)
 		case 1:
 			in1 = ptr; break;
 		case 2:
-			in2 = ptr; break;	
+			in2 = ptr; break;
+		default:
+			cout << "Invalid port call to setPortPtr" << endl;
 	}
 }
 
