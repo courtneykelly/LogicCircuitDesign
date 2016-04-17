@@ -49,7 +49,10 @@ class Window {
 		SDL_Renderer* renderer;
 		vector<Block*> blocks;
 		vector<Wire*> wires;
-		int action; // 0=none, 1=drawing wires, ...
+		int action; // 0=none, 1=drawing wires, 2=moving blocks
+		int blockNum;
+		int dx;
+		int dy;
 		SDL_Rect viewController;
 		SDL_Rect logicCanvas;
 		int borderSize;
@@ -189,7 +192,6 @@ void Window::draw()
 // NEEDS REDESIGN TO WORK FOR LOTS OF THINGS!
 int Window::eventHandler(SDL_Event e)
 {
-
 	// cout << "e.type: " << e.type << endl;
 	switch(e.type)
 	{
@@ -197,50 +199,60 @@ int Window::eventHandler(SDL_Event e)
 			return 1; // quits
 			break;
 		case SDL_MOUSEBUTTONDOWN:
+			//get mouse position
+			int x,y;
+			double blockX, blockY;
+			SDL_GetMouseState(&x, &y);
 
-		  //get mouse position
-		  int x,y;
-		  double blockX, blockY;
-		  SDL_GetMouseState(&x, &y);
-
-		  //check if mouse is inside a selection
-		  	if (staticAndGateDetection( e )) {
-                makeBlock(0); //0 = AND
-            }
-            else if (staticOrGateDetection( e )) {
-              	makeBlock(1); //1 = OR
-            }
-            else if (staticNotGateDetection( e )) {
-                makeBlock(2); //2 = NOT
-            }
-            else if(x>logicCanvas.x && x<(logicCanvas.x+logicCanvas.w) && y>logicCanvas.y && y<(logicCanvas.y+logicCanvas.h)) {
+			//check if mouse is inside a selection
+			if (staticAndGateDetection( e )) {
+				makeBlock(0); //0 = AND
+			}
+			else if (staticOrGateDetection( e )) {
+				makeBlock(1); //1 = OR
+			}
+			else if (staticNotGateDetection( e )) {
+				makeBlock(2); //2 = NOT
+			}
+			else if(x>logicCanvas.x && x<(logicCanvas.x+logicCanvas.w) && y>logicCanvas.y && y<(logicCanvas.y+logicCanvas.h))
+			{	
+				cout << "pressed in logic canvas" << endl;
 				for(int i = 0; i < blocks.size(); i++) {
-					if(gateDetection(i,e)) {
-						moveBlock(i);
+					if(gateDetection(i, e)) {
+						cout << "gate detection!!" << endl;
+						blockNum = i;
+						dx = x - blocks[i]->getx();
+						dy = y - blocks[i]->gety();
+						action = 2;
 						break;
 					}
 				}
-		    	//makeWire();
-		    	//cout << "makeWire" << endl;
-		    	break;
+				if (action == 0)
+				{
+					makeWire();
+					action = 1;
+				}
 			}
-		    			
+			break;
+
 		case SDL_MOUSEBUTTONUP:
 			action = 0;
 			break;
 	}
-	
+
+	//cout << "action: " << action;
+
 	switch (action)
-	  {
-	  case 1:
-	    moveWire();
-	    break;
-	  /*case 2:
-	    moveBlock(blockNum);
-	    break;*/
-	  default:
-	    break;
-	  }
+	{
+		case 1:
+			moveWire();
+			break;
+		case 2:
+			moveBlock(blockNum);
+			break;
+		default:
+			break;
+	}
 
 	return 0; // continues
 }
@@ -260,7 +272,7 @@ void Window::makeWire()
 
 void Window::makeBlock(int i)
 {
-	int x,y;
+	int x, y;
 	Block* Bptr;
 
 	if( i == 0 ){
@@ -280,11 +292,8 @@ void Window::makeBlock(int i)
 	}
 	
 	
-	
-	
 	blocks.push_back(Bptr);
 	action = 0;
-	
 }
 
 
@@ -298,20 +307,19 @@ void Window::moveWire()
 
 void Window::moveBlock(int i)
 {
- 	SDL_Event e;
+ 	//SDL_Event e;
  	int x;
  	int y;
- 	SDL_PollEvent( &e );
- 	while( e.type != SDL_MOUSEBUTTONUP) {
-  		SDL_GetMouseState(&x,&y);
- 		blocks[i]->setx(x);
-  		blocks[i]->sety(y);
+ 	//SDL_PollEvent( &e );
+ 	//while( e.type != SDL_MOUSEBUTTONUP) {
+  	SDL_GetMouseState(&x,&y);
+ 	blocks[i]->setx(x - dx);
+  	blocks[i]->sety(y - dy);
 
-  		drawBlocks();
-  		//SDL_RenderPresent(renderer);
-  		blocks[i]->draw(renderer);
-  		SDL_PollEvent( &e );
-	}
+  	//SDL_RenderPresent(renderer);
+  	//blocks[i]->draw(renderer);
+  	//SDL_PollEvent( &e );
+	
 
 }
 

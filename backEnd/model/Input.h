@@ -21,9 +21,9 @@ class Input : public Block
 	private:
 		int value;
 
-		Wire* out;	
+		Wire* out; // pointer
 
-		short outPort[2];
+		short outPort[2]; // (x, y)
 };
 
 

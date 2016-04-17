@@ -58,7 +58,6 @@ Window::Window()
     init();
 
 
-////////////////////
 	Block* ptr = new AndGate; // call constructor
 	blocks.push_back(ptr);
 	ptr->setOutPort(300, 200);
@@ -132,7 +131,7 @@ void Window::draw()
 // NEEDS REDESIGN TO WORK FOR LOTS OF THINGS!
 int Window::eventHandler(SDL_Event e)
 {
-	// cout << "e.type: " << e.type << endl;
+	cout << "e.type: " << e.type << endl;
 	switch(e.type)
 	{
 		case SDL_QUIT:
