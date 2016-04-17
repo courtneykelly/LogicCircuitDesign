@@ -24,8 +24,6 @@ class AndGate : public Gate
 		short xCoord[10];
 		short yCoord[10];
 		short numPts;
-
-
 };
 
 
@@ -87,7 +85,6 @@ int AndGate::onPort(int xMouse, int yMouse)
 		return 1;
 	else if (sqrt(pow(xMouse - inPort2[0], 2) + pow(yMouse - inPort2[1], 2)) < 10)
 		return 2;
-
 
 	return -1;
 }
