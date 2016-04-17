@@ -9,7 +9,7 @@ using namespace std;
 class Input : public Block
 {
 	public:
-		Input(int);    // constructor
+		Input(double,double,char,int);    // constructor
 		~Input();   // deconstructor
 		virtual int getValue();
 		virtual void draw(SDL_Renderer*);
@@ -19,13 +19,19 @@ class Input : public Block
 		virtual void sety(double);
 
 	private:
+		double x;
+		double y;
+		char name;
 		int value;
 };
 
 
 // constructor
-Input::Input(int val)
+Input::Input(double xPos, double yPos, char variable, int val) : Block()
 {
+	x = xPos;
+	y = yPos;
+	name = variable;
 	value = val;
 }
 

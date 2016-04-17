@@ -33,6 +33,7 @@ class Window {
 
 		void makeWire();
 		void makeBlock(int);
+		void makeInputs();
 		void moveWire();
 		void moveBlock(int);
 		void drawBlocks();
@@ -172,6 +173,8 @@ void Window::draw()
 	ptr = new NotGate(staticNOTx,staticNOTy);
 	ptr -> draw(renderer);
 
+	//makeInputs();
+
     // Draw Rectangle for View Controller
     SDL_SetRenderDrawColor( renderer, 0, 0, 0, 255 );     // Change Color to Black
     SDL_RenderDrawRect( renderer, &viewController );
@@ -287,6 +290,20 @@ void Window::makeBlock(int i)
 	
 }
 
+void Window::makeInputs()
+{
+	double x = 100;
+	double y = 400;
+	int value = 0;
+	Block* aPtr = new Input(x,y,'a',value);
+	Block* bPtr = new Input(x,y,'b',value);
+	Block* cPtr = new Input(x,y,'c',value);
+	Block* zPtr = new Input(x,y,'z',value);
+	blocks.push_back(aPtr);
+	blocks.push_back(bPtr);
+	blocks.push_back(cPtr);
+	blocks.push_back(zPtr);
+}
 
 void Window::moveWire()
 {
