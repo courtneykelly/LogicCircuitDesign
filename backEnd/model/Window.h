@@ -11,6 +11,7 @@
 #include <iostream>
 #include <cmath>
 #include <vector>
+#include <map>
 #include "Block.h"
 	#include "Gate.h"
 	#include "Input.h"
@@ -31,6 +32,7 @@ class Window {
 
 		void makeWire();
 		void moveWire();
+		int snapWire(int, int);
 		void drawBlocks();
 		void drawWires();
 
@@ -55,7 +57,18 @@ Window::Window()
 	action = 0;
     init();
 
+
 	Block* ptr = new AndGate; // call constructor
+	blocks.push_back(ptr);
+	ptr->setOutPort(300, 200);
+	ptr->setInPort1(200, 150);
+	ptr->setInPort2(200, 250);
+
+	
+	ptr = new AndGate;
+	ptr->setOutPort(400, 400);
+	ptr->setInPort1(300, 350);
+	ptr->setInPort2(300, 450);
 	blocks.push_back(ptr);
 
 }
@@ -118,7 +131,7 @@ void Window::draw()
 // NEEDS REDESIGN TO WORK FOR LOTS OF THINGS!
 int Window::eventHandler(SDL_Event e)
 {
-	// cout << "e.type: " << e.type << endl;
+	cout << "e.type: " << e.type << endl;
 	switch(e.type)
 	{
 		case SDL_QUIT:
@@ -126,7 +139,6 @@ int Window::eventHandler(SDL_Event e)
 			break;
 		case SDL_MOUSEBUTTONDOWN:
 			makeWire();
-			cout << "makeWire" << endl;
 			break;
 		case SDL_MOUSEBUTTONUP:
 			action = 0;
@@ -153,7 +165,7 @@ void Window::makeWire()
 	int x;
 	int y;
 	SDL_GetMouseState(&x, &y);
-	Wire* ptr = new Wire(NULL, x, y); // call constructor
+	Wire* ptr = new Wire(x, y); // call constructor
 
 	wires.push_back(ptr);
 	action = 1;
@@ -164,38 +176,92 @@ void Window::moveWire()
 {
 	int x;
 	int y;
-	int port; // -1 = none; 0 = output; 1,2,+ = input
+	short pair[2];
 	int snapped = 0;
 	SDL_GetMouseState(&x, &y);
-	wires.back()->movePoint(x, y);
+	wires.back()->movePoint2(x, y);
 
 	if (action != 1)
 	{
 		// set wire
-		cout << "setting wire" << endl;
+		if (!snapWire(x, y))
+			cout << "think about deleting that wire." << endl;
 
-		for (int i = 0; i < blocks.size(); i++)
-		{
-			port = blocks[i]->onPort(x, y);
-			cout << "Port # " << port << endl;
-			if (port >= 0)
-			{
-				// snap them together
-
-				// if port = 0
-					// point wire pointer to block address
-				// if port = 1;
-					// point block pointer 1 to wire address
-				// if port = 2;
-					// point block pointer 2 to wire address
-
-				break;
-			}
-		}
-		// if (snapped == 0)
-			// delete wire
 	}
 }
+
+
+int Window::snapWire(int x, int y)
+{
+	int connections = 0; // number of snaps
+	int	port;  // -1 = none; 0 = output; 1,2,+ = input
+	int highPortNum;
+	short* point1;
+
+	map<int, Block*> blockPorts;
+
+	// Step 1) find connections:
+	for (int i = 0; i < blocks.size(); i++)
+	{
+		port = blocks[i]->onPort(x, y);
+		if (port >= 0)
+		{
+			blockPorts[port]=blocks[i];
+			if (port > 0)
+				highPortNum = port;
+			break;
+		}
+	}
+	for (int i = 0; i < blocks.size(); i++)
+	{
+		point1 = wires.back()->getPointXY(1); // retrieve wire coordinates from pt 2
+		port = blocks[i]->onPort(point1[0], point1[1]);
+		if (port >= 0)
+		{
+			blockPorts[port]=blocks[i];
+			if (port > 0)
+				highPortNum = port;
+			break;
+		}
+	}
+	
+	// Step 2) stop connection errors:
+	if (blockPorts.size() != 2)
+	{
+		cout << "not enough connections or connected to same port" << endl;
+		return 0; // not 2 points on ports or 2 points on same port type
+	}
+	else if (blockPorts.count(0) <= 0) 
+	{
+		cout << "must connect to an outgoing port." << endl;
+		return 0;
+	}
+	else if (blockPorts.begin()->second == blockPorts.rbegin()->second)
+	{
+		cout << "must connect to different objects." << endl;
+		return 0;
+	}
+	else // wire connection is sound
+	{
+		// Step 3) connect visually
+		// move front of wire to outPort of Block
+		wires.back()->movePoint1(blockPorts[0]->getPortXY(0)[0], 
+			blockPorts[0]->getPortXY(0)[1]);
+
+		// move back of wire to correct inPort of Block
+		wires.back()->movePoint2(blockPorts[highPortNum]->getPortXY(highPortNum)[0], 
+			blockPorts[highPortNum]->getPortXY(highPortNum)[1]);
+
+		// Step 4) connect pointers
+		// point wire pointer backward to block address
+		wires.back()->setBackwardPtr(blockPorts[0]);
+		
+		// point block pointer (1 or 2) backward to wire address
+		blockPorts[highPortNum]->setPortPtr(highPortNum, wires.back());
+	}
+	return 1;
+}
+
 
 
 // Draw blocks function!!!

@@ -28,8 +28,8 @@ class OrGate : public Gate
 // constructor
 OrGate::OrGate()
 {
-	setIn0(NULL);
 	setIn1(NULL);
+	setIn2(NULL);
 
 	numPts = 10;
 }
@@ -44,8 +44,8 @@ int OrGate::getValue()
 {
 	int left;
 	int right;
-	left = getIn0()->getValue();
-	right = getIn1()->getValue();
+	left = getIn1()->getValue();
+	right = getIn2()->getValue();
 	return (left > 0 || right > 0);
 }
 
