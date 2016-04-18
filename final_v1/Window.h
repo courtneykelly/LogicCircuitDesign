@@ -232,7 +232,7 @@ int Window::eventHandler(SDL_Event e)
 				makeBlock(2); //2 = NOT
 			}
 			else if(x>logicCanvas.x && x<(logicCanvas.x+logicCanvas.w) 
-				&& y>logicCanvas.y && y<(logicCanvas.y+logicCanvas.h))
+					&& y>logicCanvas.y && y<(logicCanvas.y+logicCanvas.h))
 			{	
 				cout << "pressed in logic canvas" << endl;
 				for(int i = 0; i < blocks.size(); i++) {
@@ -247,17 +247,17 @@ int Window::eventHandler(SDL_Event e)
 				}
 				if (action == 0)
 				{
-				    for (int i = 0; i < blocks.size(); i++)
-				    {
-					int port = blocks[i]->onPort(x, y);
-					if (port == 0)
-					{
-					    makeWire();
-					    action = 1;
-					    break;
-					}
+					//for (int i = 0; i < blocks.size(); i++)
+					//{
+					//	int port = blocks[i]->onPort(x, y);
+					//	if (port == 0)
+					//	{
+					makeWire();
+					action = 1;
+					break;
+					//	}
 
-				    }
+					//}
 				}
 			}
 			break;
@@ -265,6 +265,7 @@ int Window::eventHandler(SDL_Event e)
 		case SDL_MOUSEBUTTONUP:
 			if (action == 1)
 			{
+				cout << "move it"<< endl;
 				action = 0;
 				moveWire();
 			}
@@ -432,6 +433,12 @@ int Window::snapWire(int x, int y)
 
 		// point block pointer (1 or 2) backward to wire address
 		blockPorts[highPortNum]->setPortPtr(highPortNum, wires.back());
+
+		// point wire pointer forward to next block address (1 or 2)
+		wires.back()->setForwardPtr(blockPorts[highPortNum]);
+
+		// point previous block pointer (out) forward to
+		blockPorts[0]->setPortPtr(0, wires.back());
 	}
 	return 1;
 }
@@ -506,5 +513,4 @@ bool Window::gateDetection( int blockNum, SDL_Event event )
 	}
 
 	return false;
-
 }

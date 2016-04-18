@@ -16,6 +16,7 @@ class Wire
 		int getValue();
 
 		void setBackwardPtr(Block*);
+		void setForwardPtr(Block*);
 		void movePoint1(int, int);
 		void movePoint2(int, int);
 		short *getPointXY(int);
@@ -65,6 +66,14 @@ void Wire::setBackwardPtr(Block* ptr)
 {
 	backwardPtr = ptr;
 }
+
+
+// set the pointer to the block
+void Wire::setForwardPtr(Block* ptr)
+{
+	forwardPtr = ptr;
+}
+
 
 
 // move origin (first) point of the wire
