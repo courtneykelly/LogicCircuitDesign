@@ -22,6 +22,7 @@ class AndGate : public Gate
 		virtual void sety(double);
 		virtual int getValue();
 		virtual void draw(SDL_Renderer*);
+		virtual int onPort(int, int);
 		
 	private:
 		// for drawing:
@@ -30,15 +31,24 @@ class AndGate : public Gate
 		double staticGateWidth;
 		double staticGateHeight;
 		double staticLineLength;
-	
+
+		// for drawing:
+		short xCoord[10];
+		short yCoord[10];
+		short numPts;
+
+
 };
 
 
 // constructor
 AndGate::AndGate(double xTopLeft, double yTopLeft) : Gate()
 {
-	setIn0(NULL);
 	setIn1(NULL);
+	setIn2(NULL);
+
+	numPts = 10;
+
 	staticGateWidth=50;	
 	staticGateHeight=60;
 	staticLineLength=1;
@@ -46,6 +56,9 @@ AndGate::AndGate(double xTopLeft, double yTopLeft) : Gate()
 	x = xTopLeft;
 	y = yTopLeft;
 
+	setInPort1(x, y);
+	setInPort2(x, y+staticGateHeight);
+	setOutPort(x+staticGateWidth, y + (staticGateHeight/2));
 	
 }
 
@@ -67,19 +80,27 @@ double AndGate::gety()
 void AndGate::setx(double newX)
 {
 	x = newX;
+	setInPort1(x, y);
+	setInPort2(x, y+staticGateHeight);
+	setOutPort(x+staticGateWidth, y + (staticGateHeight/2));
+
 }
 
 void AndGate::sety(double newY)
 {
 	y = newY;
+	setInPort1(x, y);
+	setInPort2(x, y+staticGateHeight);
+	setOutPort(x+staticGateWidth, y + (staticGateHeight/2));
+
 }
 
 int AndGate::getValue()
 {
 	int left;
 	int right;
-	left = getIn0()->getValue();
-	right = getIn1()->getValue();
+	left = getIn1()->getValue();
+	right = getIn2()->getValue();
 	return (left > 0 && right > 0);
 }
 
@@ -114,15 +135,45 @@ void AndGate::draw(SDL_Renderer* renderer)
 
 	// lines, to represent ports
 	boxRGBA(renderer, x, y+staticGateHeight/4-staticLineLength, x-staticGateWidth/3, 
-		y+staticGateHeight/4+staticLineLength, 255, 0, 50, 255);
+			y+staticGateHeight/4+staticLineLength, 255, 0, 50, 255);
 	boxRGBA(renderer, x, y+3*staticGateHeight/4-staticLineLength, x-staticGateWidth/3, 
-		y+3*staticGateHeight/4+staticLineLength, 255, 0, 50, 255);
+			y+3*staticGateHeight/4+staticLineLength, 255, 0, 50, 255);
 	boxRGBA(renderer, x+(staticGateWidth)+(staticGateHeight/2)+(staticGateWidth/3), 
-		y+(staticGateHeight/2)-(staticLineLength), x+(staticGateWidth)+(staticGateHeight/2),
-		y+(staticGateHeight/2)+(staticLineLength),255, 0, 50, 255);
+			y+(staticGateHeight/2)-(staticLineLength), x+(staticGateWidth)+(staticGateHeight/2),
+			y+(staticGateHeight/2)+(staticLineLength),255, 0, 50, 255);
 
 	// draw body of AND gate as a single polygon
 	filledPolygonRGBA(renderer, xPoints, yPoints, numPoints, 255, 0, 50, 255);
+
+	short* outPort = getPortXY(0);
+	short* inPort1 = getPortXY(1);
+	short* inPort2 = getPortXY(2);
+
+	circleRGBA(renderer, outPort[0], outPort[1], 10, 0, 255, 0, 255);
+	circleRGBA(renderer, inPort1[0], inPort1[1], 10, 0, 255, 0, 255);
+	circleRGBA(renderer, inPort2[0], inPort2[1], 10, 0, 255, 0, 255);
 }
+
+
+
+int AndGate::onPort(int xMouse, int yMouse)
+{
+
+	short* outPort = getPortXY(0);
+	short* inPort1 = getPortXY(1);
+	short* inPort2 = getPortXY(2);
+
+	if      (sqrt(pow(xMouse - outPort[0], 2) + pow(yMouse - outPort[1], 2)) < 10)
+		return 0;
+	else if (sqrt(pow(xMouse - inPort1[0], 2) + pow(yMouse - inPort1[1], 2)) < 10)
+		return 1;
+	else if (sqrt(pow(xMouse - inPort2[0], 2) + pow(yMouse - inPort2[1], 2)) < 10)
+		return 2;
+
+	return -1;
+}
+
+
+
 
 #endif

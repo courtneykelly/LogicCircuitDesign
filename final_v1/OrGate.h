@@ -8,11 +8,10 @@
 
 using namespace std;
 
-
 class OrGate : public Gate
 {
 	public:
-		OrGate(double,double);    // constructor
+		OrGate(double, double);    // constructor
 		~OrGate();   // deconstructor
 		virtual double getx();
 		virtual double gety();
@@ -20,6 +19,7 @@ class OrGate : public Gate
 		virtual void sety(double);
 		virtual int getValue();
 		virtual void draw(SDL_Renderer*);
+		virtual int onPort(int, int); // (xMouse, yMouse)
 		
 	private:
 		// for drawing:
@@ -35,8 +35,8 @@ class OrGate : public Gate
 // constructor
 OrGate::OrGate(double xTopLeft, double yTopLeft) : Gate()
 {
-	setIn0(NULL);
 	setIn1(NULL);
+	setIn2(NULL);
 
 	staticGateWidth=50;	
 	staticGateHeight=60;
@@ -75,8 +75,8 @@ int OrGate::getValue()
 {
 	int left;
 	int right;
-	left = getIn0()->getValue();
-	right = getIn1()->getValue();
+	left = getIn1()->getValue();
+	right = getIn2()->getValue();
 	return (left > 0 || right > 0);
 }
 
@@ -136,5 +136,24 @@ void OrGate::draw(SDL_Renderer* renderer)
 	filledPolygonRGBA(renderer, xPoints, yPoints, numPoints, 255, 0, 50, 255);
 	
 }
+
+int OrGate::onPort(int xMouse, int yMouse)
+{
+
+	short* outPort = getPortXY(0);
+	short* inPort1 = getPortXY(1);
+	short* inPort2 = getPortXY(2);
+
+	if      (sqrt(pow(xMouse - outPort[0], 2) + pow(yMouse - outPort[1], 2)) < 10)
+		return 0;
+	else if (sqrt(pow(xMouse - inPort1[0], 2) + pow(yMouse - inPort1[1], 2)) < 10)
+		return 1;
+	else if (sqrt(pow(xMouse - inPort2[0], 2) + pow(yMouse - inPort2[1], 2)) < 10)
+		return 2;
+
+	return -1;
+}
+
+
 
 #endif
