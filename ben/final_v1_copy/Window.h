@@ -231,7 +231,6 @@ int Window::eventHandler(SDL_Event e)
 				}
 				if (action == 0)
 				{
-<<<<<<< HEAD
 				    for (int i = 0; i < blocks.size(); i++)
 				    {
 					int port = blocks[i]->onPort(x, y);
@@ -241,13 +240,7 @@ int Window::eventHandler(SDL_Event e)
 					    action = 1;
 					    break;
 					}
-=======
-				    /* Checks whether wire is on port and there are
-				       the correct number of wires into that port */
-				    if (snapWire(x, y)) {
-					makeWire();
-					action = 1;
->>>>>>> 2f00b18a272b84d7dee33404be53e33f63b8ef47
+
 				    }
 				}
 			}
@@ -331,8 +324,10 @@ void Window::moveWire()
 	if (action != 1)
 	{
 		// set wire
-		if (!snapWire(x, y))
-			cout << "think about deleting that wire." << endl;
+		if (!snapWire(x, y)) {
+		    wires.pop_back();
+		    cout << "think about deleting that wire." << endl;
+		}
 	}
 }
 

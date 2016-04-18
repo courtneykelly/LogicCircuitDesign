@@ -231,8 +231,17 @@ int Window::eventHandler(SDL_Event e)
 				}
 				if (action == 0)
 				{
-					makeWire();
-					action = 1;
+				    for (int i = 0; i < blocks.size(); i++)
+				    {
+					int port = blocks[i]->onPort(x, y);
+					if (port == 0)
+					{
+					    makeWire();
+					    action = 1;
+					    break;
+					}
+
+				    }
 				}
 			}
 			break;
@@ -315,8 +324,10 @@ void Window::moveWire()
 	if (action != 1)
 	{
 		// set wire
-		if (!snapWire(x, y))
-			cout << "think about deleting that wire." << endl;
+		if (!snapWire(x, y)) {
+		    wires.pop_back();
+		    cout << "think about deleting that wire." << endl;
+		}
 	}
 }
 
@@ -342,7 +353,7 @@ void Window::moveBlock(int i)
 int Window::snapWire(int x, int y)
 {
 	int connections = 0; // number of snaps
-	int	port;  // -1 = none; 0 = output; 1,2,+ = input
+	int port;  // -1 = none; 0 = output; 1,2,+ = input
 	int highPortNum;
 	short* point1;
 
