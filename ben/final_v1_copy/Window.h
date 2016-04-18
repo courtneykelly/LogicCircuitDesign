@@ -231,8 +231,16 @@ int Window::eventHandler(SDL_Event e)
 				}
 				if (action == 0)
 				{
-					makeWire();
-					action = 1;
+				    for (int i = 0; i < blocks.size(); i++)
+				    {
+					int port = blocks[i]->onPort(x, y);
+					if (port == 0)
+					{
+					    makeWire();
+					    action = 1;
+					    break;
+					}
+				    }
 				}
 			}
 			break;
