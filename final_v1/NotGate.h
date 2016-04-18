@@ -16,8 +16,6 @@ class NotGate : public Gate
 	public:
 		NotGate(double,double);    // constructor
 		~NotGate();   // deconstructor
-	
-		virtual Wire* getPortPtr(int);
 
 		virtual double getx();
 		virtual double gety();
@@ -30,9 +28,6 @@ class NotGate : public Gate
 		
 	private:
 		int value;
-
-		Wire *out;
-		Wire *in1; 
 
 		short outPort[2]; // (x, y)
 
@@ -52,8 +47,10 @@ class NotGate : public Gate
 // constructor
 NotGate::NotGate(double xTopLeft, double yTopLeft) : Gate()
 {
-	setIn1(NULL);
-	setIn2(NULL);
+	setPortPtr(0, NULL);
+	setPortPtr(1, NULL);
+	setPortPtr(2, NULL);
+
 	staticGateWidth=50;	
 	staticGateHeight=60;
 	staticLineLength=1;
@@ -68,21 +65,6 @@ NotGate::NotGate(double xTopLeft, double yTopLeft) : Gate()
 NotGate::~NotGate()
 {
 }
-
-
-Wire *NotGate::getPortPtr(int port)
-{
-	switch (port)
-	{
-		case 0:
-			return out; break;
-		case 1:
-			return in1; break;
-		default:
-			cout << "Invalid port call to getPortPtr" << endl;
-			return NULL;
-	}
-}	
 
 
 double NotGate::getx()
@@ -109,8 +91,23 @@ void NotGate::sety(double newY)
 
 int NotGate::getValue()
 {	
-
-	// need to implement!!
+	int input;
+	if (getPortPtr(1) == NULL)
+		return -1;
+	else // if input is defined
+	{
+		switch (getPortPtr(1)->getValue())
+		{
+			case -1: // undefined prior
+				return -1; break;
+			case 0: // invert it
+				return 1; break;
+			case 1: // invert it
+				return 0; break;
+			default: // error
+				return -1; break;
+		}
+	}
 }
 
 void NotGate::draw(SDL_Renderer* renderer)

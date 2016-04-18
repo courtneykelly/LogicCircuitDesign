@@ -38,8 +38,9 @@ class OrGate : public Gate
 // constructor
 OrGate::OrGate(double xTopLeft, double yTopLeft) : Gate()
 {
-	setIn1(NULL);
-	setIn2(NULL);
+	setPortPtr(0, NULL);
+	setPortPtr(1, NULL);
+	setPortPtr(2, NULL);
 
 	staticGateWidth=50;	
 	staticGateHeight=60;
@@ -82,9 +83,14 @@ int OrGate::getValue()
 {
 	int left;
 	int right;
+	if (getPortPtr(1) == NULL || getPortPtr(2) == NULL)
+		return -1;
 	left = getIn1()->getValue();
 	right = getIn2()->getValue();
-	return (left > 0 || right > 0);
+	if (left == -1 || right == -1)
+		return -1;
+	else
+		return (left > 0 || right > 0);
 }
 
 void OrGate::draw(SDL_Renderer* renderer)

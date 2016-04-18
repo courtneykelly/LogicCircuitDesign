@@ -3,6 +3,7 @@
 
 #include <iostream>   // for using cout
 #include "Block.h"
+#include "Wire.h"
 
 using namespace std;
 
@@ -24,7 +25,6 @@ class Input : public Block
 		virtual void setOutPort(short, short);
 		virtual void setInPort1(short, short);
 		virtual void setInPort2(short, short);
-
 
 		virtual int onPort(int, int);
 
@@ -81,7 +81,9 @@ int Input::getValue()
 
 void Input::draw(SDL_Renderer* renderer)
 {
-
+	// draw port (temporary)
+	short* outPort = getPortXY(0);
+	circleRGBA(renderer, outPort[0], outPort[1], 10, 0, 0, 255, 255);
 }
 
 double Input::getx()
@@ -128,7 +130,6 @@ void Input::setInPort2(short x, short y)
 {
 	cout << "Input does not have setInPort1 implementation" << endl;
 }
-
 
 
 

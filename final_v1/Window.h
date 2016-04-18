@@ -15,6 +15,7 @@
 #include "Block.h"
 #include "Gate.h"
 #include "Input.h"
+#include "Output.h"
 #include "Wire.h"
 #include "AndGate.h"
 #include "OrGate.h"
@@ -112,6 +113,16 @@ Window::Window()
 	staticNOTx = viewController.x + (viewController.w / 2) - (staticGateWidth/3);
 	staticNOTy = viewController.y + (5*viewController.h / 6) - (staticGateHeight/2);
 
+	// temp!!!!!!!!!!!!!!!!!!!!!!
+	Block* Bptr;
+	Bptr = new Input(1);
+	Bptr->setOutPort(10, 400);
+	blocks.push_back(Bptr);
+
+	Bptr = new Output(40, 60);
+	Bptr->setInPort1(700, 400);
+	blocks.push_back(Bptr);
+
 	init();
 }
 
@@ -170,13 +181,16 @@ void Window::draw()
 
 	Block* ptr = new AndGate(staticANDx,staticANDy);
 	ptr -> draw(renderer);
+	delete ptr;
 
 	ptr = new OrGate(staticORx,staticORy);
 	ptr -> draw(renderer);
+	delete ptr;
 
 
 	ptr = new NotGate(staticNOTx,staticNOTy);
 	ptr -> draw(renderer);
+	delete ptr;
 
 	// Draw Rectangle for View Controller
 	SDL_SetRenderDrawColor( renderer, 0, 0, 0, 255 );     // Change Color to Black
@@ -217,7 +231,8 @@ int Window::eventHandler(SDL_Event e)
 			else if (staticNotGateDetection( e )) {
 				makeBlock(2); //2 = NOT
 			}
-			else if(x>logicCanvas.x && x<(logicCanvas.x+logicCanvas.w) && y>logicCanvas.y && y<(logicCanvas.y+logicCanvas.h))
+			else if(x>logicCanvas.x && x<(logicCanvas.x+logicCanvas.w) 
+				&& y>logicCanvas.y && y<(logicCanvas.y+logicCanvas.h))
 			{	
 				cout << "pressed in logic canvas" << endl;
 				for(int i = 0; i < blocks.size(); i++) {
@@ -329,9 +344,14 @@ void Window::moveBlock(int i)
 	int x;
 	int y;
 
+	// move block
 	SDL_GetMouseState(&x,&y);
 	blocks[i]->setx(x - dx);
 	blocks[i]->sety(y - dy);
+
+	// move wires
+	//blocks[i]->bringWires();
+
 }
 
 

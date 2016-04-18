@@ -46,8 +46,9 @@ class AndGate : public Gate
 // constructor
 AndGate::AndGate(double xTopLeft, double yTopLeft) : Gate()
 {
-	setIn1(NULL);
-	setIn2(NULL);
+	setPortPtr(0, NULL);
+	setPortPtr(1, NULL);
+	setPortPtr(2, NULL);
 
 	numPts = 10;
 
@@ -94,10 +95,17 @@ int AndGate::getValue()
 {
 	int left;
 	int right;
+	if (getPortPtr(1) == NULL || getPortPtr(2) == NULL)
+		return -1;
+
 	left = getIn1()->getValue();
 	right = getIn2()->getValue();
-	return (left > 0 && right > 0);
+	if (left == -1 or right == -1)
+		return -1;
+	else
+		return (left > 0 && right > 0);
 }
+
 
 void AndGate::draw(SDL_Renderer* renderer)
 {
