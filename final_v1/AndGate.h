@@ -173,7 +173,6 @@ void AndGate::updatePortXY()
 	setInPort1(x-10, y);
 	setInPort2(x-10, y+staticGateHeight);
 	setOutPort(x+staticGateWidth+40, y + (staticGateHeight/2));
-
 }
 
 
