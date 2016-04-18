@@ -36,6 +36,7 @@ class Window {
 		void makeBlock(int);
 		void moveWire();
 		int snapWire(int, int);
+		void deleteWire(int);
 		void moveBlock(int);
 		void drawBlocks();
 		void drawWires();
@@ -316,26 +317,21 @@ void Window::moveWire()
 	{
 		// set wire
 		if (!snapWire(x, y))
-			cout << "think about deleting that wire." << endl;
+		{
+			cout << "deleting that wire." << endl;
+			deleteWire(wires.size()-1);
+		}
 	}
 }
 
 void Window::moveBlock(int i)
 {
-	//SDL_Event e;
 	int x;
 	int y;
-	//SDL_PollEvent( &e );
-	//while( e.type != SDL_MOUSEBUTTONUP) {
+
 	SDL_GetMouseState(&x,&y);
 	blocks[i]->setx(x - dx);
 	blocks[i]->sety(y - dy);
-
-	//SDL_RenderPresent(renderer);
-	//blocks[i]->draw(renderer);
-	//SDL_PollEvent( &e );
-
-
 }
 
 
@@ -410,6 +406,13 @@ int Window::snapWire(int x, int y)
 	return 1;
 }
 
+
+void Window::deleteWire(int wireNum)
+{
+	delete wires[wireNum];
+	wires.erase(wires.begin()+wireNum);
+
+}
 
 
 // Draw blocks function!!!

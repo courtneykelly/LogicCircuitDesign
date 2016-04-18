@@ -42,6 +42,9 @@ class NotGate : public Gate
 		double staticGateWidth;
 		double staticGateHeight;
 		double staticLineLength;
+
+		// helper function:
+		void updatePortXY();
 	
 };
 
@@ -58,7 +61,7 @@ NotGate::NotGate(double xTopLeft, double yTopLeft) : Gate()
 	x = xTopLeft;
 	y = yTopLeft;
 
-	
+	updatePortXY();
 }
 
 // destructor
@@ -95,11 +98,13 @@ double NotGate::gety()
 void NotGate::setx(double newX)
 {
 	x = newX;
+	updatePortXY();
 }
 
 void NotGate::sety(double newY)
 {
 	y = newY;
+	updatePortXY();
 }
 
 int NotGate::getValue()
@@ -111,16 +116,25 @@ int NotGate::getValue()
 void NotGate::draw(SDL_Renderer* renderer)
 {
 	// Change color to blue
-    SDL_SetRenderDrawColor( renderer, 0, 0, 255, 255 );
+	SDL_SetRenderDrawColor( renderer, 0, 0, 255, 255 );
 
-    // draw lines
-    	boxRGBA( renderer, x, y+(staticGateHeight/2-staticLineLength), x-staticGateWidth/3, 
-    		y+(staticGateHeight/2)+staticLineLength, 255, 0, 50, 255 );
-    	boxRGBA( renderer, x+(2*staticGateWidth/3)+(staticGateWidth/3)-5, y+(staticGateHeight/2-staticLineLength), 
-    		x+(2*staticGateWidth/3)-10, y+(staticGateHeight/2)+staticLineLength, 255, 0, 50, 255 );
-    // draw triangle
+	// draw lines
+	boxRGBA( renderer, x, y+(staticGateHeight/2-staticLineLength), x-staticGateWidth/3, 
+			y+(staticGateHeight/2)+staticLineLength, 255, 0, 50, 255 );
+	boxRGBA( renderer, x+(2*staticGateWidth/3)+(staticGateWidth/3)-5, y+(staticGateHeight/2-staticLineLength), 
+			x+(2*staticGateWidth/3)-10, y+(staticGateHeight/2)+staticLineLength, 255, 0, 50, 255 );
+	// draw triangle
 	filledTrigonRGBA( renderer, x, y+(staticGateHeight/4), x+(2*staticGateWidth/3), 
-		y+(staticGateHeight/2), x, y+(3*staticGateHeight/4), 255, 0, 50, 255);
+			y+(staticGateHeight/2), x, y+(3*staticGateHeight/4), 255, 0, 50, 255);
+
+
+	// draw ports (temporary)
+	short* outPort = getPortXY(0);
+	short* inPort1 = getPortXY(1);
+
+	circleRGBA(renderer, outPort[0], outPort[1], 10, 0, 255, 0, 255);
+	circleRGBA(renderer, inPort1[0], inPort1[1], 10, 0, 255, 0, 255);
+
 }
 
 int NotGate::onPort(int xMouse, int yMouse)
@@ -128,7 +142,6 @@ int NotGate::onPort(int xMouse, int yMouse)
 
 	short* outPort = getPortXY(0);
 	short* inPort1 = getPortXY(1);
-	short* inPort2 = getPortXY(2);
 
 	if      (sqrt(pow(xMouse - outPort[0], 2) + pow(yMouse - outPort[1], 2)) < 10)
 		return 0;
@@ -136,6 +149,12 @@ int NotGate::onPort(int xMouse, int yMouse)
 		return 1;
 	else
 		return -1;
+}
+
+void NotGate::updatePortXY()
+{
+	setInPort1(x, y + (staticGateHeight/2));
+	setOutPort(x+staticGateWidth, y + (staticGateHeight/2));
 }
 
 
