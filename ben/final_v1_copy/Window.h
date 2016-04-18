@@ -11,6 +11,7 @@
 #include <iostream>
 #include <cmath>
 #include <vector>
+#include <map>
 #include "Block.h"
 #include "Gate.h"
 #include "Input.h"
@@ -33,8 +34,8 @@ class Window {
 
 		void makeWire();
 		void makeBlock(int);
-		void makeInputs();
 		void moveWire();
+		int snapWire(int, int);
 		void moveBlock(int);
 		void drawBlocks();
 		void drawWires();
@@ -75,10 +76,10 @@ class Window {
 // constructor
 Window::Window()
 {
-    screen_width = 1000;
-    screen_height = 600;
-    window = NULL;
-    renderer = NULL;
+	screen_width = 1000;
+	screen_height = 600;
+	window = NULL;
+	renderer = NULL;
 	action = 0;
 	borderSize=10;
 	staticGateWidth=50;	
@@ -90,18 +91,18 @@ Window::Window()
 
 
 	// Initialize View Controller
-    viewController.x = screen_width - (screen_width/4);
-    viewController.y = screen_height/2;
-    viewController.w = screen_width/4 - borderSize;
-    viewController.h = screen_height/2 - borderSize;
+	viewController.x = screen_width - (screen_width/4);
+	viewController.y = screen_height/2;
+	viewController.w = screen_width/4 - borderSize;
+	viewController.h = screen_height/2 - borderSize;
 
-    // Initialize Logic Canvas
-    logicCanvas.x = borderSize;
-    logicCanvas.y = screen_height/3;
-    logicCanvas.w = screen_width - (3*borderSize) - (viewController.w);
-    logicCanvas.h = 2*screen_height/3 - borderSize;
+	// Initialize Logic Canvas
+	logicCanvas.x = borderSize;
+	logicCanvas.y = screen_height/3;
+	logicCanvas.w = screen_width - (3*borderSize) - (viewController.w);
+	logicCanvas.h = 2*screen_height/3 - borderSize;
 
-    staticANDx = viewController.x + (viewController.w / 2) - (staticGateWidth+(staticGateHeight/2))/2;
+	staticANDx = viewController.x + (viewController.w / 2) - (staticGateWidth+(staticGateHeight/2))/2;
 	staticANDy = viewController.y + (viewController.h / 6) - (staticGateHeight/2);
 
 	staticORx = viewController.x + (viewController.w / 2) - (staticGateWidth+(staticGateHeight/2))/2;
@@ -110,84 +111,82 @@ Window::Window()
 	staticNOTx = viewController.x + (viewController.w / 2) - (staticGateWidth/3);
 	staticNOTy = viewController.y + (5*viewController.h / 6) - (staticGateHeight/2);
 
-    init();
+	init();
 }
 
 
 // destructor
 Window::~Window()
 {
-    SDL_DestroyRenderer (renderer);
-    SDL_DestroyWindow (window);
-    window = NULL;
-    renderer = NULL;
+	SDL_DestroyRenderer (renderer);
+	SDL_DestroyWindow (window);
+	window = NULL;
+	renderer = NULL;
 
-    SDL_Quit();
+	SDL_Quit();
 }
 
 
 // initilaizes the window and renderer
 int Window::init()
 {
-    if (SDL_Init(SDL_INIT_VIDEO) < 0)
-    {
+	if (SDL_Init(SDL_INIT_VIDEO) < 0)
+	{
 		std::cout << "Could not initialize SDL: " << SDL_GetError() << std::endl;
 		return -1;
-    }
+	}
 
-    // create window
-    window = SDL_CreateWindow("Logic Circuit Design", SDL_WINDOWPOS_UNDEFINED,
-	SDL_WINDOWPOS_UNDEFINED, screen_width, screen_height, SDL_WINDOW_SHOWN);
+	// create window
+	window = SDL_CreateWindow("Logic Circuit Design", SDL_WINDOWPOS_UNDEFINED,
+			SDL_WINDOWPOS_UNDEFINED, screen_width, screen_height, SDL_WINDOW_SHOWN);
 
-    // create renderer
-    renderer = SDL_CreateRenderer(window, -1, 0);
-    if (renderer == NULL)
-    {
+	// create renderer
+	renderer = SDL_CreateRenderer(window, -1, 0);
+	if (renderer == NULL)
+	{
 		std::cout << "Could not create renderer: " << SDL_GetError() << std::endl;
 		return -1;
-    }
+	}
 
-    // set renderer resolution
-    SDL_RenderSetLogicalSize (renderer, screen_width, screen_height);
+	// set renderer resolution
+	SDL_RenderSetLogicalSize (renderer, screen_width, screen_height);
 
-    // set Background color
-    SDL_SetRenderDrawColor (renderer, 255, 255, 255, 255);
-    SDL_RenderClear (renderer);
+	// set Background color
+	SDL_SetRenderDrawColor (renderer, 255, 255, 255, 255);
+	SDL_RenderClear (renderer);
 
-    return 1;
+	return 1;
 }
 
 
 void Window::draw()
 {
-	 // Change color to blue
-    SDL_SetRenderDrawColor( renderer, 0, 0, 255, 255 );
+	// Change color to blue
+	SDL_SetRenderDrawColor( renderer, 0, 0, 255, 255 );
 
-    // Draw Static Gates
-    
-	
+	// Draw Static Gates
+
+
 	Block* ptr = new AndGate(staticANDx,staticANDy);
 	ptr -> draw(renderer);
 
 	ptr = new OrGate(staticORx,staticORy);
 	ptr -> draw(renderer);
 
-	
+
 	ptr = new NotGate(staticNOTx,staticNOTy);
 	ptr -> draw(renderer);
 
-	makeInputs();
-
-    // Draw Rectangle for View Controller
-    SDL_SetRenderDrawColor( renderer, 0, 0, 0, 255 );     // Change Color to Black
-    SDL_RenderDrawRect( renderer, &viewController );
-    SDL_RenderDrawRect( renderer, &logicCanvas );
+	// Draw Rectangle for View Controller
+	SDL_SetRenderDrawColor( renderer, 0, 0, 0, 255 );     // Change Color to Black
+	SDL_RenderDrawRect( renderer, &viewController );
+	SDL_RenderDrawRect( renderer, &logicCanvas );
 
 
-    SDL_RenderPresent(renderer); // draws it
-    SDL_Delay(40); // 40 default
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-    SDL_RenderClear(renderer); // clear screen to white
+	SDL_RenderPresent(renderer); // draws it
+	SDL_Delay(40); // 40 default
+	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+	SDL_RenderClear(renderer); // clear screen to white
 }
 
 
@@ -239,7 +238,13 @@ int Window::eventHandler(SDL_Event e)
 			break;
 
 		case SDL_MOUSEBUTTONUP:
-			action = 0;
+			if (action == 1)
+			{
+				action = 0;
+				moveWire();
+			}
+			else
+				action = 0;
 			break;
 	}
 
@@ -267,7 +272,7 @@ void Window::makeWire()
 	int x;
 	int y;
 	SDL_GetMouseState(&x, &y);
-	Wire* ptr = new Wire(NULL, x, y); // call constructor
+	Wire* ptr = new Wire(x, y); // call constructor
 
 	wires.push_back(ptr);
 	action = 1;
@@ -293,60 +298,127 @@ void Window::makeBlock(int i)
 		y = 500;
 		Bptr = new NotGate(x,y);
 	}
-	
-	
+
+
 	blocks.push_back(Bptr);
 	action = 0;
 }
 
-void Window::makeInputs()
-{
-	double x = 100;
-	double y = 400;
-	int value = 0;
-	Block* aPtr = new Input(x,y,'a',value);
-	Block* bPtr = new Input(x,y,'b',value);
-	Block* cPtr = new Input(x,y,'c',value);
-	Block* zPtr = new Input(x,y,'z',value);
-	blocks.push_back(aPtr);
-	blocks.push_back(bPtr);
-	blocks.push_back(cPtr);
-	blocks.push_back(zPtr);
-}
 
 void Window::moveWire()
 {
 	int x;
 	int y;
 	SDL_GetMouseState(&x, &y);
-	wires.back()->movePoint(x, y);
+	wires.back()->movePoint2(x, y);
+
+	if (action != 1)
+	{
+		// set wire
+		if (!snapWire(x, y))
+			cout << "think about deleting that wire." << endl;
+	}
 }
 
 void Window::moveBlock(int i)
 {
- 	//SDL_Event e;
- 	int x;
- 	int y;
- 	//SDL_PollEvent( &e );
- 	//while( e.type != SDL_MOUSEBUTTONUP) {
-  	SDL_GetMouseState(&x,&y);
- 	blocks[i]->setx(x - dx);
-  	blocks[i]->sety(y - dy);
+	//SDL_Event e;
+	int x;
+	int y;
+	//SDL_PollEvent( &e );
+	//while( e.type != SDL_MOUSEBUTTONUP) {
+	SDL_GetMouseState(&x,&y);
+	blocks[i]->setx(x - dx);
+	blocks[i]->sety(y - dy);
 
-  	//SDL_RenderPresent(renderer);
-  	//blocks[i]->draw(renderer);
-  	//SDL_PollEvent( &e );
-	
+	//SDL_RenderPresent(renderer);
+	//blocks[i]->draw(renderer);
+	//SDL_PollEvent( &e );
+
 
 }
+
+
+int Window::snapWire(int x, int y)
+{
+	int connections = 0; // number of snaps
+	int	port;  // -1 = none; 0 = output; 1,2,+ = input
+	int highPortNum;
+	short* point1;
+
+	map<int, Block*> blockPorts;
+
+	// Step 1) find connections:
+	for (int i = 0; i < blocks.size(); i++)
+	{
+		port = blocks[i]->onPort(x, y);
+		if (port >= 0)
+		{
+			blockPorts[port]=blocks[i];
+			if (port > 0)
+				highPortNum = port;
+			break;
+		}
+	}
+	for (int i = 0; i < blocks.size(); i++)
+	{
+		point1 = wires.back()->getPointXY(1); // retrieve wire coordinates from pt 2
+		port = blocks[i]->onPort(point1[0], point1[1]);
+		if (port >= 0)
+		{
+			blockPorts[port]=blocks[i];
+			if (port > 0)
+				highPortNum = port;
+			break;
+		}
+	}
+
+	// Step 2) stop connection errors:
+	if (blockPorts.size() != 2)
+	{
+		cout << "not enough connections or connected to same port" << endl;
+		return 0; // not 2 points on ports or 2 points on same port type
+	}
+	else if (blockPorts.count(0) <= 0) 
+	{
+		cout << "must connect to an outgoing port." << endl;
+		return 0;
+	}
+	else if (blockPorts.begin()->second == blockPorts.rbegin()->second)
+	{
+		cout << "must connect to different objects." << endl;
+		return 0;
+	}
+	else // wire connection is sound
+	{
+		// Step 3) connect visually
+		// move front of wire to outPort of Block
+		wires.back()->movePoint1(blockPorts[0]->getPortXY(0)[0], 
+				blockPorts[0]->getPortXY(0)[1]);
+
+		// move back of wire to correct inPort of Block
+		wires.back()->movePoint2(blockPorts[highPortNum]->getPortXY(highPortNum)[0], 
+				blockPorts[highPortNum]->getPortXY(highPortNum)[1]);
+
+		// Step 4) connect pointers
+		// point wire pointer backward to block address
+		wires.back()->setBackwardPtr(blockPorts[0]);
+
+		// point block pointer (1 or 2) backward to wire address
+		blockPorts[highPortNum]->setPortPtr(highPortNum, wires.back());
+	}
+	return 1;
+}
+
+
 
 // Draw blocks function!!!
 void Window::drawBlocks()
 {
-  for(int i = 0; i < blocks.size(); i++)
-    {
-      blocks[i]->draw(renderer);
-    }
+	for(int i = 0; i < blocks.size(); i++)
+	{
+		blocks[i]->draw(renderer);
+	}
 
 }
 
@@ -362,31 +434,31 @@ void Window::drawWires()
 
 bool Window::staticAndGateDetection( SDL_Event event) 
 {
-	 if ( (event.motion.x>staticANDx) && (event.motion.x<(staticANDx+highlightBoxWidth)) ) {
-        if ( (event.motion.y>staticANDy) && (event.motion.y<(staticANDy+highlightBoxHeight)) ) {
-            return true;
-        }
-    }
-    return false;
+	if ( (event.motion.x>staticANDx) && (event.motion.x<(staticANDx+highlightBoxWidth)) ) {
+		if ( (event.motion.y>staticANDy) && (event.motion.y<(staticANDy+highlightBoxHeight)) ) {
+			return true;
+		}
+	}
+	return false;
 }
 bool Window::staticOrGateDetection( SDL_Event event ) 
 {
-    if ( (event.motion.x>staticORx) && (event.motion.x<(staticORx+highlightBoxWidth)) ) {
-        if ( (event.motion.y>staticORy) && (event.motion.y<(staticORy+highlightBoxHeight)) ) {
-            return true;
-        }
-    }
-    return false;
+	if ( (event.motion.x>staticORx) && (event.motion.x<(staticORx+highlightBoxWidth)) ) {
+		if ( (event.motion.y>staticORy) && (event.motion.y<(staticORy+highlightBoxHeight)) ) {
+			return true;
+		}
+	}
+	return false;
 }
 bool Window::staticNotGateDetection( SDL_Event event ) 
 {
 
-    if ( (event.motion.x>staticNOTx) && (event.motion.x<(staticNOTx+highlightBoxWidth)) ) {
-        if ( (event.motion.y>staticNOTy) && (event.motion.y<(staticNOTy+highlightBoxHeight)) ) {
-            return true;
-        }
-    }
-    return false;
+	if ( (event.motion.x>staticNOTx) && (event.motion.x<(staticNOTx+highlightBoxWidth)) ) {
+		if ( (event.motion.y>staticNOTy) && (event.motion.y<(staticNOTy+highlightBoxHeight)) ) {
+			return true;
+		}
+	}
+	return false;
 }
 
 bool Window::gateDetection( int blockNum, SDL_Event event )
