@@ -7,6 +7,7 @@
 
 #include <SDL.h>
 #include "SDL2_gfxPrimitives.h"
+#include "SDL_image.h"
 #include <string>
 #include <iostream>
 #include <cmath>
@@ -43,6 +44,8 @@ class Window {
 		bool staticNotGateDetection( SDL_Event );
 		bool gateDetection( int, SDL_Event );
 
+		bool LoadTexture( const string &str );	
+
 	private:
 		double screen_width;
 		double screen_height;
@@ -56,6 +59,9 @@ class Window {
 		int dy;
 		SDL_Rect viewController;
 		SDL_Rect logicCanvas;
+		// Textures
+			SDL_Rect a0;
+			SDL_Texture* a0Texture;
 		int borderSize;
 		double staticANDx;
 		double staticANDy;
@@ -109,6 +115,19 @@ Window::Window()
 
 	staticNOTx = viewController.x + (viewController.w / 2) - (staticGateWidth/3);
 	staticNOTy = viewController.y + (5*viewController.h / 6) - (staticGateHeight/2);
+
+	// Initialize Input Images
+		if(LoadTexture("player.bmp")) {
+			cout << "Yay";
+		}
+		if(a0Texture == NULL) {
+			cout << "\nBad\n";
+		}
+
+		a0.x = 100;
+		a0.y = 400;
+		a0.w = 118;
+		a0.h = 118;
 
     init();
 }
@@ -182,7 +201,11 @@ void Window::draw()
     SDL_SetRenderDrawColor( renderer, 0, 0, 0, 255 );     // Change Color to Black
     SDL_RenderDrawRect( renderer, &viewController );
     SDL_RenderDrawRect( renderer, &logicCanvas );
+    //SDL_RenderDrawRect(renderer, &a0);
 
+
+    // Load Images
+    	SDL_RenderCopy( renderer, a0Texture, NULL, &a0 );
 
     SDL_RenderPresent(renderer); // draws it
     SDL_Delay(40); // 40 default
@@ -358,6 +381,37 @@ void Window::drawWires()
 		wires[i]->draw(renderer);
 	}
 
+}
+
+bool Window::LoadTexture( const string &str ) 
+{
+	// Initialize to NULL
+		SDL_Texture* texture = NULL;
+
+	// Load Image as SD_Surface
+		SDL_Surface* surface = SDL_LoadBMP( str.c_str() );
+		if( surface == NULL ){
+				cout << "\nUnable to load image.\n" << endl;
+		}
+		else {
+				cout << "\ngot it";
+		}
+
+	// SDL_Surface is just the raw pixels 
+	// Convert it to a hardware-optimized texture so we can render it
+		texture = SDL_CreateTextureFromSurface( renderer, surface );
+		if( texture == NULL ){
+				cout << "\nUnable to create texture." << endl;
+		}
+		else {
+				cout << "got texture";
+		}
+
+	// Don't need the original texture, release the memory
+		SDL_FreeSurface( surface );
+		a0Texture = texture;
+
+	return a0Texture != NULL;
 }
 
 bool Window::staticAndGateDetection( SDL_Event event) 
