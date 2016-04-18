@@ -238,7 +238,7 @@ int Window::eventHandler(SDL_Event e)
 			break;
 
 		case SDL_MOUSEBUTTONUP:
-			if (action = 1)
+			if (action == 1)
 			{
 				action = 0;
 				moveWire();

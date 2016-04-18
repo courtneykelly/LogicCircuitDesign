@@ -16,7 +16,7 @@ class OrGate : public Gate
 		~OrGate();   // deconstructor
 		virtual int getValue();
 		virtual void draw();
-		
+	
 	private:
 		// for drawing:
 		short xCoord[10];

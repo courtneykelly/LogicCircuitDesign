@@ -6,6 +6,7 @@
 
 using namespace std;
 
+
 class Input : public Block
 {
 	public:
@@ -51,23 +52,25 @@ int Input::getValue()
 void Input::draw(SDL_Renderer* renderer)
 {
 
+
+
 }
 
 double Input::getx()
 {
-
+	return x;
 }
 double Input::gety()
-{
-
+{	
+	return y;
 }
-void Input::setx(double)
+void Input::setx(double xNew)
 {
-
+	x = xNew;
 }
-void Input::sety(double) 
+void Input::sety(double yNew) 
 {
-
+	y = yNew;
 }
 
 #endif
