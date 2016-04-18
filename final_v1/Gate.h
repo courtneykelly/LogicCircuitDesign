@@ -33,6 +33,8 @@ class Gate : public Block
 		virtual void setOutPort(short, short);
 		virtual void setInPort1(short, short);
 		virtual void setInPort2(short, short);
+		
+		virtual void bringWires();
 
 	private:
 		Wire* out;
@@ -143,6 +145,22 @@ void Gate::setInPort2(short x, short y)
 
 
 
+
+void Gate::bringWires()
+{
+	if (getPortPtr(0) != NULL) // if pointer is conected
+	{
+		// then move wire to match ports
+		getPortPtr(0)->movePoint1(getPortXY(0)[0], getPortXY(0)[1]);
+	}
+	for (int i = 1; i <=2; i++)
+	{
+		if (getPortPtr(i) != NULL)
+		{
+			getPortPtr(i)->movePoint2(getPortXY(i)[0], getPortXY(i)[1]);
+		}
+	}
+}
 
 
 

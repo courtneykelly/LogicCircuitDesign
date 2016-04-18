@@ -360,7 +360,7 @@ void Window::moveBlock(int i)
 	blocks[i]->sety(y - dy);
 
 	// move wires
-	//blocks[i]->bringWires();
+	blocks[i]->bringWires();
 
 }
 

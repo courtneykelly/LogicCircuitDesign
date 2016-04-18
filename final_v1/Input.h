@@ -28,6 +28,8 @@ class Input : public Block
 
 		virtual int onPort(int, int);
 
+		virtual void bringWires();
+
 	private:
 		int value;
 
@@ -140,6 +142,15 @@ int Input::onPort(int xMouse, int yMouse)
 		return 0; 
 	else
 		return -1;
+}
+
+void Input::bringWires()
+{
+	if (getPortPtr(0) != NULL) // if pointer is conected
+	{
+		// then move wire to match ports
+		getPortPtr(0)->movePoint1(getPortXY(0)[0], getPortXY(0)[1]);
+	}
 }
 
 
