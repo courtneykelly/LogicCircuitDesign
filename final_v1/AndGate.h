@@ -37,6 +37,8 @@ class AndGate : public Gate
 		short yCoord[10];
 		short numPts;
 
+		void updatePortXY();
+
 
 };
 
@@ -56,10 +58,8 @@ AndGate::AndGate(double xTopLeft, double yTopLeft) : Gate()
 	x = xTopLeft;
 	y = yTopLeft;
 
-	setInPort1(x, y);
-	setInPort2(x, y+staticGateHeight);
-	setOutPort(x+staticGateWidth, y + (staticGateHeight/2));
-	
+	updatePortXY();
+
 }
 
 // destructor
@@ -80,19 +80,14 @@ double AndGate::gety()
 void AndGate::setx(double newX)
 {
 	x = newX;
-	setInPort1(x, y);
-	setInPort2(x, y+staticGateHeight);
-	setOutPort(x+staticGateWidth, y + (staticGateHeight/2));
+	updatePortXY();
 
 }
 
 void AndGate::sety(double newY)
 {
 	y = newY;
-	setInPort1(x, y);
-	setInPort2(x, y+staticGateHeight);
-	setOutPort(x+staticGateWidth, y + (staticGateHeight/2));
-
+	updatePortXY();
 }
 
 int AndGate::getValue()
@@ -173,7 +168,13 @@ int AndGate::onPort(int xMouse, int yMouse)
 	return -1;
 }
 
+void AndGate::updatePortXY()
+{
+	setInPort1(x-10, y);
+	setInPort2(x-10, y+staticGateHeight);
+	setOutPort(x+staticGateWidth+40, y + (staticGateHeight/2));
 
+}
 
 
 #endif
