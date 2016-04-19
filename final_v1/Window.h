@@ -120,15 +120,15 @@ Window::Window()
 	staticNOTy = viewController.y + (5*viewController.h / 6) - (staticGateHeight/2);
 
 	// temp!!!!!!!!!!!!!!!!!!!!!!
-	Block* Bptr;
-	Bptr = new Input(50, 275, 'a', 0);
-	blocks.push_back(Bptr);
 
-	Bptr = new Input(50, 350, 'b', 0);
-	blocks.push_back(Bptr);
+	Block* Bptra = new Input(50, 275, 'a', 0);
+	blocks.push_back(Bptra);
 
-	Bptr = new Input(50, 425, 'c', 0);
-	blocks.push_back(Bptr);
+	Block* Bptrb = new Input(50, 350, 'b', 0);
+	blocks.push_back(Bptrb);
+
+	Block* Bptrc = new Input(50, 425, 'c', 0);
+	blocks.push_back(Bptrc);
 
 	/*
 	Bptr = new Output(40, 60);
@@ -261,10 +261,15 @@ int Window::eventHandler(SDL_Event e)
 				for(int i = 0; i < blocks.size(); i++) {
 					if (inputDetection(i, e)) {
 							blockNum=i;
+							cout << blocks[1]->gety() << endl;
 							action=3;
 							break;
 						}
 					if(gateDetection(i, e)) {
+						if(blocks[i]->getx() == 50){
+							action = 0;
+							break;
+						}
 						cout << "gate detection!!" << endl;
 						blockNum = i;
 						dx = x - blocks[i]->getx();
@@ -559,18 +564,11 @@ bool Window::inputDetection( int blockNum, SDL_Event event )
 	double blockX = blocks[blockNum]->getx();
 	double blockY = blocks[blockNum]->gety();
 
-	if((event.motion.x>50) && (event.motion.x<80)){
-		if ( (event.motion.y>275) && (event.motion.y < 305)) {
-			return true;
-		}
-		else if((event.motion.y>350) && (event.motion.y < 380)){
-			return true;
-		}
-		else if((event.motion.y>425) && (event.motion.y<455)) {
+	if((event.motion.x>blockX) && (event.motion.x<(blockX+30))){
+		if ( (event.motion.y>blockY) && (event.motion.y < (blockY+30))) {
 			return true;
 		}
 	}
-	return false;
 }
 
 void Window::changeInputValue( int i )
