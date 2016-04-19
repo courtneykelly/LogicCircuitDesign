@@ -1,0 +1,67 @@
+Courtney Kelly
+Lab 8 
+report2.txt
+
+Part 1:  coding a small bit of your project
+-------------------------------------------
+	GitHub repository: https://github.com/courtneykelly/logicCircuitDesign
+
+	I submitted my testing code both in my dropbox and our group's git hub repository in 
+	/logicCircuitDesign/courtney/test. The file test.cpp flashes back and forth with the 
+	between two pictures of Professors Scott found on his website. The user can exit the 
+	window at any time. This program got me comfortable and used to using SDL_image and time 
+	delays. Both are important to the sucess of our project.
+
+Part 2: Documentation 
+---------------------
+ 
++15 Explains how what you completed works internally
+	Internally, test.cpp first creates two const integers for the screen width and height. 
+	These are const becuase they should not be able to be modified my the user. It then 
+	initializes 5 functions: 
+		bool init(); 	starts up SDL and creates window by calling the function init()
+		bool loadMedia1();	these functions are to load the two images of Prof Scott
+		bool loadMedia2();
+	It then initializes a SDL_Window, where I will render all my surfaces, etc. It then
+	initilizes three surfaces, one for the screen (the surface contained by the window), 
+	and two other surfaces, one for each image of Prof Scott.			
+		void close1(); 		Frees media and shuts down SDL
+		void close2();
+	These two functions will clean up and close the surfaces once the user exits. In main
+	the program first calls the init() function which starts up SDL and creates the window.
+	It then loads the media, so it calls loadMedia1() and loadMedia2(), which use SDL_LoadBMP
+	to load the images of Prof Scott. It then creates an SDL_Event and a while loop that 
+	will only exit when an quit click event occurs. In the loop it applies image1 using 
+	SDL_BlitSurface(, it then updates the surface using SDL_UpdateWindowSurface(, then it delays
+	using SDL_Delay(). It repeats this proocess with image2
+
++40 A time log of what you worked on for the project
+	3/8: Lab 5:00-5:50
+	3/15: Lab 5:00-5:50
+	3/19: Watched SDL tutorials for a collective 4 hours
+	3/21: Wrote a compilable program: 3 hours
+
+Part 3: show us what you learned
+--------------------------------
+	I learned many intersting things about SDL for this lab. I got a basic understanding of how SDL
+	works as well as rendering. In order to make an image appear on the screen you first have to make
+	a window, but you also have to make a surface corresponding to that window. The surface is necessary
+	so you can place things on the screen. You can't just place an image on the screen, you have to
+	create a smaller surface first, load the image onto that surface, and then put that surface on
+	the surface for your Window. In order for the user to interact with the program, you will need to 
+	put all your actions within a while loop. In this while loop you need to create an SDL_Event. This
+	picks up things like mouse clicks or mouse movements. SDL events will be crucial to the success of 
+	our project because it's highly interactive.
+
+	I will utilize what I learned through the tutorials for our final project. We will need a window, 
+	and a main action while loop keeping track of different SDL events so the user can interact with
+	the window. We will need either images or drawings for all of our inputs and gates. We will have a 
+	Window class, a block class, a gate class, a wire class, etc. 
+
+	I completed the rubric I made a few labs ago by going through the SDL tutorials and creating 
+	something that compiles.
+
+
+
+
+
