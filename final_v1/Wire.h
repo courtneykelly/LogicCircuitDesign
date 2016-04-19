@@ -2,6 +2,7 @@
 #define WIRE_H
 
 #include <iostream>   // for using cout
+#include <cmath>
 #include "Block.h" // for pointers to objects
 #include "Input.h"
 #include "Gate.h"
@@ -22,7 +23,8 @@ class Wire
 		short *getPointXY(int);
 
 		void draw(SDL_Renderer*);
-		void deletePrep();	
+		void deletePrep();
+		int onWire();
 
 	private:
 		Block* forwardPtr;
@@ -139,5 +141,17 @@ void Wire::deletePrep()
 		backwardPtr->setPortPtr(2, NULL);
 	}
 }
+
+
+int Wire::onWire()
+{
+	int length;
+	length = sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2));
+
+	cout << "length: " << length << endl;
+
+	return -1;
+}
+
 
 #endif
