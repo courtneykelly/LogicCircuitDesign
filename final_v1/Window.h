@@ -244,12 +244,12 @@ int Window::eventHandler(SDL_Event e)
 			{	
 				cout << "pressed in logic canvas" << endl;
 				for(int i = 0; i < blocks.size(); i++) {
-					if(gateDetection(i, e)) {
-						if (inputDetection(i, e)) {
+					if (inputDetection(i, e)) {
 							blockNum=i;
 							action=3;
 							break;
 						}
+					if(gateDetection(i, e)) {
 						cout << "gate detection!!" << endl;
 						blockNum = i;
 						dx = x - blocks[i]->getx();
