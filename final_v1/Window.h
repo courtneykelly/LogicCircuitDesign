@@ -45,6 +45,7 @@ class Window {
 		bool staticOrGateDetection( SDL_Event );
 		bool staticNotGateDetection( SDL_Event );
 		bool gateDetection( int, SDL_Event );
+		bool wireDetection( int );
 
 	private:
 		double screen_width;
@@ -235,6 +236,17 @@ int Window::eventHandler(SDL_Event e)
 					&& y>logicCanvas.y && y<(logicCanvas.y+logicCanvas.h))
 			{	
 				cout << "pressed in logic canvas" << endl;
+				// determine if on wire
+				for (int j = 0; j < wires.size(); j++)
+				{
+					if (wireDetection(j))
+					{
+						cout << "clicked on wire" << endl;
+						break;
+					}
+				}
+
+				// determine if on block
 				for(int i = 0; i < blocks.size(); i++) {
 					if(gateDetection(i, e)) {
 						cout << "gate detection!!" << endl;
@@ -511,6 +523,12 @@ bool Window::gateDetection( int blockNum, SDL_Event event )
 			return true;
 		}
 	}
+
+	return false;
+}
+
+bool Window::wireDetection( int wireNum)
+{
 
 	return false;
 }
