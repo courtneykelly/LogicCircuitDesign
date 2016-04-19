@@ -43,11 +43,29 @@ class AndGate : public Gate 		// Inherits from the class Gate
 };
 
 
+<<<<<<< HEAD
 // Constructor
 	AndGate::AndGate(double xTopLeft, double yTopLeft) : Gate()
 	{
 		setIn1(NULL);
 		setIn2(NULL);
+=======
+// constructor
+AndGate::AndGate(double xTopLeft, double yTopLeft) : Gate()
+{
+	setPortPtr(0, NULL);
+	setPortPtr(1, NULL);
+	setPortPtr(2, NULL);
+
+	numPts = 10;
+
+	staticGateWidth=50;	
+	staticGateHeight=60;
+	staticLineLength=1;
+
+	x = xTopLeft;
+	y = yTopLeft;
+>>>>>>> 36be65c2b87de454b9471a76265a873287adec7e
 
 		numPts = 10;
 
@@ -60,6 +78,58 @@ class AndGate : public Gate 		// Inherits from the class Gate
 
 		updatePortXY();
 
+<<<<<<< HEAD
+=======
+void AndGate::setx(double newX)
+{
+	x = newX;
+	updatePortXY();
+
+}
+
+void AndGate::sety(double newY)
+{
+	y = newY;
+	updatePortXY();
+}
+
+int AndGate::getValue()
+{
+	int left;
+	int right;
+	if (getPortPtr(1) == NULL || getPortPtr(2) == NULL)
+		return -1;
+
+	left = getIn1()->getValue();
+	right = getIn2()->getValue();
+	if (left == -1 or right == -1)
+		return -1;
+	else
+		return (left > 0 && right > 0);
+}
+
+
+void AndGate::draw(SDL_Renderer* renderer)
+{
+	// Change color to blue
+    SDL_SetRenderDrawColor( renderer, 0, 0, 255, 255 );
+
+    // Set Trigonometry Values for drawing Half Circle
+	double step = 2;					// step size= 2 degrees
+	int numPoints = int(180/step + 3);	// number of points based on step size
+	short xPoints[numPoints];			
+	short yPoints[numPoints];
+
+	double theta = 270*PI/180;					// start theta=270 degrees and convert to radians
+	double xCenter = x + staticGateWidth;		// x value of center point for semi circle
+	double yCenter = y + staticGateHeight/2;	// y value of center point for semi circle
+	double radius = staticGateHeight/2;			// radius of semi circle
+		
+	for (int i=0; i<(180/step); i++) {				// loop through number of points
+		xPoints[i] = xCenter + radius*cos(theta);	// get x value based on theta, xCenter, and radius
+		yPoints[i] = yCenter + radius*sin(theta);	// get y value based on theta, yCenter, and radius
+		theta += step*PI/180;						// increment theta by step size, convert to radians
+>>>>>>> 36be65c2b87de454b9471a76265a873287adec7e
 	}
 
 // Destructor
@@ -198,6 +268,7 @@ class AndGate : public Gate 		// Inherits from the class Gate
 		return -1;
 	}
 
+<<<<<<< HEAD
 /*
 */
 	void AndGate::updatePortXY()
@@ -207,6 +278,14 @@ class AndGate : public Gate 		// Inherits from the class Gate
 		setOutPort(x+staticGateWidth+40, y + (staticGateHeight/2));
 
 	}
+=======
+void AndGate::updatePortXY()
+{
+	setInPort1(x-10, y);
+	setInPort2(x-10, y+staticGateHeight);
+	setOutPort(x+staticGateWidth+40, y + (staticGateHeight/2));
+}
+>>>>>>> 36be65c2b87de454b9471a76265a873287adec7e
 
 
 	#endif

@@ -5,12 +5,12 @@
 #include <iostream>
 #include <string>
 
-
 class Wire;
 
 using namespace std;
 
 class Block {
+	
 
 	public:
 
@@ -33,6 +33,8 @@ class Block {
 		virtual void setOutPort(short, short) = 0;
 		virtual void setInPort1(short, short) = 0;
 		virtual void setInPort2(short, short) = 0;
+
+		virtual void bringWires() = 0;
 };
 
 // constructor
@@ -45,6 +47,7 @@ Block::~Block ()
 {
 
 }
+
 
 
 #endif

@@ -15,6 +15,7 @@
 #include "Block.h"
 #include "Gate.h"
 #include "Input.h"
+#include "Output.h"
 #include "Wire.h"
 #include "AndGate.h"
 #include "OrGate.h"
@@ -36,6 +37,7 @@ class Window {
 		void makeBlock(int);
 		void moveWire();
 		int snapWire(int, int);
+		void deleteWire(int);
 		void moveBlock(int);
 		void drawBlocks();
 		void drawWires();
@@ -111,6 +113,16 @@ Window::Window()
 	staticNOTx = viewController.x + (viewController.w / 2) - (staticGateWidth/3);
 	staticNOTy = viewController.y + (5*viewController.h / 6) - (staticGateHeight/2);
 
+	// temp!!!!!!!!!!!!!!!!!!!!!!
+	Block* Bptr;
+	Bptr = new Input(1);
+	Bptr->setOutPort(10, 400);
+	blocks.push_back(Bptr);
+
+	Bptr = new Output(40, 60);
+	Bptr->setInPort1(700, 400);
+	blocks.push_back(Bptr);
+
 	init();
 }
 
@@ -169,13 +181,16 @@ void Window::draw()
 
 	Block* ptr = new AndGate(staticANDx,staticANDy);
 	ptr -> draw(renderer);
+	delete ptr;
 
 	ptr = new OrGate(staticORx,staticORy);
 	ptr -> draw(renderer);
+	delete ptr;
 
 
 	ptr = new NotGate(staticNOTx,staticNOTy);
 	ptr -> draw(renderer);
+	delete ptr;
 
 	// Draw Rectangle for View Controller
 	SDL_SetRenderDrawColor( renderer, 0, 0, 0, 255 );     // Change Color to Black
@@ -216,7 +231,8 @@ int Window::eventHandler(SDL_Event e)
 			else if (staticNotGateDetection( e )) {
 				makeBlock(2); //2 = NOT
 			}
-			else if(x>logicCanvas.x && x<(logicCanvas.x+logicCanvas.w) && y>logicCanvas.y && y<(logicCanvas.y+logicCanvas.h))
+			else if(x>logicCanvas.x && x<(logicCanvas.x+logicCanvas.w) 
+					&& y>logicCanvas.y && y<(logicCanvas.y+logicCanvas.h))
 			{	
 				cout << "pressed in logic canvas" << endl;
 				for(int i = 0; i < blocks.size(); i++) {
@@ -231,8 +247,17 @@ int Window::eventHandler(SDL_Event e)
 				}
 				if (action == 0)
 				{
+					//for (int i = 0; i < blocks.size(); i++)
+					//{
+					//	int port = blocks[i]->onPort(x, y);
+					//	if (port == 0)
+					//	{
 					makeWire();
 					action = 1;
+					break;
+					//	}
+
+					//}
 				}
 			}
 			break;
@@ -240,6 +265,7 @@ int Window::eventHandler(SDL_Event e)
 		case SDL_MOUSEBUTTONUP:
 			if (action == 1)
 			{
+				cout << "move it"<< endl;
 				action = 0;
 				moveWire();
 			}
@@ -316,25 +342,26 @@ void Window::moveWire()
 	{
 		// set wire
 		if (!snapWire(x, y))
-			cout << "think about deleting that wire." << endl;
+		{
+		    wires.pop_back();
+		    cout << "think about deleting that wire." << endl;
+
+		}
 	}
 }
 
 void Window::moveBlock(int i)
 {
-	//SDL_Event e;
 	int x;
 	int y;
-	//SDL_PollEvent( &e );
-	//while( e.type != SDL_MOUSEBUTTONUP) {
+
+	// move block
 	SDL_GetMouseState(&x,&y);
 	blocks[i]->setx(x - dx);
 	blocks[i]->sety(y - dy);
 
-	//SDL_RenderPresent(renderer);
-	//blocks[i]->draw(renderer);
-	//SDL_PollEvent( &e );
-
+	// move wires
+	blocks[i]->bringWires();
 
 }
 
@@ -342,7 +369,7 @@ void Window::moveBlock(int i)
 int Window::snapWire(int x, int y)
 {
 	int connections = 0; // number of snaps
-	int	port;  // -1 = none; 0 = output; 1,2,+ = input
+	int port;  // -1 = none; 0 = output; 1,2,+ = input
 	int highPortNum;
 	short* point1;
 
@@ -406,10 +433,23 @@ int Window::snapWire(int x, int y)
 
 		// point block pointer (1 or 2) backward to wire address
 		blockPorts[highPortNum]->setPortPtr(highPortNum, wires.back());
+
+		// point wire pointer forward to next block address (1 or 2)
+		wires.back()->setForwardPtr(blockPorts[highPortNum]);
+
+		// point previous block pointer (out) forward to
+		blockPorts[0]->setPortPtr(0, wires.back());
 	}
 	return 1;
 }
 
+
+void Window::deleteWire(int wireNum)
+{
+	delete wires[wireNum];
+	wires.erase(wires.begin()+wireNum);
+
+}
 
 
 // Draw blocks function!!!
@@ -473,5 +513,4 @@ bool Window::gateDetection( int blockNum, SDL_Event event )
 	}
 
 	return false;
-
 }

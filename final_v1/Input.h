@@ -3,6 +3,7 @@
 
 #include <iostream>   // for using cout
 #include "Block.h"
+#include "Wire.h"
 
 using namespace std;
 
@@ -25,8 +26,9 @@ class Input : public Block
 		virtual void setInPort1(short, short);
 		virtual void setInPort2(short, short);
 
-
 		virtual int onPort(int, int);
+
+		virtual void bringWires();
 
 	private:
 		int value;
@@ -81,7 +83,9 @@ int Input::getValue()
 
 void Input::draw(SDL_Renderer* renderer)
 {
-
+	// draw port (temporary)
+	short* outPort = getPortXY(0);
+	circleRGBA(renderer, outPort[0], outPort[1], 10, 0, 0, 255, 255);
 }
 
 double Input::getx()
@@ -131,7 +135,6 @@ void Input::setInPort2(short x, short y)
 
 
 
-
 int Input::onPort(int xMouse, int yMouse)
 {
 	// if on the 'out' port:
@@ -139,6 +142,15 @@ int Input::onPort(int xMouse, int yMouse)
 		return 0; 
 	else
 		return -1;
+}
+
+void Input::bringWires()
+{
+	if (getPortPtr(0) != NULL) // if pointer is conected
+	{
+		// then move wire to match ports
+		getPortPtr(0)->movePoint1(getPortXY(0)[0], getPortXY(0)[1]);
+	}
 }
 
 

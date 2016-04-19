@@ -29,14 +29,18 @@ class OrGate : public Gate
 		double staticGateHeight;
 		double staticLineLength;
 
+		// helper functions:
+		void updatePortXY();
+
 };
 
 
 // constructor
 OrGate::OrGate(double xTopLeft, double yTopLeft) : Gate()
 {
-	setIn1(NULL);
-	setIn2(NULL);
+	setPortPtr(0, NULL);
+	setPortPtr(1, NULL);
+	setPortPtr(2, NULL);
 
 	staticGateWidth=50;	
 	staticGateHeight=60;
@@ -44,6 +48,8 @@ OrGate::OrGate(double xTopLeft, double yTopLeft) : Gate()
 
 	x = xTopLeft;
 	y = yTopLeft;
+
+	updatePortXY();
 }
 
 // destructor
@@ -64,20 +70,27 @@ double OrGate::gety()
 void OrGate::setx(double newX)
 {
 	x = newX;
+	updatePortXY();
 }
 
 void OrGate::sety(double newY)
 {
 	y = newY;
+	updatePortXY();
 }
 
 int OrGate::getValue()
 {
 	int left;
 	int right;
+	if (getPortPtr(1) == NULL || getPortPtr(2) == NULL)
+		return -1;
 	left = getIn1()->getValue();
 	right = getIn2()->getValue();
-	return (left > 0 || right > 0);
+	if (left == -1 || right == -1)
+		return -1;
+	else
+		return (left > 0 || right > 0);
 }
 
 void OrGate::draw(SDL_Renderer* renderer)
@@ -95,7 +108,7 @@ void OrGate::draw(SDL_Renderer* renderer)
 	double xCenter = x;							// x value of center point for semi circle
 	double yCenter = y + staticGateHeight/2;	// y value of center point for semi circle
 	double radius = staticGateHeight/2;			// radius of semi circle
-	
+
 	xPoints[0] = x;
 	yPoints[0] = y;	
 	for (int i=1; i<=(180/step); i++) {				// loop through number of points
@@ -119,21 +132,30 @@ void OrGate::draw(SDL_Renderer* renderer)
 		yPoints[i] = yCenter + radius*sin(theta);		// get y value based on theta, yCenter, and radius
 		theta += step*PI/180;							// increment theta by step size, convert to radians
 	}
-	
+
 	xPoints[numPoints-1] = x+(staticGateWidth);
 	yPoints[numPoints-1] = y;
 
 	// lines, to represent ports
 	boxRGBA(renderer, x+12, y, x-staticGateWidth/3, 
-		y+2*staticLineLength, 255, 0, 50, 255);
+			y+2*staticLineLength, 255, 0, 50, 255);
 	boxRGBA(renderer, x+12, y+staticGateHeight-2*staticLineLength, x-staticGateWidth/3, 
-		y+staticGateHeight, 255, 0, 50, 255);
+			y+staticGateHeight, 255, 0, 50, 255);
 	boxRGBA(renderer, x + staticGateWidth + radius + (staticGateWidth/3), 
-		y+(staticGateHeight/2)-(staticLineLength), x + staticGateWidth + radius,
-		y+(staticGateHeight/2)+(staticLineLength),255, 0, 50, 255);
+			y+(staticGateHeight/2)-(staticLineLength), x + staticGateWidth + radius,
+			y+(staticGateHeight/2)+(staticLineLength),255, 0, 50, 255);
 
 	// draw body of OR gate as a single polygon
 	filledPolygonRGBA(renderer, xPoints, yPoints, numPoints, 255, 0, 50, 255);
+
+	short* outPort = getPortXY(0);
+	short* inPort1 = getPortXY(1);
+	short* inPort2 = getPortXY(2);
+
+	circleRGBA(renderer, outPort[0], outPort[1], 10, 0, 255, 0, 255);
+	circleRGBA(renderer, inPort1[0], inPort1[1], 10, 0, 255, 0, 255);
+	circleRGBA(renderer, inPort2[0], inPort2[1], 10, 0, 255, 0, 255);
+
 	
 }
 
@@ -155,5 +177,11 @@ int OrGate::onPort(int xMouse, int yMouse)
 }
 
 
+void OrGate::updatePortXY()
+{
+	setInPort1(x-10, y);
+	setInPort2(x-10, y+staticGateHeight);
+	setOutPort(x+staticGateWidth+40, y + (staticGateHeight/2));
+}
 
 #endif

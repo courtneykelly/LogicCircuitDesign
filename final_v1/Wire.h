@@ -16,6 +16,7 @@ class Wire
 		int getValue();
 
 		void setBackwardPtr(Block*);
+		void setForwardPtr(Block*);
 		void movePoint1(int, int);
 		void movePoint2(int, int);
 		short *getPointXY(int);
@@ -29,9 +30,9 @@ class Wire
 		int value;
 
 		// wire coordinates:
-		int x1;
+		int x1; // connected to block output
 		int y1;
-		int x2;
+		int x2; // connected to block input
 		int y2;
 };
 
@@ -43,14 +44,12 @@ Wire::Wire(int x, int y)
 	x2 = x;
 	y1 = y;
 	y2 = y;
-	cout << "constructor x1: " << x1 << "  y1: " << y1 << endl;
 }
 
 
 // destructor
 Wire::~Wire()
 {
-
 }
 
 
@@ -67,6 +66,14 @@ void Wire::setBackwardPtr(Block* ptr)
 {
 	backwardPtr = ptr;
 }
+
+
+// set the pointer to the block
+void Wire::setForwardPtr(Block* ptr)
+{
+	forwardPtr = ptr;
+}
+
 
 
 // move origin (first) point of the wire
