@@ -23,6 +23,7 @@ class AndGate : public Gate 		// Inherits from the class Gate
 		virtual int getValue();				// return value of AND gate based on inputs
 		virtual void draw(SDL_Renderer*);	// draws the AND gate based on x and y values
 		virtual int onPort(int, int);		// returns 1 or 0 if mouse is on a "port"
+		virtual void setValue();			// needed to change value of Inputs
 		
 	private:
 		// for drawing:
@@ -207,6 +208,14 @@ class AndGate : public Gate 		// Inherits from the class Gate
 		setInPort1(x-10, y);
 		setInPort2(x-10, y+staticGateHeight);
 		setOutPort(x+staticGateWidth+40, y + (staticGateHeight/2));
+
+	}
+
+/* 	setValue function. Not needed in this class, but since virtual
+	function, needs implementation.
+*/
+	void AndGate::setValue()
+	{
 
 	}
 

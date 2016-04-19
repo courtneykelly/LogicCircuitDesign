@@ -10,7 +10,7 @@ using namespace std;
 class Input : public Block
 {
 	public:
-		Input(int);    // constructor
+		Input(double, double, char, int);    // constructor
 		~Input();   // deconstructor
 		virtual int getValue();
 		virtual void draw(SDL_Renderer*);
@@ -29,8 +29,12 @@ class Input : public Block
 		virtual int onPort(int, int);
 
 		virtual void bringWires();
+		virtual void setValue();	// needed to change value of Inputs
 
 	private:
+		double x;
+		double y;
+		char name;
 		int value;
 
 		Wire* out; // pointer
@@ -40,9 +44,13 @@ class Input : public Block
 
 
 // constructor
-Input::Input(int val)
+Input::Input(double xPos, double yPos, char variable, int val) : Block()
 {
+	x = xPos;
+	y = yPos;
+	name = variable;
 	value = val;
+	setOutPort(x+30, y+15); 
 }
 
 
@@ -83,18 +91,45 @@ int Input::getValue()
 
 void Input::draw(SDL_Renderer* renderer)
 {
-	// draw port (temporary)
 	short* outPort = getPortXY(0);
-	circleRGBA(renderer, outPort[0], outPort[1], 10, 0, 0, 255, 255);
+	circleRGBA(renderer, outPort[0], outPort[1], 10, 0, 255, 0, 255);
+
+	SDL_Rect outerBox;
+	SDL_Rect zero;
+
+	// Change color to blue
+	SDL_SetRenderDrawColor( renderer, 0, 0, 255, 255 );
+
+	outerBox.x = x;
+	outerBox.y = y;
+	outerBox.w = 30;
+	outerBox.h = 30;
+
+	zero.x = x+11;
+	zero.y = y+8;
+	zero.w = 9;
+	zero.h = 14;
+
+	SDL_RenderDrawRect( renderer, &outerBox );
+
+	if (value == 0) {
+		SDL_RenderDrawRect( renderer, &zero );
+	}
+	else if (value == 1) {
+		SDL_RenderDrawLine( renderer, x+15, y+8, x+15, y+22 );
+	}
+	else {
+		cout << "Error Drawing static inputs, value not 0 or 1" << endl;
+	}
 }
 
 double Input::getx()
 {
-
+	return x;
 }
 double Input::gety()
 {
-
+	return y;
 }
 void Input::setx(double)
 {
@@ -152,6 +187,19 @@ void Input::bringWires()
 		getPortPtr(0)->movePoint1(getPortXY(0)[0], getPortXY(0)[1]);
 	}
 }
+
+/* 	setValue function. Not needed in this class, but since virtual
+	function, needs implementation.
+*/
+	void Input::setValue()
+	{
+		if (value == 1) {
+			value = 0;
+		}
+		else {
+			value = 1;
+		}
+	}
 
 
 #endif

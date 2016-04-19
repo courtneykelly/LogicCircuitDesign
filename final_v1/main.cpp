@@ -25,8 +25,8 @@ int main()
 
 	////////////////////////////////
     	// user changes the following 2:	
-    	Input inputA(0);			
-    	Input inputB(1);			
+    	//Input inputA(0);			
+    	//Input inputB(1);			
 	////////////////////////////////
 
 	/*AndGate and_gate;

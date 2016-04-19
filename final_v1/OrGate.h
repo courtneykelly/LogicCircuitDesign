@@ -20,6 +20,7 @@ class OrGate : public Gate
 		virtual int getValue();
 		virtual void draw(SDL_Renderer*);
 		virtual int onPort(int, int); // (xMouse, yMouse)
+		virtual void setValue();	// needed to change value of Inputs
 		
 	private:
 		// for drawing:
@@ -183,5 +184,13 @@ void OrGate::updatePortXY()
 	setInPort2(x-10, y+staticGateHeight);
 	setOutPort(x+staticGateWidth+40, y + (staticGateHeight/2));
 }
+
+/* 	setValue function. Not needed in this class, but since virtual
+	function, needs implementation.
+*/
+	void OrGate::setValue()
+	{
+
+	}
 
 #endif

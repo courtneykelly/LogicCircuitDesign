@@ -35,6 +35,7 @@ class Block {
 		virtual void setInPort2(short, short) = 0;
 
 		virtual void bringWires() = 0;
+		virtual void setValue() = 0;	// needed to change value of Inputs
 };
 
 // constructor
