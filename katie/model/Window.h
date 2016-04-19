@@ -117,7 +117,7 @@ Window::Window()
 	staticNOTy = viewController.y + (5*viewController.h / 6) - (staticGateHeight/2);
 
 	// Initialize Input Images
-		if(LoadTexture("player.bmp")) {
+		/*if(LoadTexture("player.bmp")) {
 			cout << "Yay";
 		}
 		if(a0Texture == NULL) {
@@ -127,7 +127,9 @@ Window::Window()
 		a0.x = 100;
 		a0.y = 400;
 		a0.w = 118;
-		a0.h = 118;
+		a0.h = 118;*/
+
+		
 
     init();
 }
