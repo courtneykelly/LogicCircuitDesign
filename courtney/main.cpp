@@ -1,212 +1,76 @@
-#include "SDL.h"
-#include <iostream>
+// logicCircuitDesign
 
-using namespace std;
+// cse20212, final project
 
-int posX = 50;
-int posY = 70;
-int sizeX = 1000;
-int sizeY = 700;
-int borderSize = 10;
-int staticGateWidth = 60;
-int staticGateHeight = 40; 
+// main.cpp
 
-SDL_Window* window;
-SDL_Renderer* renderer;
+// test the SDL window
 
-bool InitEverything();
-bool InitSDL();
-bool CreateWindow();
-bool CreateRenderer();
-void SetupRenderer();
+#include "Window.h"
+#include "Block.h"
+	#include "Gate.h"
+		// AndGate
+		// OrGate
+	#include "Input.h"
+#include "Wire.h"
+#include <SDL.h>
 
-void Render();
-void RunGame();
-bool andGateDetection( SDL_Event );
-bool orGateDetection( SDL_Event );
-bool notGateDetection( SDL_Event );
 
-SDL_Rect viewController;
-SDL_Rect logicCanvas;
-SDL_Rect staticAND;
-SDL_Rect staticOR;
-SDL_Rect staticNOT;
-
-int main( int argc, char* args[] )
+int main()
 {
-    if ( !InitEverything() ) 
-        return -1;
 
-    // Initialize View Controller
-    viewController.x = sizeX - (sizeX/4);
-    viewController.y = sizeY/2;
-    viewController.w = sizeX/4 - borderSize;
-    viewController.h = sizeY/2 - borderSize;
+	Window screen;		// Create an Object of class type Window called screen
+	bool quit = false;	// quit boolean used to exit from display window/gui
+	SDL_Event e;		// create an SDL event to recognize click events, etc.
 
-    // Initialize Logic Canvas
-    logicCanvas.x = borderSize;
-    logicCanvas.y = sizeY/3;
-    logicCanvas.w = sizeX - (3*borderSize) - (viewController.w);
-    logicCanvas.h = 2*sizeY/3 - borderSize;
+	////////////////////////////////
+    	// user changes the following 2:	
+    	//Input inputA(0);			
+    	//Input inputB(1);			
+	////////////////////////////////
 
-    // Initlaize AND Gate in View Controller
-    staticAND.x = viewController.x + (viewController.w / 2) - (staticGateWidth/2);
-    staticAND.y = viewController.y + (viewController.h / 6) - (staticGateHeight/2);
-    staticAND.w = staticGateWidth;
-    staticAND.h = staticGateHeight;
+	/*AndGate and_gate;
+	//Gate or_gate(1);
+	Block* ptr = &and_gate;
 
-    // Initialize OR Gate in View Controller
-    staticOR.x = viewController.x + (viewController.w / 2) - (staticGateWidth/2);
-    staticOR.y = viewController.y + (3*viewController.h / 6) - (staticGateHeight/2);
-    staticOR.w = staticGateWidth;
-    staticOR.h = staticGateHeight;
+	Wire from_A0(&inputA, 1, 1);
+	//Wire from_A1(&inputA);
+	Wire from_B0(&inputB, 1, 1);
+	//Wire from_B1(&inputB);
 
-    // Initialize NOT Gate in View Controller
-    staticNOT.x = viewController.x + (viewController.w / 2) - (staticGateWidth/2);
-    staticNOT.y = viewController.y + (5*viewController.h / 6) - (staticGateHeight/2);
-    staticNOT.w = staticGateWidth;
-    staticNOT.h = staticGateHeight;
+	and_gate.setIn0(&from_A0);
+	and_gate.setIn1(&from_B0);
 
-    RunGame();
-}
+	//or_gate.setIn0(&from_A1);
+	//or_gate.setIn1(&from_B1);
 
-void Render()
-{
-    // Clear the window and make it all green
-    SDL_RenderClear( renderer );
+	//Wire from_or(&or_gate);
 
-    // Change color to blue
-    SDL_SetRenderDrawColor( renderer, 0, 0, 255, 255 );
+	Wire from_and(&and_gate, 1, 1);
 
-    // Draw Static Gates
-    SDL_RenderFillRect( renderer, &staticAND );
-    SDL_RenderFillRect( renderer, &staticOR );
-    SDL_RenderFillRect( renderer, &staticNOT );
+	// evaluate
+	cout << "AND=" << from_and.getValue() << endl;
+	//cout << "OR=" << from_or.getValue() << endl;*/
 
-    // Draw Rectangle for View Controller
-    SDL_SetRenderDrawColor( renderer, 0, 0, 0, 255 );     // Change Color to Black
-    SDL_RenderDrawRect( renderer, &viewController );
-    SDL_RenderDrawRect( renderer, &logicCanvas );
+	/*	Main action while loop, will only exit the loop if
+		the user exits the window with a click event. Calls
+		our virtual draw functions for the wires and blocks
+		(and gates, or gates, not gates, etc.). Also continually
+		draws and updates the window itself.	
+	*/
+	while (!quit)
+	{
 
-    // Change color to white
-    SDL_SetRenderDrawColor( renderer, 255, 255, 255, 255 );
+		screen.drawWires();
+		screen.drawBlocks();	// AND, OR, and NOT Gates
 
-    // Render the changes above
-    SDL_RenderPresent( renderer);
-}
-bool InitEverything()
-{
-    if ( !InitSDL() )
-        return false;
+		screen.draw(); // draws, delays, then clears
 
-    if ( !CreateWindow() )
-        return false;
+		while (SDL_PollEvent( &e ) != 0 )
+		{
+			quit = screen.eventHandler(e);
+		}
+	}
 
-    if ( !CreateRenderer() )
-        return false;
-
-    SetupRenderer();
-
-    return true;
-}
-bool InitSDL()
-{
-    if ( SDL_Init( SDL_INIT_EVERYTHING ) == -1 )
-    {
-        std::cout << " Failed to initialize SDL : " << SDL_GetError() << std::endl;
-        return false;
-    }
-
-    return true;
-}
-bool CreateWindow()
-{
-    window = SDL_CreateWindow( "Logic Circuit Design Simulator", posX, posY, sizeX, sizeY, 0 );
-
-    if ( window == nullptr )
-    {
-        std::cout << "Failed to create window : " << SDL_GetError();
-        return false;
-    }
-
-    return true;
-}
-bool CreateRenderer()
-{
-    renderer = SDL_CreateRenderer( window, -1, 0 );
-
-    if ( renderer == nullptr )
-    {
-        std::cout << "Failed to create renderer : " << SDL_GetError();
-        return false;
-    }
-
-    return true;
-}
-void SetupRenderer()
-{
-    // Set size of renderer to the same as window
-    SDL_RenderSetLogicalSize( renderer, sizeX, sizeY );
-
-    // Set color of renderer to green
-    SDL_SetRenderDrawColor( renderer, 0, 255, 0, 255 );
-}
-void RunGame()
-{
-    bool loop = true;
-
-    while ( loop )
-    {
-        SDL_Event event;
-        while ( SDL_PollEvent( &event ) )
-        {
-            if ( event.type == SDL_QUIT )
-                loop = false;
-            else if ( event.type == SDL_MOUSEBUTTONDOWN )
-            {
-                if (andGateDetection( event )) {
-                    cout << "And Gate Detection" << endl;
-                }
-                else if (orGateDetection( event )) {
-                    cout << "OR Gate Detection" << endl;
-                }
-                else if (notGateDetection( event )) {
-                    cout << "NOT Gate Detection" << endl;
-                }
-                   
-            }
-        }
-
-        Render();
-
-        // Add a 16msec delay to make our game run at ~60 fps
-        SDL_Delay( 16 );
-    }
-}
-bool andGateDetection( SDL_Event event ) 
-{
-    if ( (event.motion.x>staticAND.x) && (event.motion.x<(staticAND.x+staticAND.w)) ) {
-        if ( (event.motion.y>staticAND.y) && (event.motion.y<(staticAND.y+staticAND.h)) ) {
-            return true;
-        }
-    }
-    return false;
-}
-bool orGateDetection( SDL_Event event ) 
-{
-    if ( (event.motion.x>staticOR.x) && (event.motion.x<(staticOR.x+staticOR.w)) ) {
-        if ( (event.motion.y>staticOR.y) && (event.motion.y<(staticOR.y+staticOR.h)) ) {
-            return true;
-        }
-    }
-    return false;
-}
-bool notGateDetection( SDL_Event event ) 
-{
-    if ( (event.motion.x>staticNOT.x) && (event.motion.x<(staticNOT.x+staticNOT.w)) ) {
-        if ( (event.motion.y>staticNOT.y) && (event.motion.y<(staticNOT.y+staticNOT.h)) ) {
-            return true;
-        }
-    }
-    return false;
+	return 0;
 }
