@@ -24,6 +24,7 @@ class NotGate : public Gate
 		virtual int getValue();
 		virtual void draw(SDL_Renderer*);
 		virtual int onPort(int, int); // (xMouse, yMouse)
+		virtual void setValue();	// needed to change value of Inputs
 
 		
 	private:
@@ -153,6 +154,14 @@ void NotGate::updatePortXY()
 	setInPort1(x, y + (staticGateHeight/2));
 	setOutPort(x+staticGateWidth, y + (staticGateHeight/2));
 }
+
+/* 	setValue function. Not needed in this class, but since virtual
+	function, needs implementation.
+*/
+	void NotGate::setValue()
+	{
+
+	}
 
 
 #endif

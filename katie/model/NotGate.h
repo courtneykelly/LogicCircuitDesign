@@ -22,6 +22,7 @@ class NotGate : public Gate
 		virtual void sety(double);
 		virtual int getValue();
 		virtual void draw(SDL_Renderer*);
+		virtual void setValue();
 		
 	private:
 		// for drawing:
@@ -92,6 +93,11 @@ void NotGate::draw(SDL_Renderer* renderer)
     // draw triangle
 	filledTrigonRGBA( renderer, x, y+(staticGateHeight/4), x+(2*staticGateWidth/3), 
 		y+(staticGateHeight/2), x, y+(3*staticGateHeight/4), 255, 0, 50, 255);
+}
+
+void NotGate::setValue()
+{
+	
 }
 
 #endif

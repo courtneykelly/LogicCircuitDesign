@@ -16,6 +16,7 @@ class Block {
 		~Block();	// deconstructor
 
 		virtual int getValue() = 0;      // print function	
+		virtual void setValue() = 0;
 		virtual void draw(SDL_Renderer*) = 0;
 		virtual double getx() = 0;
 		virtual double gety() = 0;

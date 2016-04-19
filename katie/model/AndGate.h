@@ -22,6 +22,7 @@ class AndGate : public Gate
 		virtual void sety(double);
 		virtual int getValue();
 		virtual void draw(SDL_Renderer*);
+		virtual void setValue();
 		
 	private:
 		// for drawing:
@@ -123,6 +124,11 @@ void AndGate::draw(SDL_Renderer* renderer)
 
 	// draw body of AND gate as a single polygon
 	filledPolygonRGBA(renderer, xPoints, yPoints, numPoints, 255, 0, 50, 255);
+}
+
+void AndGate::setValue()
+{
+	
 }
 
 #endif

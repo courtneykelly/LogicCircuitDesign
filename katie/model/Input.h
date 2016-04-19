@@ -18,6 +18,7 @@ class Input : public Block
 		virtual double gety();
 		virtual void setx(double);
 		virtual void sety(double);
+		virtual void setValue();
 
 	private:
 		double x;
@@ -51,8 +52,30 @@ int Input::getValue()
 
 void Input::draw(SDL_Renderer* renderer)
 {
+	SDL_Rect outerBox;
+	SDL_Rect zero;
 
+	// Change color to blue
+    SDL_SetRenderDrawColor( renderer, 0, 0, 255, 255 );
 
+    outerBox.x = x;
+    outerBox.y = y;
+    outerBox.w = 30;
+    outerBox.h = 30;
+
+    zero.x = x+11;
+    zero.y = y+8;
+    zero.w = 9;
+    zero.h = 14;
+
+    SDL_RenderDrawRect( renderer, &outerBox );
+
+    if (value == 0) {
+    	SDL_RenderDrawRect( renderer, &zero );
+    }
+    else if( value == 1 ) {
+    	SDL_RenderDrawLine( renderer, x + 15, y + 8, x + 15 , y + 22);
+    }
 
 }
 
@@ -71,6 +94,15 @@ void Input::setx(double xNew)
 void Input::sety(double yNew) 
 {
 	y = yNew;
+}
+
+void Input::setValue() {
+	if(value == 1) {
+		value = 0;
+	}
+	else {
+		value = 1;
+	}
 }
 
 #endif

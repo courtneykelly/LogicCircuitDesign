@@ -15,7 +15,7 @@
 #include "Block.h"
 #include "Gate.h"
 #include "Input.h"
-#include "Output.h"
+//#include "Output.h"
 #include "Wire.h"
 #include "AndGate.h"
 #include "OrGate.h"
@@ -45,7 +45,12 @@ class Window {
 		bool staticOrGateDetection( SDL_Event );
 		bool staticNotGateDetection( SDL_Event );
 		bool gateDetection( int, SDL_Event );
+
 		bool wireDetection( int );
+
+		bool inputDetection( int, SDL_Event );
+		void changeInputValue( int );
+
 
 	private:
 		double screen_width;
@@ -116,14 +121,20 @@ Window::Window()
 
 	// temp!!!!!!!!!!!!!!!!!!!!!!
 	Block* Bptr;
-	Bptr = new Input(1);
-	Bptr->setOutPort(10, 400);
+	Bptr = new Input(50, 275, 'a', 0);
 	blocks.push_back(Bptr);
 
+	Bptr = new Input(50, 350, 'b', 0);
+	blocks.push_back(Bptr);
+
+	Bptr = new Input(50, 425, 'c', 0);
+	blocks.push_back(Bptr);
+
+	/*
 	Bptr = new Output(40, 60);
 	Bptr->setInPort1(700, 400);
 	blocks.push_back(Bptr);
-
+	*/
 	init();
 }
 
@@ -248,6 +259,11 @@ int Window::eventHandler(SDL_Event e)
 
 				// determine if on block
 				for(int i = 0; i < blocks.size(); i++) {
+					if (inputDetection(i, e)) {
+							blockNum=i;
+							action=3;
+							break;
+						}
 					if(gateDetection(i, e)) {
 						cout << "gate detection!!" << endl;
 						blockNum = i;
@@ -295,6 +311,9 @@ int Window::eventHandler(SDL_Event e)
 			break;
 		case 2:
 			moveBlock(blockNum);
+			break;
+		case 3:
+			changeInputValue(blockNum);
 			break;
 		default:
 			break;
@@ -527,8 +546,36 @@ bool Window::gateDetection( int blockNum, SDL_Event event )
 	return false;
 }
 
+
 bool Window::wireDetection( int wireNum)
 {
 
 	return false;
 }
+
+
+bool Window::inputDetection( int blockNum, SDL_Event event ) 
+{
+	double blockX = blocks[blockNum]->getx();
+	double blockY = blocks[blockNum]->gety();
+
+	if((event.motion.x>50) && (event.motion.x<80)){
+		if ( (event.motion.y>275) && (event.motion.y < 305)) {
+			return true;
+		}
+		else if((event.motion.y>350) && (event.motion.y < 380)){
+			return true;
+		}
+		else if((event.motion.y>425) && (event.motion.y<455)) {
+			return true;
+		}
+	}
+	return false;
+}
+
+void Window::changeInputValue( int i )
+{
+	blocks[i]->setValue();
+	cout << blocks[i]->getValue() << endl;
+}
+
