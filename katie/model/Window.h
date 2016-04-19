@@ -43,6 +43,8 @@ class Window {
 		bool staticOrGateDetection( SDL_Event );
 		bool staticNotGateDetection( SDL_Event );
 		bool gateDetection( int, SDL_Event );
+		bool inputDetection( int, SDL_Event );
+		void changeInputValue( int );
 
 		bool LoadTexture( const string &str );	
 
@@ -116,6 +118,7 @@ Window::Window()
 	staticNOTx = viewController.x + (viewController.w / 2) - (staticGateWidth/3);
 	staticNOTy = viewController.y + (5*viewController.h / 6) - (staticGateHeight/2);
 
+	makeInputs();
 	// Initialize Input Images
 		/*if(LoadTexture("player.bmp")) {
 			cout << "Yay";
@@ -129,7 +132,7 @@ Window::Window()
 		a0.w = 118;
 		a0.h = 118;*/
 
-		
+
 
     init();
 }
@@ -197,7 +200,6 @@ void Window::draw()
 	ptr = new NotGate(staticNOTx,staticNOTy);
 	ptr -> draw(renderer);
 
-	makeInputs();
 
     // Draw Rectangle for View Controller
     SDL_SetRenderDrawColor( renderer, 0, 0, 0, 255 );     // Change Color to Black
@@ -247,6 +249,12 @@ int Window::eventHandler(SDL_Event e)
 				cout << "pressed in logic canvas" << endl;
 				for(int i = 0; i < blocks.size(); i++) {
 					if(gateDetection(i, e)) {
+						if(inputDetection(i, e)){
+							blockNum = i;
+							action = 3;
+							break;
+
+						}
 						cout << "gate detection!!" << endl;
 						blockNum = i;
 						dx = x - blocks[i]->getx();
@@ -278,6 +286,9 @@ int Window::eventHandler(SDL_Event e)
 		case 2:
 			moveBlock(blockNum);
 			break;
+		case 3:
+			changeInputValue(blockNum);
+			break;
 		default:
 			break;
 	}
@@ -304,17 +315,17 @@ void Window::makeBlock(int i)
 	Block* Bptr;
 
 	if( i == 0 ){
-		x = 100;
+		x = 200;
 		y = 300;
 		Bptr = new AndGate(x,y);
 	}
 	else if(i == 1){
-		x = 100;
+		x = 200;
 		y = 400;
 		Bptr = new OrGate(x,y);
 	}
 	else if(i == 2){
-		x = 100;
+		x = 200;
 		y = 500;
 		Bptr = new NotGate(x,y);
 	}
@@ -326,17 +337,15 @@ void Window::makeBlock(int i)
 
 void Window::makeInputs()
 {
-	double x = 100;
-	double y = 400;
+
 	int value = 0;
-	Block* aPtr = new Input(x,y,'a',value);
-	Block* bPtr = new Input(x,y,'b',value);
-	Block* cPtr = new Input(x,y,'c',value);
-	Block* zPtr = new Input(x,y,'z',value);
+	Block* aPtr = new Input(100,300,'a',value);
+	Block* bPtr = new Input(100,350,'b',value);
+	Block* cPtr = new Input(100,400,'c',value);
 	blocks.push_back(aPtr);
 	blocks.push_back(bPtr);
 	blocks.push_back(cPtr);
-	blocks.push_back(zPtr);
+
 }
 
 void Window::moveWire()
@@ -349,18 +358,15 @@ void Window::moveWire()
 
 void Window::moveBlock(int i)
 {
- 	//SDL_Event e;
+
  	int x;
  	int y;
- 	//SDL_PollEvent( &e );
- 	//while( e.type != SDL_MOUSEBUTTONUP) {
+ 	
   	SDL_GetMouseState(&x,&y);
  	blocks[i]->setx(x - dx);
   	blocks[i]->sety(y - dy);
 
-  	//SDL_RenderPresent(renderer);
-  	//blocks[i]->draw(renderer);
-  	//SDL_PollEvent( &e );
+  	
 	
 
 }
@@ -458,4 +464,30 @@ bool Window::gateDetection( int blockNum, SDL_Event event )
 
 	return false;
 
+}
+
+bool Window::inputDetection( int blockNum, SDL_Event event )
+{
+	double blockX = blocks[blockNum]->getx();
+	double blockY = blocks[blockNum]->gety();
+
+	if((event.motion.x>100) && (event.motion.x<130)){
+		if ( (event.motion.y>300) && (event.motion.y < 330)) {
+			return true;
+		}
+		else if((event.motion.y>350) && (event.motion.y < 380)){
+			return true;
+		}
+		else if((event.motion.y>400) && (event.motion.y<430)) {
+			return true;
+		}
+	}
+
+	return false;
+
+}
+
+void Window::changeInputValue(int i)
+{
+	blocks[i]->setValue();
 }

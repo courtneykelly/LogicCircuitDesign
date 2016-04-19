@@ -14,6 +14,7 @@ class Gate : public Block
 	public:
 		Gate();
 		virtual int getValue() = 0;
+		virtual void setValue() = 0;
 		virtual void draw(SDL_Renderer*) = 0;
 		virtual double getx() = 0;
 		virtual double gety() = 0;

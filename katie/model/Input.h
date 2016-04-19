@@ -18,6 +18,7 @@ class Input : public Block
 		virtual double gety();
 		virtual void setx(double);
 		virtual void sety(double);
+		virtual void setValue();
 
 	private:
 		double x;
@@ -93,6 +94,15 @@ void Input::setx(double xNew)
 void Input::sety(double yNew) 
 {
 	y = yNew;
+}
+
+void Input::setValue() {
+	if(value == 1) {
+		value = 0;
+	}
+	else {
+		value = 1;
+	}
 }
 
 #endif
