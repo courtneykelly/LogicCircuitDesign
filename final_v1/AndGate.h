@@ -116,9 +116,23 @@ class AndGate : public Gate 		// Inherits from the class Gate
 	{
 		int left;
 		int right;
-		left = getIn1()->getValue();
-		right = getIn2()->getValue();
-		return (left > 0 && right > 0);
+		if (getPortPtr(1) == NULL || getPortPtr(2) == NULL)
+		{
+			return -1;
+		}
+		else
+		{
+			left = getIn1()->getValue();
+			right = getIn2()->getValue();
+			if (left == -1 || right == -1)
+			{
+				return -1;
+			}
+			else
+			{
+				return (left > 0 && right > 0);
+			}
+		}
 	}
 
 /*	Draw Function. This virtual function is very specific 
