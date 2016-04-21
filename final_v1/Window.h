@@ -15,7 +15,7 @@
 #include "Block.h"
 #include "Gate.h"
 #include "Input.h"
-//#include "Output.h"
+#include "Output.h"
 #include "Wire.h"
 #include "AndGate.h"
 #include "OrGate.h"
@@ -121,20 +121,20 @@ Window::Window()
 
 	// temp!!!!!!!!!!!!!!!!!!!!!!
 
-	Block* Bptra = new Input(50, 275, 'a', 0);
-	blocks.push_back(Bptra);
+	Block* Bptr = new Input(50, 275, 'a', 0);
+	blocks.push_back(Bptr);
 
-	Block* Bptrb = new Input(50, 350, 'b', 0);
-	blocks.push_back(Bptrb);
+	Bptr = new Input(50, 350, 'b', 0);
+	blocks.push_back(Bptr);
 
-	Block* Bptrc = new Input(50, 425, 'c', 0);
-	blocks.push_back(Bptrc);
+	Bptr = new Input(50, 425, 'c', 0);
+	blocks.push_back(Bptr);
 
-	/*
+
 	Bptr = new Output(40, 60);
 	Bptr->setInPort1(700, 400);
 	blocks.push_back(Bptr);
-	*/
+
 	init();
 }
 
@@ -576,4 +576,5 @@ void Window::changeInputValue( int i )
 	blocks[i]->setValue();
 	cout << blocks[i]->getValue() << endl;
 }
+
 

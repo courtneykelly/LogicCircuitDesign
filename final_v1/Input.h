@@ -190,16 +190,16 @@ void Input::bringWires()
 
 /* 	setValue function. Not needed in this class, but since virtual
 	function, needs implementation.
-*/
-	void Input::setValue()
-	{
-		if (value == 1) {
-			value = 0;
-		}
-		else {
-			value = 1;
-		}
+ */
+void Input::setValue()
+{
+	if (value == 1) {
+		value = 0;
 	}
+	else {
+		value = 1;
+	}
+}
 
 
 #endif

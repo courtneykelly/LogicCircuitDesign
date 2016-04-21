@@ -47,8 +47,9 @@ class AndGate : public Gate 		// Inherits from the class Gate
 // Constructor
 	AndGate::AndGate(double xTopLeft, double yTopLeft) : Gate()
 	{
-		setIn1(NULL);
-		setIn2(NULL);
+		setPortPtr(0, NULL);
+		setPortPtr(1, NULL);
+		setPortPtr(2, NULL);
 
 		numPts = 10;
 
@@ -116,9 +117,23 @@ class AndGate : public Gate 		// Inherits from the class Gate
 	{
 		int left;
 		int right;
-		left = getIn1()->getValue();
-		right = getIn2()->getValue();
-		return (left > 0 && right > 0);
+		if (getPortPtr(1) == NULL || getPortPtr(2) == NULL)
+		{
+			return -1;
+		}
+		else
+		{
+			left = getPortPtr(1)->getValue();
+			right = getPortPtr(2)->getValue();
+			if (left == -1 || right == -1)
+			{
+				return -1;
+			}
+			else
+			{
+				return (left > 0 && right > 0);
+			}
+		}
 	}
 
 /*	Draw Function. This virtual function is very specific 
