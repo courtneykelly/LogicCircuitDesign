@@ -119,9 +119,9 @@ Window::Window()
 	staticNOTx = viewController.x + (viewController.w / 2) - (staticGateWidth/3);
 	staticNOTy = viewController.y + (5*viewController.h / 6) - (staticGateHeight/2);
 
-	// temp!!!!!!!!!!!!!!!!!!!!!!
-
-	Block* Bptr = new Input(50, 275, 'a', 0);
+	// Sets 3 Static Input Blocks
+	Block* Bptr;
+	Bptr = new Input(50, 275, 'a', 0);
 	blocks.push_back(Bptr);
 
 	Bptr = new Input(50, 350, 'b', 0);
@@ -130,9 +130,8 @@ Window::Window()
 	Bptr = new Input(50, 425, 'c', 0);
 	blocks.push_back(Bptr);
 
-
-	Bptr = new Output(40, 60);
-	Bptr->setInPort1(700, 400);
+	// Sets Static Output Block
+	Bptr = new Output(690, 350, 'z', 0);
 	blocks.push_back(Bptr);
 
 	init();

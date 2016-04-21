@@ -9,7 +9,7 @@ using namespace std;
 class Output : public Block
 {
 	public:
-		Output(int, int);    // constructor
+		Output(double, double, char, int);    // constructor
 		~Output();   // deconstructor
 		virtual int getValue();
 		virtual void draw(SDL_Renderer*);
@@ -32,6 +32,9 @@ class Output : public Block
 		virtual void setValue();
 
 	private:
+		double x;
+		double y;
+		char name;
 		int value;
 
 		Wire* in1; // pointer
@@ -41,8 +44,13 @@ class Output : public Block
 
 
 // constructor
-Output::Output(int x, int y)
+Output::Output(double xPos, double yPos, char variable, int val) : Block()
 {
+	x = xPos;			// 710
+	y = yPos;			// 350
+	name = variable;
+	value = val;
+	setInPort1(x, y+15);
 	setPortPtr(1, NULL);
 }
 
@@ -106,16 +114,45 @@ void Output::draw(SDL_Renderer* renderer)
 	{
 		cout << "error: " << e <<  endl;
 	}
+
+	// Set Output Box Rectangles
+	SDL_Rect outerBox;
+	SDL_Rect zero;
+
+	// Change color to blue
+	SDL_SetRenderDrawColor( renderer, 0, 0, 255, 255 );
+
+	outerBox.x = x;
+	outerBox.y = y;
+	outerBox.w = 30;
+	outerBox.h = 30;
+
+	zero.x = x+11;
+	zero.y = y+8;
+	zero.w = 9;
+	zero.h = 14;
+
+	SDL_RenderDrawRect( renderer, &outerBox );
+
+	if (getValue() == 0) {
+		SDL_RenderDrawRect( renderer, &zero );
+	}
+	else if (getValue() == 1) {
+		SDL_RenderDrawLine( renderer, x+15, y+8, x+15, y+22 );
+	}
+	else {
+		cout << "Error Drawing static inputs, value not 0 or 1" << endl;
+	}
 		
 }
 
 double Output::getx()
 {
-
+	return x;
 }
 double Output::gety()
 {
-
+	return y;
 }
 void Output::setx(double)
 {
