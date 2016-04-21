@@ -86,8 +86,8 @@ int OrGate::getValue()
 	int right;
 	if (getPortPtr(1) == NULL || getPortPtr(2) == NULL)
 		return -1;
-	left = getIn1()->getValue();
-	right = getIn2()->getValue();
+	left = getPortPtr(1)->getValue();
+	right = getPortPtr(2)->getValue();
 	if (left == -1 || right == -1)
 		return -1;
 	else

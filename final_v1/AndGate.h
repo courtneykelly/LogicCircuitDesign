@@ -47,8 +47,9 @@ class AndGate : public Gate 		// Inherits from the class Gate
 // Constructor
 	AndGate::AndGate(double xTopLeft, double yTopLeft) : Gate()
 	{
-		setIn1(NULL);
-		setIn2(NULL);
+		setPortPtr(0, NULL);
+		setPortPtr(1, NULL);
+		setPortPtr(2, NULL);
 
 		numPts = 10;
 

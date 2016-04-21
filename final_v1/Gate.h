@@ -12,29 +12,28 @@ class Gate : public Block
 
 {
 	public:
-		virtual int getValue() = 0;
-		virtual void draw(SDL_Renderer*) = 0;
-		virtual int onPort(int, int) = 0;
-
+		// position of gate
 		virtual double getx() = 0;
 		virtual double gety() = 0;
 		virtual void setx(double) = 0;
 		virtual void sety(double) = 0;
-		virtual void setValue() = 0;	// needed to change value of Inputs
 
-		void setIn1(Wire *);
-		void setIn2(Wire *);
-		Wire* getIn1();
-		Wire* getIn2();
-
+		// pointer from ports
 		virtual Wire *getPortPtr(int);
 		virtual void setPortPtr(int, Wire*);
 
+		// position of ports
 		virtual short *getPortXY(int);
 		virtual void setOutPort(short, short);
 		virtual void setInPort1(short, short);
 		virtual void setInPort2(short, short);
 		
+		// value of gate
+		virtual int getValue() = 0;
+		virtual void setValue() = 0;	// needed to change value of Inputs	
+		
+		virtual void draw(SDL_Renderer*) = 0;
+		virtual int onPort(int, int) = 0;
 		virtual void bringWires();
 
 
@@ -50,29 +49,6 @@ class Gate : public Block
 
 };
 
-
-
-void Gate::setIn1(Wire *pointer)
-{
-	in1 = pointer;
-}
-
-
-void Gate::setIn2(Wire *pointer)
-{
-	in2 = pointer;
-}
-
-Wire* Gate::getIn1()
-{
-
-	return in1;
-}
-
-Wire* Gate::getIn2()
-{
-	return in2;
-}
 
 
 // returns a pointer to the port of the int specified.
