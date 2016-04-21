@@ -227,10 +227,8 @@ int Window::eventHandler(SDL_Event e)
 			return 1; // quits
 			break;
 		case SDL_MOUSEBUTTONDOWN:
-			//get mouse position
-			int x,y;
+			
 			double blockX, blockY;
-			SDL_GetMouseState(&x, &y);
 
 			//check if mouse is inside a selection
 			if (staticAndGateDetection( e )) {
@@ -242,8 +240,8 @@ int Window::eventHandler(SDL_Event e)
 			else if (staticNotGateDetection( e )) {
 				makeBlock(2); //2 = NOT
 			}
-			else if(x>logicCanvas.x && x<(logicCanvas.x+logicCanvas.w) 
-					&& y>logicCanvas.y && y<(logicCanvas.y+logicCanvas.h))
+			else if(e.motion.x>logicCanvas.x && e.motion.x<(logicCanvas.x+logicCanvas.w) 
+					&& e.motion.y>logicCanvas.y && e.motion.y<(logicCanvas.y+logicCanvas.h))
 			{	
 				cout << "pressed in logic canvas" << endl;
 				// determine if on wire
@@ -260,7 +258,6 @@ int Window::eventHandler(SDL_Event e)
 				for(int i = 0; i < blocks.size(); i++) {
 					if (inputDetection(i, e)) {
 							blockNum=i;
-							cout << blocks[1]->gety() << endl;
 							action=3;
 							break;
 						}
@@ -271,8 +268,8 @@ int Window::eventHandler(SDL_Event e)
 						}
 						cout << "gate detection!!" << endl;
 						blockNum = i;
-						dx = x - blocks[i]->getx();
-						dy = y - blocks[i]->gety();
+						dx = e.motion.x - blocks[i]->getx();
+						dy = e.motion.y - blocks[i]->gety();
 						action = 2;
 						break;
 					}
