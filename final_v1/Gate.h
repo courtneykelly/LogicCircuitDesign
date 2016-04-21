@@ -75,7 +75,7 @@ Wire* Gate::getIn2()
 }
 
 
-
+// returns a pointer to the port of the int specified.
 Wire *Gate::getPortPtr(int port)
 {
 	switch (port)
@@ -87,7 +87,7 @@ Wire *Gate::getPortPtr(int port)
 		case 2:
 			return in2; break;	
 		default:
-			cout << "Invalid port call to getPortPtr" << endl;
+			cout << "Invalid port call to getPortPtr within class Gate" << endl;
 			return NULL;
 	}
 }	
