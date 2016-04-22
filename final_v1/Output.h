@@ -26,6 +26,7 @@ class Output : public Block
 		virtual void setInPort2(short, short);
 
 		virtual int onPort(int, int);
+		virtual int onBlock(int, int);
 
 		virtual void bringWires();
 
@@ -50,7 +51,7 @@ Output::Output(double xPos, double yPos, char variable, int val) : Block()
 	y = yPos;			// 350
 	name = variable;
 	value = val;
-	setInPort1(x, y+15);
+	setInPort1(x-10, y+15);
 	setPortPtr(1, NULL);
 }
 
@@ -103,17 +104,12 @@ void Output::draw(SDL_Renderer* renderer)
 	// must first get the value by running getValue() before displaying the number
 	
 
-	// draw port (temporary)
+	// draw port in1
 	short* outPort = getPortXY(1);
 	circleRGBA(renderer, inPort1[0], inPort1[1], 10, 0, 0, 255, 255);
-	try
-	{
-		cout << "output = " << getValue() << endl;
-	}
-	catch (int e) // shouldn't thow an error too much now
-	{
-		cout << "error: " << e <<  endl;
-	}
+
+	boxRGBA( renderer, x-10, y+14, x, y+16, 0, 0, 0, 255);
+
 
 	// Set Output Box Rectangles
 	SDL_Rect outerBox;
@@ -134,15 +130,16 @@ void Output::draw(SDL_Renderer* renderer)
 
 	SDL_RenderDrawRect( renderer, &outerBox );
 
+
 	if (getValue() == 0) {
 		SDL_RenderDrawRect( renderer, &zero );
 	}
 	else if (getValue() == 1) {
 		SDL_RenderDrawLine( renderer, x+15, y+8, x+15, y+22 );
 	}
-	else {
-		cout << "Error Drawing static inputs, value not 0 or 1" << endl;
-	}
+	//else {
+	//	cout << "Error Drawing static outputs, value not 0 or 1" << endl;
+	//}
 		
 }
 
@@ -201,6 +198,19 @@ int Output::onPort(int xMouse, int yMouse)
 		return 1; 
 	else
 		return -1;
+}
+
+int Output::onBlock(int xClick, int yClick)
+{
+	if (yClick >= y && yClick <= y+30) // in vertical bounds
+	{
+		if (xClick >= x && xClick <= x+30) // in horizontal bounds
+		{
+			cout << "on Output" << endl;
+			return 1;
+		}
+	}
+	return 0;
 }
 
 void Output::bringWires()

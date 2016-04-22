@@ -20,6 +20,7 @@ class OrGate : public Gate
 		virtual int getValue();
 		virtual void draw(SDL_Renderer*);
 		virtual int onPort(int, int); // (xMouse, yMouse)
+		virtual int onBlock(int, int);
 		virtual void setValue();	// needed to change value of Inputs
 		
 	private:
@@ -139,12 +140,12 @@ void OrGate::draw(SDL_Renderer* renderer)
 
 	// lines, to represent ports
 	boxRGBA(renderer, x+12, y, x-staticGateWidth/3, 
-			y+2*staticLineLength, 255, 0, 50, 255);
+			y+2*staticLineLength, 0, 0, 0, 255);
 	boxRGBA(renderer, x+12, y+staticGateHeight-2*staticLineLength, x-staticGateWidth/3, 
-			y+staticGateHeight, 255, 0, 50, 255);
+			y+staticGateHeight, 0, 0, 0, 255);
 	boxRGBA(renderer, x + staticGateWidth + radius + (staticGateWidth/3), 
 			y+(staticGateHeight/2)-(staticLineLength), x + staticGateWidth + radius,
-			y+(staticGateHeight/2)+(staticLineLength),255, 0, 50, 255);
+			y+(staticGateHeight/2)+(staticLineLength), 0, 0, 0, 255);
 
 	// draw body of OR gate as a single polygon
 	filledPolygonRGBA(renderer, xPoints, yPoints, numPoints, 255, 0, 50, 255);
@@ -178,11 +179,26 @@ int OrGate::onPort(int xMouse, int yMouse)
 }
 
 
+int OrGate::onBlock(int xClick, int yClick)
+{
+	if (yClick >= y && yClick <= y+staticGateHeight) // in vertical bounds
+	{
+		if (xClick >= x && xClick <= x+staticGateWidth) // in horizontal bounds
+		{
+			cout << "on OrGate" << endl;
+			return 1;
+		}
+	}
+	return 0;
+}
+
+
 void OrGate::updatePortXY()
 {
-	setInPort1(x-10, y);
-	setInPort2(x-10, y+staticGateHeight);
-	setOutPort(x+staticGateWidth+40, y + (staticGateHeight/2));
+	setInPort1(x-18, y+1);
+	setInPort2(x-18, y+staticGateHeight-1);
+	setOutPort(x+staticGateWidth+45, y + (staticGateHeight/2));
+
 }
 
 /* 	setValue function. Not needed in this class, but since virtual
