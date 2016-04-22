@@ -151,7 +151,7 @@ int NotGate::onPort(int xMouse, int yMouse)
 
 void NotGate::updatePortXY()
 {
-	setInPort1(x, y + (staticGateHeight/2));
+	setInPort1(x-10, y + (staticGateHeight/2));
 	setOutPort(x+staticGateWidth, y + (staticGateHeight/2));
 }
 

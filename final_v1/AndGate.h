@@ -220,8 +220,8 @@ class AndGate : public Gate 		// Inherits from the class Gate
 */
 	void AndGate::updatePortXY()
 	{
-		setInPort1(x-10, y);
-		setInPort2(x-10, y+staticGateHeight);
+		setInPort1(x-10, y+(staticGateHeight/4));
+		setInPort2(x-10, y+(3*staticGateHeight/4));
 		setOutPort(x+staticGateWidth+40, y + (staticGateHeight/2));
 
 	}
