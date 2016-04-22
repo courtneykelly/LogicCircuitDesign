@@ -231,21 +231,15 @@ int AndGate::onBlock(int xClick, int yClick)
 /*	UpdatePort Function. This function updates the location 
 	of the ports. This is called every time the value of 
 	x and y is changed. 
-<<<<<<< HEAD
+
 */
-	void AndGate::updatePortXY()
-	{
-		setInPort1(x-10, y+(staticGateHeight/4));
-		setInPort2(x-10, y+(3*staticGateHeight/4));
-		setOutPort(x+staticGateWidth+40, y + (staticGateHeight/2));
-=======
- */
+
 void AndGate::updatePortXY()
 {
 	setInPort1(x-18, y+15);
 	setInPort2(x-18, y+staticGateHeight-15);
 	setOutPort(x+staticGateWidth+45, y + (staticGateHeight/2));
->>>>>>> c8eb6c740a6971ae1915c6590056f8ef5ff7a795
+
 
 }
 

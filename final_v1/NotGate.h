@@ -166,13 +166,13 @@ int NotGate::onBlock(int xClick, int yClick)
 
 void NotGate::updatePortXY()
 {
-<<<<<<< HEAD
+
 	setInPort1(x-10, y + (staticGateHeight/2));
 	setOutPort(x+staticGateWidth, y + (staticGateHeight/2));
-=======
+
 	setInPort1(x-18, y + (staticGateHeight/2));
 	setOutPort(x+staticGateWidth-4, y + (staticGateHeight/2));
->>>>>>> c8eb6c740a6971ae1915c6590056f8ef5ff7a795
+
 }
 
 /* 	setValue function. Not needed in this class, but since virtual
