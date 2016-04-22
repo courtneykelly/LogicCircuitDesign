@@ -24,6 +24,7 @@ class NotGate : public Gate
 		virtual int getValue();
 		virtual void draw(SDL_Renderer*);
 		virtual int onPort(int, int); // (xMouse, yMouse)
+		virtual int onBlock(int, int);
 		virtual void setValue();	// needed to change value of Inputs
 
 		
@@ -118,9 +119,9 @@ void NotGate::draw(SDL_Renderer* renderer)
 
 	// draw lines
 	boxRGBA( renderer, x, y+(staticGateHeight/2-staticLineLength), x-staticGateWidth/3, 
-			y+(staticGateHeight/2)+staticLineLength, 255, 0, 50, 255 );
+			y+(staticGateHeight/2)+staticLineLength, 0, 0, 0, 255 );
 	boxRGBA( renderer, x+(2*staticGateWidth/3)+(staticGateWidth/3)-5, y+(staticGateHeight/2-staticLineLength), 
-			x+(2*staticGateWidth/3)-10, y+(staticGateHeight/2)+staticLineLength, 255, 0, 50, 255 );
+			x+(2*staticGateWidth/3)-10, y+(staticGateHeight/2)+staticLineLength, 0, 0, 0, 255 );
 	// draw triangle
 	filledTrigonRGBA( renderer, x, y+(staticGateHeight/4), x+(2*staticGateWidth/3), 
 			y+(staticGateHeight/2), x, y+(3*staticGateHeight/4), 255, 0, 50, 255);
@@ -149,19 +150,38 @@ int NotGate::onPort(int xMouse, int yMouse)
 		return -1;
 }
 
+int NotGate::onBlock(int xClick, int yClick)
+{
+	if (yClick >= y && yClick <= y+staticGateHeight) // in vertical bounds
+	{
+		if (xClick >= x && xClick <= x+staticGateWidth) // in horizontal bounds
+		{
+			cout << "on NotGate" << endl;
+			return 1;
+		}
+	}
+	return 0;
+}
+
+
 void NotGate::updatePortXY()
 {
+<<<<<<< HEAD
 	setInPort1(x-10, y + (staticGateHeight/2));
 	setOutPort(x+staticGateWidth, y + (staticGateHeight/2));
+=======
+	setInPort1(x-18, y + (staticGateHeight/2));
+	setOutPort(x+staticGateWidth-4, y + (staticGateHeight/2));
+>>>>>>> c8eb6c740a6971ae1915c6590056f8ef5ff7a795
 }
 
 /* 	setValue function. Not needed in this class, but since virtual
 	function, needs implementation.
-*/
-	void NotGate::setValue()
-	{
+ */
+void NotGate::setValue()
+{
 
-	}
+}
 
 
 #endif

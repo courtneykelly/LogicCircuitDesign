@@ -34,6 +34,7 @@ class Gate : public Block
 		
 		virtual void draw(SDL_Renderer*) = 0;
 		virtual int onPort(int, int) = 0;
+		virtual int onBlock(int, int) = 0;
 		virtual void bringWires();
 
 

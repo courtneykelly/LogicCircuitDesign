@@ -256,6 +256,8 @@ int Window::eventHandler(SDL_Event e)
 
 				// determine if on block
 				for(int i = 0; i < blocks.size(); i++) {
+					blocks[i]->onBlock(e.motion.x, e.motion.y);
+
 					if (inputDetection(i, e)) {
 							blockNum=i;
 							action=3;

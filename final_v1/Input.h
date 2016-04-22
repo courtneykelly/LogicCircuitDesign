@@ -27,6 +27,7 @@ class Input : public Block
 		virtual void setInPort2(short, short);
 
 		virtual int onPort(int, int);
+		virtual int onBlock(int, int);
 
 		virtual void bringWires();
 		virtual void setValue();	// needed to change value of Inputs
@@ -50,7 +51,7 @@ Input::Input(double xPos, double yPos, char variable, int val) : Block()
 	y = yPos;
 	name = variable;
 	value = val;
-	setOutPort(x+30, y+15); 
+	setOutPort(x+40, y+15); 
 }
 
 
@@ -91,14 +92,17 @@ int Input::getValue()
 
 void Input::draw(SDL_Renderer* renderer)
 {
+	// draw port
 	short* outPort = getPortXY(0);
 	circleRGBA(renderer, outPort[0], outPort[1], 10, 0, 255, 0, 255);
-
+	boxRGBA( renderer, x+30, y+14, x+40, y+16, 0, 0, 0, 255);
+	
 	SDL_Rect outerBox;
 	SDL_Rect zero;
 
 	// Change color to blue
 	SDL_SetRenderDrawColor( renderer, 0, 0, 255, 255 );
+
 
 	outerBox.x = x;
 	outerBox.y = y;
@@ -177,6 +181,18 @@ int Input::onPort(int xMouse, int yMouse)
 		return 0; 
 	else
 		return -1;
+}
+
+int Input::onBlock(int xClick, int yClick)
+{
+	if (yClick >= y && yClick <= y+30) // in vertical bounds
+	{
+		if (xClick >= x && xClick <= x+30) // in horizontal bounds
+		{
+			return 1;
+		}
+	}
+	return 0;
 }
 
 void Input::bringWires()
