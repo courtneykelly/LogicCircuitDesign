@@ -376,7 +376,8 @@ void Window::moveWire()
 	{
 		// set wire
 		if (!snapWire(x, y))
-		{
+		{	
+			delete wires.back();
 		    wires.pop_back(); // deletes last wire
 		    cout << "think about deleting that wire." << endl;
 
@@ -448,6 +449,11 @@ int Window::snapWire(int x, int y)
 	else if (blockPorts.begin()->second == blockPorts.rbegin()->second)
 	{
 		cout << "must connect to different objects." << endl;
+		return 0;
+	}
+	else if (blockPorts[highPortNum]->getPortPtr(highPortNum) != NULL)
+	{
+		cout << "in ports must not already have connections" << endl;
 		return 0;
 	}
 	else // wire connection is sound

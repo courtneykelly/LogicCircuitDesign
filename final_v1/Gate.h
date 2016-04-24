@@ -59,8 +59,11 @@ Wire *Gate::getPortPtr(int port)
 	switch (port)
 	{
 		case 0:
-			cout << "Error, out is a vector of pointers, not a pointer." << endl;
-			return out[0]; break;
+			cout << "might be an error" << endl;
+			if (out.size() == 0)
+				return NULL;
+			else
+				return out[0]; break;
 		case 1:
 			return in1; break;
 		case 2:
