@@ -2,6 +2,7 @@
 #define INPUT_H
 
 #include <iostream>   // for using cout
+#include <vector>
 #include "Block.h"
 #include "Wire.h"
 
@@ -38,7 +39,7 @@ class Input : public Block
 		char name;
 		int value;
 
-		Wire* out; // pointer
+		vector<Wire*> out; // pointer
 
 		short outPort[2]; // (x, y)
 };
@@ -66,7 +67,8 @@ Wire *Input::getPortPtr(int port)
 	switch (port)
 	{
 		case 0:
-			return out; break;
+			cout << "Error. out port is a vector of pointers, not a pointer" << endl;
+			return NULL; break;
 		default:
 			cout << "Invalid port call to getPortPtr. (only port=0)" << endl;
 			return NULL;
@@ -79,7 +81,7 @@ void Input::setPortPtr(int port, Wire* ptr)
 	switch (port)
 	{
 		case 0:
-			out = ptr; break;
+			out.push_back(ptr); break;
 		default:
 			cout << "Invalid port call to setPortPtr. (only port=0)" << endl;
 	}
@@ -197,11 +199,18 @@ int Input::onBlock(int xClick, int yClick)
 
 void Input::bringWires()
 {
+	int i;
+	for (i = 0; i < out.size(); i++)
+	{
+		out[i]->movePoint1(getPortXY(0)[0], getPortXY(0)[1]);
+	}
+	/*
 	if (getPortPtr(0) != NULL) // if pointer is conected
 	{
 		// then move wire to match ports
 		getPortPtr(0)->movePoint1(getPortXY(0)[0], getPortXY(0)[1]);
 	}
+	*/
 }
 
 /* 	setValue function. Not needed in this class, but since virtual

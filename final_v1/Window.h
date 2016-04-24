@@ -377,7 +377,7 @@ void Window::moveWire()
 		// set wire
 		if (!snapWire(x, y))
 		{
-		    wires.pop_back();
+		    wires.pop_back(); // deletes last wire
 		    cout << "think about deleting that wire." << endl;
 
 		}
@@ -482,7 +482,6 @@ void Window::deleteWire(int wireNum)
 {
 	delete wires[wireNum];
 	wires.erase(wires.begin()+wireNum);
-
 }
 
 
@@ -493,7 +492,6 @@ void Window::drawBlocks()
 	{
 		blocks[i]->draw(renderer);
 	}
-
 }
 
 
@@ -552,7 +550,6 @@ bool Window::gateDetection( int blockNum, SDL_Event event )
 
 bool Window::wireDetection( int wireNum)
 {
-
 	return false;
 }
 

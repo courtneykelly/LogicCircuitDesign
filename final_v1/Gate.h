@@ -2,6 +2,7 @@
 #define GATE_H
 
 #include <iostream>   // for using cout
+#include <vector>
 #include "Block.h"
 #include "Input.h"
 #include "Wire.h"
@@ -39,7 +40,7 @@ class Gate : public Block
 
 
 	private:
-		Wire* out;
+		vector<Wire*> out;
 		Wire* in1;
 		Wire* in2;                // first element in the list
 
@@ -58,7 +59,8 @@ Wire *Gate::getPortPtr(int port)
 	switch (port)
 	{
 		case 0:
-			return out; break;
+			cout << "Error, out is a vector of pointers, not a pointer." << endl;
+			return out[0]; break;
 		case 1:
 			return in1; break;
 		case 2:
@@ -75,7 +77,7 @@ void Gate::setPortPtr(int port, Wire* ptr)
 	switch (port)
 	{
 		case 0:
-			out = ptr; break;
+			out.push_back(ptr); break;
 		case 1:
 			in1 = ptr; break;
 		case 2:
@@ -123,16 +125,22 @@ void Gate::setInPort2(short x, short y)
 }
 
 
-
-
 void Gate::bringWires()
 {
+	int i;
+	for (i = 0; i < out.size(); i++)
+	{
+		out[i]->movePoint1(getPortXY(0)[0], getPortXY(0)[1]);
+	}
+
+	/*
 	if (getPortPtr(0) != NULL) // if pointer is conected
 	{
 		// then move wire to match ports
 		getPortPtr(0)->movePoint1(getPortXY(0)[0], getPortXY(0)[1]);
 	}
-	for (int i = 1; i <=2; i++)
+	*/
+	for (i = 1; i <=2; i++)
 	{
 		if (getPortPtr(i) != NULL)
 		{
@@ -140,11 +148,6 @@ void Gate::bringWires()
 		}
 	}
 }
-
-
-
-
-
 
 
 #endif

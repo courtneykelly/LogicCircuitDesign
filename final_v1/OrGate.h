@@ -40,7 +40,7 @@ class OrGate : public Gate
 // constructor
 OrGate::OrGate(double xTopLeft, double yTopLeft) : Gate()
 {
-	setPortPtr(0, NULL);
+	//setPortPtr(0, NULL);
 	setPortPtr(1, NULL);
 	setPortPtr(2, NULL);
 
@@ -163,7 +163,6 @@ void OrGate::draw(SDL_Renderer* renderer)
 
 int OrGate::onPort(int xMouse, int yMouse)
 {
-
 	short* outPort = getPortXY(0);
 	short* inPort1 = getPortXY(1);
 	short* inPort2 = getPortXY(2);

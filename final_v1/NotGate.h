@@ -49,7 +49,7 @@ class NotGate : public Gate
 // constructor
 NotGate::NotGate(double xTopLeft, double yTopLeft) : Gate()
 {
-	setPortPtr(0, NULL);
+	//setPortPtr(0, NULL);
 	setPortPtr(1, NULL);
 	setPortPtr(2, NULL);
 
