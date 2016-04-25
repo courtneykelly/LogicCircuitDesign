@@ -98,7 +98,7 @@ Window::Window()
 	renderer = NULL;
 	titleText = NULL;
 	titleHeight = 100;
-	titleWidth = 650;
+	titleWidth = 350;
 	action = 0;				// type of drawing action: wire, gate, or input
 	borderSize=10;			// border size between canvases
 	staticGateWidth=50;		// width of the static gates in the View Controller Canvas on right
@@ -130,7 +130,6 @@ Window::Window()
 	staticNOTx = viewController.x + (viewController.w / 2) - (staticGateWidth/3);
 	staticNOTy = viewController.y + (5*viewController.h / 6) - (staticGateHeight/2);
 
-	// Initialize title image
 	title.x = 0;
 	title.y = 0;
 	title.w = titleWidth;
@@ -193,7 +192,6 @@ int Window::init()
 		return -1;
 	}
 
-	//Load images
 	loadFromFile();
 
 	// Set renderer resolution
@@ -236,7 +234,7 @@ void Window::draw()
 	SDL_RenderDrawRect( renderer, &viewController );
 	SDL_RenderDrawRect( renderer, &logicCanvas );
 
-	//Draw image
+
 	SDL_RenderCopy( renderer, titleText, NULL, &title);
 
 
@@ -257,7 +255,7 @@ bool Window::loadFromFile() {
 		titleText = SDL_CreateTextureFromSurface( renderer, loadedSurface);
 		if( titleText == NULL )
 		{
-			cout << "Unable to create texture.";
+			cout << "Unable to creat texture";
 		}
 		else {
 			titleWidth = loadedSurface->w;

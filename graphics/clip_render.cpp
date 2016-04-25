@@ -3,6 +3,7 @@
 
 //Using SDL, SDL_image, standard math, and strings
 #include <SDL.h>
+#include <SDL2/SDL_image.h>
 #include <SDL_image.h>
 #include <stdio.h>
 #include <string>
@@ -53,6 +54,7 @@ private:
   //Image dimensions
   int mWidth;
   int mHeight;
+
 };
 
 //The mouse button
@@ -113,6 +115,8 @@ LTexture::~LTexture()
   free();
 }
 
+
+
 bool LTexture::loadFromFile( std::string path )
 {
   //Get rid of preexisting texture
@@ -156,6 +160,8 @@ bool LTexture::loadFromFile( std::string path )
 
 void LTexture::free()
 {
+
+  LTexture gTexture;
   //Free texture if it exists
   if( mTexture != NULL )
     {
@@ -179,7 +185,7 @@ void LTexture::render( int x, int y, SDL_Rect* clip )
     }
 
   //Render to screen
-  SDL_RenderCopy( gRenderer, mTexture, clip, &renderQuad );
+  SDL_RenderCopy( gRenderer, gTexture, clip, &renderQuad );
 }
 
 int LTexture::getWidth()
@@ -247,14 +253,14 @@ void LButton::handleEvent( SDL_Event* e )
 			switch( e->type )
 			{
 				case SDL_MOUSEBUTTONDOWN:
-					//Clear screen
-					SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
-	                            	SDL_RenderClear( gRenderer );
+				  //Clear screen
+				  SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
+          SDL_RenderClear( gRenderer );
 
 					//Render top left sprite
-	                                gTexture.render( x, y, &gANDGATE );
-								                                                                      //Update screen
-                                         SDL_RenderPresent( gRenderer );				
+          gTexture.render( x, y, &gANDGATE );
+					//Update screen
+          SDL_RenderPresent( gRenderer );				
 
 				break;
 

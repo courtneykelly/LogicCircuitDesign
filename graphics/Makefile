@@ -9,7 +9,7 @@ CC = g++
 COMPILER_FLAGS = -w
 
 #LINKER_FLAGS specifies the libraries we're linking against
-LINKER_FLAGS = -L/usr/local/lib -lSDL2 -lSDL2_gfx -I/usr/local/include/SDL2 \
+LINKER_FLAGS = -L/usr/local/lib -lSDL2 -lSDL2_gfx -lSDL2_image -I/usr/local/include/SDL2 \
  -D_THREAD_SAFE 
 #-lSDL2 -lSDL2_image 
 
