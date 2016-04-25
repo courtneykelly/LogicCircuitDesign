@@ -385,7 +385,11 @@ void Window::makeBlock(int i)
 	action = 0;
 }
 
-/*	
+/*	This function handles the moving of wires. This happens when you want to 
+	click and drag a wire. It gets the wire you've created or are moving and has
+	the endpoint of that wire follow the x and y position of the mouse to create
+	the click and drag effect. It will then snap the wire into a port position or 
+	delete it if it's in an incorrect position.
 */
 void Window::moveWire()
 {
@@ -406,8 +410,12 @@ void Window::moveWire()
 		}
 	}
 }
-
-/*	
+	
+/*	This function moves the gate you're clicking on.
+	Once you click on it the position of the gate will
+	follow the x and y coordinates of the mouse. It also calls
+	the bringWires function to make sure if there is a wire
+	attached to a port oin the gate you're moving, it follows.
 */
 void Window::moveBlock(int i)
 {
@@ -424,7 +432,9 @@ void Window::moveBlock(int i)
 
 }
 
-/*	
+/*	The function gives the effect of snapping a wire into postion.
+	If you click and drag a wire to a port, we wanted it to snap to the 
+	exact position of the port, once you were in circle range of that port.
 */
 int Window::snapWire(int x, int y)
 {
@@ -508,7 +518,8 @@ int Window::snapWire(int x, int y)
 	return 1;
 }
 
-/*	
+/*	This function will erase a wire. This happens when you click and drag a 
+	wire to an incorrect port, or to no port at all.	
 */
 void Window::deleteWire(int wireNum)
 {
@@ -517,7 +528,8 @@ void Window::deleteWire(int wireNum)
 }
 
 
-/*	
+/*	This function loops through our blocks vector of pointers to gates objects,
+	input objects, and output objects.
 */
 void Window::drawBlocks()
 {
@@ -527,7 +539,10 @@ void Window::drawBlocks()
 	}
 }
 
-/*	
+/*	This function loops through out wires vector of pointer to wire objects.
+	This vector stores all the wires that are currently drawn on the 
+	screen. We call this function in main, so it constantly redraws the wires.
+	This is to handle when we move wires, or click and drag them, etc.
 */
 void Window::drawWires()
 {
@@ -538,7 +553,9 @@ void Window::drawWires()
 
 }
 
-/*	
+/*	This function returns true if the user clicked on the static AND gate in 
+	the view controller. We use this function, so if the user clicks on a static 
+	AND gate, then a new one will be drawn on the logic canvas.
 */
 bool Window::staticAndGateDetection( SDL_Event event) 
 {
@@ -550,7 +567,9 @@ bool Window::staticAndGateDetection( SDL_Event event)
 	return false;
 }
 
-/*	
+/*	This function returns true if the user clicked on the static OR gate in 
+	the view controller. We use this function, so if the user clicks on a static 
+	OR gate, then a new one will be drawn on the logic canvas.
 */
 bool Window::staticOrGateDetection( SDL_Event event ) 
 {
@@ -562,7 +581,9 @@ bool Window::staticOrGateDetection( SDL_Event event )
 	return false;
 }
 
-/*	
+/*	This function returns true if the user clicked on the static NOT gate in 
+	the view controller. We use this function, so if the user clicks on a static 
+	NOT gate, then a new one will be drawn on the logic canvas.
 */
 bool Window::staticNotGateDetection( SDL_Event event ) 
 {
@@ -575,7 +596,11 @@ bool Window::staticNotGateDetection( SDL_Event event )
 	return false;
 }
 
-/*	
+/*	This function returns true if the user clicked on one of the gates on the logic canvas.
+	We loop through this funciton in our Event Handler. We loops through our blocks vector
+	of pointers and pass in the block number we are looking at, along with the SDL event. It 
+	sees if the SDL click event corresponds to one of the blocks on the logic canvas. If 
+	this is true, we'll return true in order to enable movement of that block.
 */
 bool Window::gateDetection( int blockNum, SDL_Event event )
 {
@@ -591,14 +616,17 @@ bool Window::gateDetection( int blockNum, SDL_Event event )
 	return false;
 }
 
-/*	
+/*	This function is not used in the Window class, but it needed to be implemented
+	because it is a virtual function.
 */
 bool Window::wireDetection( int wireNum)
 {
 	return false;
 }
 
-/*	
+/*	This function detects if one of the input blocks has been clicked. This is 
+	necessary because if one of the input blocks has been clicked then 
+	we need to change its value. 
 */
 bool Window::inputDetection( int blockNum, SDL_Event event ) 
 {
@@ -612,7 +640,8 @@ bool Window::inputDetection( int blockNum, SDL_Event event )
 	}
 }
 
-/*	
+/*	This function changes the value of the input blocks by calling 
+	the set value funtion of the Input.h class.
 */
 void Window::changeInputValue( int i )
 {
