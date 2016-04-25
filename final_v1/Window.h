@@ -1,9 +1,7 @@
-// logicCircuitDesign
-
-// Window.h
-
-// contains all of the information for the window
-
+/* 	logicCircuitDesign
+	Window.h
+	contains all of the information for the window
+*/
 
 #include <SDL.h>
 #include "SDL2_gfxPrimitives.h"
@@ -81,21 +79,23 @@ class Window {
 };
 
 
-// constructor
+/* 	Constructor
+*/
 Window::Window()
 {
-	screen_width = 1000;
-	screen_height = 600;
+	// Initialize Important Variables for Window dimensions
+	screen_width = 1000;	// window width
+	screen_height = 600;	// window height
 	window = NULL;
 	renderer = NULL;
-	action = 0;
-	borderSize=10;
-	staticGateWidth=50;	
-	staticGateHeight=60;
-	staticLineLength=1;
+	action = 0;				// type of drawing action: wire, gate, or input
+	borderSize=10;			// border size between canvases
+	staticGateWidth=50;		// width of the static gates in the View Controller Canvas on right
+	staticGateHeight=60;	// height of the static gates in the View Controller Canvas on right
+	staticLineLength=1;		// length of output port lines
 	buffer = 2;
-	highlightBoxWidth = (5/3)*staticGateWidth + (1/2)*staticGateHeight + 2*buffer;
-	highlightBoxHeight = staticGateHeight + 2*buffer;
+	highlightBoxWidth = (5/3)*staticGateWidth + (1/2)*staticGateHeight + 2*buffer;	// highlight box is the clicking range for a 
+	highlightBoxHeight = staticGateHeight + 2*buffer;								// gate detection in the view controller
 
 
 	// Initialize View Controller
@@ -134,11 +134,14 @@ Window::Window()
 	Bptr = new Output(690, 350, 'z', 0);
 	blocks.push_back(Bptr);
 
-	init();
+	init();	// call init function
 }
 
 
-// destructor
+/* 	Destructor
+	Destroys everything in the window, this function is called during 
+	an exit click event in order to exit the window.
+*/
 Window::~Window()
 {
 	SDL_DestroyRenderer (renderer);
@@ -150,20 +153,22 @@ Window::~Window()
 }
 
 
-// initilaizes the window and renderer
+/* 	Initilaizes the window and renderer
+*/
 int Window::init()
 {
+	// Error handling, if for some reason SDL couldn't initialize 
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 	{
 		std::cout << "Could not initialize SDL: " << SDL_GetError() << std::endl;
 		return -1;
 	}
 
-	// create window
+	// Create window
 	window = SDL_CreateWindow("Logic Circuit Design", SDL_WINDOWPOS_UNDEFINED,
 			SDL_WINDOWPOS_UNDEFINED, screen_width, screen_height, SDL_WINDOW_SHOWN);
 
-	// create renderer
+	// Create renderer
 	renderer = SDL_CreateRenderer(window, -1, 0);
 	if (renderer == NULL)
 	{
@@ -171,7 +176,7 @@ int Window::init()
 		return -1;
 	}
 
-	// set renderer resolution
+	// Set renderer resolution
 	SDL_RenderSetLogicalSize (renderer, screen_width, screen_height);
 
 	// set Background color
@@ -181,15 +186,18 @@ int Window::init()
 	return 1;
 }
 
-
+/*	Draw function. This function draws everything that is static on the 
+	window. This includes the three static gates in the View Controller, 
+	the View Controller box itself, and the logic canvas box. This function 
+	needs to be constantly called in our main as everything changes as the 
+	user interacts with it, but our background stays the same.
+*/
 void Window::draw()
 {
 	// Change color to blue
 	SDL_SetRenderDrawColor( renderer, 0, 0, 255, 255 );
 
-	// Draw Static Gates
-
-
+	// Draws Static Gates
 	Block* ptr = new AndGate(staticANDx,staticANDy);
 	ptr -> draw(renderer);
 	delete ptr;
@@ -215,9 +223,12 @@ void Window::draw()
 	SDL_RenderClear(renderer); // clear screen to white
 }
 
-
-// Conditionally call actions based on SDL event and variables
-// NEEDS REDESIGN TO WORK FOR LOTS OF THINGS!
+/*	Event Handler function. Conditionally calls actions based on SDL 
+	event and variables. This function is how the user interacts with 
+	the program. The user performs an SDL event such as a click, or a
+	drag, and we call the appropriate function for our prgram to react 
+	accordingly. 
+*/
 int Window::eventHandler(SDL_Event e)
 {
 	// cout << "e.type: " << e.type << endl;
@@ -226,11 +237,12 @@ int Window::eventHandler(SDL_Event e)
 		case SDL_QUIT:
 			return 1; // quits
 			break;
-		case SDL_MOUSEBUTTONDOWN:
+		case SDL_MOUSEBUTTONDOWN:		// If the user clicks down without releasing
 			
 			double blockX, blockY;
 
-			//check if mouse is inside a selection
+			// Checks if mouse is inside one of the static gates
+			// Draws the apprpriate gate on the logic canvas
 			if (staticAndGateDetection( e )) {
 				makeBlock(0); //0 = AND
 			}
@@ -240,6 +252,9 @@ int Window::eventHandler(SDL_Event e)
 			else if (staticNotGateDetection( e )) {
 				makeBlock(2); //2 = NOT
 			}
+			// This "else if" handles clicks within the logic canvas. These types of actions
+			// could be a wire draw, moving one of the gates on the canvas, or changing
+			// the value of one of the input blocks
 			else if(e.motion.x>logicCanvas.x && e.motion.x<(logicCanvas.x+logicCanvas.w) 
 					&& e.motion.y>logicCanvas.y && e.motion.y<(logicCanvas.y+logicCanvas.h))
 			{	
@@ -254,7 +269,7 @@ int Window::eventHandler(SDL_Event e)
 					}
 				}
 
-				// determine if on block
+				// determine if on input or gate block
 				for(int i = 0; i < blocks.size(); i++) {
 					blocks[i]->onBlock(e.motion.x, e.motion.y);
 
@@ -307,6 +322,7 @@ int Window::eventHandler(SDL_Event e)
 
 	//cout << "action: " << action;
 
+	// Performs appropriate action based on click event
 	switch (action)
 	{
 		case 1:
@@ -326,7 +342,8 @@ int Window::eventHandler(SDL_Event e)
 }
 
 
-// Push back a new wire to vector wires
+/* 	Push back a new wire to vector wires
+*/
 void Window::makeWire()
 {
 	int x;
@@ -334,10 +351,14 @@ void Window::makeWire()
 	SDL_GetMouseState(&x, &y);
 	Wire* ptr = new Wire(x, y); // call constructor
 
-	wires.push_back(ptr);
+	wires.push_back(ptr);		// add wireto vector of pointers
 	action = 1;
 }
 
+/*	Pushback a new Gate based on it's type, which is passed as an integer 
+	to the function. 0 is a new AND gate, 1 is a new OR gate, and 2 is a 
+	new NOT gate.
+*/
 void Window::makeBlock(int i)
 {
 	int x, y;
@@ -346,25 +367,26 @@ void Window::makeBlock(int i)
 	if( i == 0 ){
 		x = 100;
 		y = 300;
-		Bptr = new AndGate(x,y);
+		Bptr = new AndGate(x,y);	// create new pointer and call AND gate constructor
 	}
 	else if(i == 1){
 		x = 100;
 		y = 400;
-		Bptr = new OrGate(x,y);
+		Bptr = new OrGate(x,y);		// create new pointer and call OR gate constructor
 	}
 	else if(i == 2){
 		x = 100;
 		y = 500;
-		Bptr = new NotGate(x,y);
+		Bptr = new NotGate(x,y);	// create new pointer and call NOT gate constructor
 	}
 
 
-	blocks.push_back(Bptr);
+	blocks.push_back(Bptr);		// push the new point into the vector of pointers for the blocks
 	action = 0;
 }
 
-
+/*	
+*/
 void Window::moveWire()
 {
 	int x;
@@ -385,6 +407,8 @@ void Window::moveWire()
 	}
 }
 
+/*	
+*/
 void Window::moveBlock(int i)
 {
 	int x;
@@ -400,7 +424,8 @@ void Window::moveBlock(int i)
 
 }
 
-
+/*	
+*/
 int Window::snapWire(int x, int y)
 {
 	int connections = 0; // number of snaps
@@ -483,7 +508,8 @@ int Window::snapWire(int x, int y)
 	return 1;
 }
 
-
+/*	
+*/
 void Window::deleteWire(int wireNum)
 {
 	delete wires[wireNum];
@@ -491,7 +517,8 @@ void Window::deleteWire(int wireNum)
 }
 
 
-// Draw blocks function!!!
+/*	
+*/
 void Window::drawBlocks()
 {
 	for(int i = 0; i < blocks.size(); i++)
@@ -500,7 +527,8 @@ void Window::drawBlocks()
 	}
 }
 
-
+/*	
+*/
 void Window::drawWires()
 {
 	for (int i = 0; i < wires.size(); i++)
@@ -510,6 +538,8 @@ void Window::drawWires()
 
 }
 
+/*	
+*/
 bool Window::staticAndGateDetection( SDL_Event event) 
 {
 	if ( (event.motion.x>staticANDx) && (event.motion.x<(staticANDx+highlightBoxWidth)) ) {
@@ -519,6 +549,9 @@ bool Window::staticAndGateDetection( SDL_Event event)
 	}
 	return false;
 }
+
+/*	
+*/
 bool Window::staticOrGateDetection( SDL_Event event ) 
 {
 	if ( (event.motion.x>staticORx) && (event.motion.x<(staticORx+highlightBoxWidth)) ) {
@@ -528,6 +561,9 @@ bool Window::staticOrGateDetection( SDL_Event event )
 	}
 	return false;
 }
+
+/*	
+*/
 bool Window::staticNotGateDetection( SDL_Event event ) 
 {
 
@@ -539,6 +575,8 @@ bool Window::staticNotGateDetection( SDL_Event event )
 	return false;
 }
 
+/*	
+*/
 bool Window::gateDetection( int blockNum, SDL_Event event )
 {
 	double blockX = blocks[blockNum]->getx();
@@ -553,13 +591,15 @@ bool Window::gateDetection( int blockNum, SDL_Event event )
 	return false;
 }
 
-
+/*	
+*/
 bool Window::wireDetection( int wireNum)
 {
 	return false;
 }
 
-
+/*	
+*/
 bool Window::inputDetection( int blockNum, SDL_Event event ) 
 {
 	double blockX = blocks[blockNum]->getx();
@@ -572,6 +612,8 @@ bool Window::inputDetection( int blockNum, SDL_Event event )
 	}
 }
 
+/*	
+*/
 void Window::changeInputValue( int i )
 {
 	blocks[i]->setValue();
