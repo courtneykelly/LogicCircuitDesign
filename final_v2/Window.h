@@ -52,6 +52,8 @@ class Window {
 		bool inputDetection( int, SDL_Event );
 		void changeInputValue( int );
 
+		void clearAll();
+
 
 	private:
 		double screen_width;
@@ -660,6 +662,8 @@ void Window::moveBlock(int i)
 /*	The function gives the effect of snapping a wire into postion.
 	If you click and drag a wire to a port, we wanted it to snap to the 
 	exact position of the port, once you were in circle range of that port.
+	It also connects the pointers to and from the wires so that the equations
+	and results can be evaluated.
 */
 int Window::snapWire(int x, int y)
 {
@@ -872,6 +876,20 @@ void Window::changeInputValue( int i )
 {
 	blocks[i]->setValue();
 	//cout << blocks[i]->getValue() << endl;
+}
+
+void Window::clearAll()
+{
+	int i;
+	for (i = wires.size()-1; i--; i>=0)
+	{
+		deleteWire(i);
+	}
+	for (i = blocks.size()-1; i--; i>=0)
+	{
+		delete blocks[i];
+		blocks.erase(blocks.begin()+i);
+	}
 }
 
 
