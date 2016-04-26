@@ -157,7 +157,6 @@ int NotGate::onBlock(int xClick, int yClick)
 	{
 		if (xClick >= x && xClick <= x+staticGateWidth) // in horizontal bounds
 		{
-			cout << "on NotGate" << endl;
 			return 1;
 		}
 	}

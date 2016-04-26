@@ -186,7 +186,6 @@ int OrGate::onBlock(int xClick, int yClick)
 	{
 		if (xClick >= x && xClick <= x+staticGateWidth) // in horizontal bounds
 		{
-			cout << "on OrGate" << endl;
 			return 1;
 		}
 	}

@@ -67,6 +67,7 @@ class Window {
 
 		// Data Members for Equation Text
 		TTF_Font* font;
+		TTF_Font* font2;
 		SDL_Texture* equationText;
 		SDL_Rect equation;
 
@@ -79,6 +80,14 @@ class Window {
 		SDL_Rect cLabel;
 		SDL_Texture* zTexture;
 		SDL_Rect zLabel;
+
+		// Clear Button
+		SDL_Rect clear;
+		SDL_Texture* clearText;
+
+		// Instruction Box
+		SDL_Rect instruct;
+		SDL_Texture* instructText;
 
 		vector<Block*> blocks;
 		Block* outputPtr;
@@ -126,13 +135,20 @@ Window::Window()
 	titleHeight = 100;
 	titleWidth = 650;
 	font = NULL;
+	font2 = NULL;
+
+	// Initialize Variable for clear button
 	equationText = NULL;
+	clearText = NULL;
 
 	// Initialize Variables for Input/Output Label Text
 	aTexture = NULL;
 	bTexture = NULL;
 	cTexture = NULL;
 	zTexture = NULL;
+
+	// Initialize Variables for instruction box
+	instructText = NULL;
 
 	action = 0;				// type of drawing action: wire, gate, or input
 	borderSize=10;			// border size between canvases
@@ -177,6 +193,12 @@ Window::Window()
 	equation.w = 100;
 	equation.h = 50;
 
+	// Initialize clear rectangle
+	clear.x = 800;
+	clear.y = 175;
+	clear.w = 100;
+	clear.h = 50;
+
 	// Initiaize Input/Output rectangles
 	aLabel.x = 25;
 	aLabel.y = 265;
@@ -197,6 +219,12 @@ Window::Window()
 	zLabel.y = 370;
 	zLabel.w = 10;
 	zLabel.h = 15; 
+
+	// Initialize instruction box rectangles
+	instruct.x = 770;
+	instruct.y = 275;
+	instruct.w = 125;
+	instruct.h = 100;
 
 	// Sets 3 Static Input Blocks
 	Block* Bptr;
@@ -266,6 +294,7 @@ int Window::init()
 
 	//Load font
 	font = TTF_OpenFont( "CourierNew.ttf", 40);
+	font2 = TTF_OpenFont( "CourierNew.ttf", 20);
 
 	// Error check
 	if (font == NULL){
@@ -326,6 +355,8 @@ void Window::draw()
 	SDL_RenderCopy( renderer, bTexture, NULL, &bLabel );
 	SDL_RenderCopy( renderer, cTexture, NULL, &cLabel );
 	SDL_RenderCopy( renderer, zTexture, NULL, &zLabel );
+	SDL_RenderCopy( renderer, clearText, NULL, &clear );
+	SDL_RenderCopy( renderer, instructText, NULL, &instruct );
 
 	// Render to screen 
 	SDL_RenderPresent(renderer); // draws it
@@ -336,7 +367,6 @@ void Window::draw()
 	// Outputs equation to stdout
 	if ( outputPtr->getValue() != -1 && equationOutputted == 0)
 	{
-	    cout << "z = " << outputPtr->getEquation() << endl; 
 	    equationOutputted = 1;
 
 	}
@@ -399,18 +429,30 @@ void Window::loadFromFile() {
 	SDL_Surface* surface5 = TTF_RenderText_Solid( font, "z", textColor );
 	zTexture = SDL_CreateTextureFromSurface( renderer, surface5 );
 
+	SDL_Color backgroundColor2 = { 255, 0, 0, 255 };
+	SDL_Color textColor2 = { 0, 0, 0, 255 };
+
+	SDL_Surface* surface6 = TTF_RenderText_Shaded( font, "CLEAR", textColor2, backgroundColor2);
+	clearText = SDL_CreateTextureFromSurface( renderer, surface6 );
+
+	SDL_Surface* surface7 = TTF_RenderText_Solid( font2, "Click to add gate", textColor);
+	instructText = SDL_CreateTextureFromSurface( renderer, surface7 );
+
 	// Free all Surfaces and call QueryTexture SDL function for all textures
 	SDL_FreeSurface( surface1 );
 	SDL_FreeSurface( surface2 );
 	SDL_FreeSurface( surface3 );
 	SDL_FreeSurface( surface4 );
 	SDL_FreeSurface( surface5 );
+	SDL_FreeSurface( surface6 );
+	SDL_FreeSurface( surface7 );
 	SDL_QueryTexture( equationText, NULL, NULL, &equation.w, &equation.h);
 	SDL_QueryTexture( aTexture, NULL, NULL, &aLabel.w, &aLabel.h );
 	SDL_QueryTexture( bTexture, NULL, NULL, &bLabel.w, &bLabel.h );
 	SDL_QueryTexture( cTexture, NULL, NULL, &cLabel.w, &cLabel.h );
 	SDL_QueryTexture( zTexture, NULL, NULL, &zLabel.w, &zLabel.h );
-
+	SDL_QueryTexture( clearText, NULL, NULL, &clear.w, &clear.h );
+	SDL_QueryTexture( instructText, NULL, NULL, &instruct.w, &instruct.h );
 }
 
 /*	Event Handler function. Conditionally calls actions based on SDL 
@@ -421,7 +463,7 @@ void Window::loadFromFile() {
 */
 int Window::eventHandler(SDL_Event e)
 {
-	// cout << "e.type: " << e.type << endl;
+
 	switch(e.type)
 	{
 		case SDL_QUIT:
@@ -448,13 +490,11 @@ int Window::eventHandler(SDL_Event e)
 			else if(e.motion.x>logicCanvas.x && e.motion.x<(logicCanvas.x+logicCanvas.w) 
 					&& e.motion.y>logicCanvas.y && e.motion.y<(logicCanvas.y+logicCanvas.h))
 			{	
-				cout << "pressed in logic canvas" << endl;
 				// determine if on wire
 				for (int j = 0; j < wires.size(); j++)
 				{
 					if (wireDetection(j))
 					{
-						cout << "clicked on wire" << endl;
 						break;
 					}
 				}
@@ -473,7 +513,6 @@ int Window::eventHandler(SDL_Event e)
 							action = 0;
 							break;
 						}
-						cout << "gate detection!!" << endl;
 						blockNum = i;
 						dx = e.motion.x - blocks[i]->getx();
 						dy = e.motion.y - blocks[i]->gety();
@@ -501,7 +540,6 @@ int Window::eventHandler(SDL_Event e)
 		case SDL_MOUSEBUTTONUP:
 			if (action == 1)
 			{
-				cout << "move it"<< endl;
 				action = 0;
 				moveWire();
 			}
@@ -593,7 +631,6 @@ void Window::moveWire()
 		{	
 			delete wires.back();
 		    wires.pop_back(); // deletes last wire
-		    cout << "think about deleting that wire." << endl;
 
 		}
 	}
@@ -834,7 +871,7 @@ bool Window::inputDetection( int blockNum, SDL_Event event )
 void Window::changeInputValue( int i )
 {
 	blocks[i]->setValue();
-	cout << blocks[i]->getValue() << endl;
+	//cout << blocks[i]->getValue() << endl;
 }
 
 
