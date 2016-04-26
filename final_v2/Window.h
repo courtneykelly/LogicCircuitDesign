@@ -5,8 +5,10 @@
 
 #include <SDL.h>
 #include "SDL2_gfxPrimitives.h"
-#include <SDL2/SDL_image.h>
-#include <SDL2/SDL_ttf.h>
+//#include <SDL2/SDL_image.h>
+#include "SDL_image.h"
+//#include <SDL2/SDL_ttf.h>
+#include "SDL_ttf.h"
 #include <string>
 #include <iostream>
 #include <cmath>
@@ -59,11 +61,13 @@ class Window {
 		SDL_Window* window;
 		SDL_Renderer* renderer;
 
-			SDL_Rect title;
+		// Data Memebers for Title Image
+		SDL_Rect title;
 		SDL_Texture* titleText;
 		int titleWidth;
 		int titleHeight;
 
+		// Data Members for Equation Text
 		TTF_Font* font;
 		SDL_Texture* equationText;
 		SDL_Rect equation;
@@ -76,6 +80,8 @@ class Window {
 		int blockNum;
 		int dx;
 		int dy;
+
+		// Data Members for Static Visuals, AND, OR, NOT, and box outlines
 		SDL_Rect viewController;
 		SDL_Rect logicCanvas;
 		int borderSize;
@@ -145,7 +151,7 @@ Window::Window()
 	title.w = titleWidth;
 	title.h = titleHeight;
 
-	// Initialize equation
+	// Initialize equation rectangle
 	equation.x = 100;
 	equation.y = 150;
 	equation.w = 100;
