@@ -255,9 +255,7 @@ void AndGate::setValue()
 
 string AndGate::getEquation()
 {
-    string equation;
-    
-    equation = "(" + ( getWire1()->getBackwardPtr() )->getEquation() + ( getWire2()->getBackwardPtr() )->getEquation() + ")";
+    string equation = "(" + ( getWire1()->getBackwardPtr() )->getEquation() + ( getWire2()->getBackwardPtr() )->getEquation() + ")";
 
     return equation;
 }

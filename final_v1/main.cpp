@@ -8,8 +8,10 @@
 
 #include "Window.h"
 #include "Block.h"
-#include "Gate.h"
-#include "Input.h"
+	#include "Gate.h"
+		// AndGate
+		// OrGate
+	#include "Input.h"
 #include "Wire.h"
 #include <SDL.h>
 

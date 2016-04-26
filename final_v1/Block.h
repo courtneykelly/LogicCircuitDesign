@@ -38,14 +38,9 @@ class Block {
 		virtual void bringWires() = 0;
 		virtual void setValue() = 0;	// needed to change value of Inputs
 
-		virtual int isInput();
 		virtual string getEquation() = 0;
 };
 
-/*	This is the abstract base class for our inheritance tree, which is why 
-	there are no implementations. The Gate class, Input class, and Output 
-	class all inherit from this class. 
-*/
 // constructor
 Block::Block()
 {
@@ -55,11 +50,6 @@ Block::Block()
 Block::~Block ()
 {
 
-}
-
-int Block::isInput()
-{
-    return 0;
 }
 
 

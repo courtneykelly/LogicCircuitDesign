@@ -5,8 +5,7 @@
 
 #include <SDL.h>
 #include "SDL2_gfxPrimitives.h"
-//#include <SDL2/SDL_image.h>
-#include "SDL_image.h"
+#include <SDL2/SDL_image.h>
 #include <string>
 #include <iostream>
 #include <cmath>
@@ -22,6 +21,7 @@
 #include "NotGate.h"
 
 #define PI 3.14159265
+using namespace std;
 
 class Window {
 
@@ -65,6 +65,8 @@ class Window {
 		int titleHeight;
 
 		vector<Block*> blocks;
+		Block* outputPtr;
+		int equationOutputted;
 		vector<Wire*> wires;
 		int action; // 0=none, 1=drawing wires, 2=moving blocks
 		int blockNum;
@@ -150,7 +152,10 @@ Window::Window()
 
 	// Sets Static Output Block
 	Bptr = new Output(690, 350, 'z', 0);
+	outputPtr = Bptr;		    // sets outputPtr
 	blocks.push_back(Bptr);
+
+	equationOutputted = 0;
 
 	init();	// call init function
 }
@@ -246,6 +251,13 @@ void Window::draw()
 	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 	SDL_RenderClear(renderer); // clear screen to white
 
+	// Outputs equation to stdout
+	if ( outputPtr->getValue() != -1 && equationOutputted == 0)
+	{
+	    cout << "z = " << outputPtr->getEquation() << endl; 
+	    equationOutputted = 1;
+	}
+	
 }
 
 bool Window::loadFromFile() {

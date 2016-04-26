@@ -243,6 +243,8 @@ string Output::getEquation()
     string equation;
 
     equation = ( getWire1()->getBackwardPtr() )->getEquation();
+
+    return equation;
 }
 
 #endif
