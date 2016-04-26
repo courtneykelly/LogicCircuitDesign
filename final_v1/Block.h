@@ -42,6 +42,10 @@ class Block {
 		virtual string getEquation() = 0;
 };
 
+/*	This is the abstract base class for our inheritance tree, which is why 
+	there are no implementations. The Gate class, Input class, and Output 
+	class all inherit from this class. 
+*/
 // constructor
 Block::Block()
 {

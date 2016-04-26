@@ -12,16 +12,16 @@ using namespace std;
 class Wire
 {
 	public:
-		Wire(int, int);	// constructor
-		~Wire();   // deconstructor
+		Wire(int, int);		// constructor
+		~Wire();   			// deconstructor
 		int getValue();
 
-		void setBackwardPtr(Block*);
-		void setForwardPtr(Block*);
+		void setBackwardPtr(Block*);	// Each wire has a forward pointer and a backward pointer, which
+		void setForwardPtr(Block*);		// point to the two blocks the wire is connected to
 		
-		Block *getBackwardPtr();
+		Block *getBackwardPtr();		// returns the backward pointer
 
-		void movePoint1(int, int);
+		void movePoint1(int, int);		
 		void movePoint2(int, int);
 		short *getPointXY(int);
 
@@ -42,7 +42,7 @@ class Wire
 };
 
 
-// constructor
+// Constructor
 Wire::Wire(int x, int y)
 {
 	x1 = x;
@@ -52,43 +52,48 @@ Wire::Wire(int x, int y)
 }
 
 
-// destructor
+// Destructor
 Wire::~Wire()
 {
 }
 
-
-// evaluate function with:
+/*	Getter Function. Returns the "value" of the wire, by evaluating
+	the value of the gate of the backwardPtr
+*/
 int Wire::getValue()
 {
 	return (backwardPtr->getValue());
 }
 
-
-
-// set the pointer to the block
+/* 	Seeter Function. Sets the backward pointer to the block passed in.
+*/
 void Wire::setBackwardPtr(Block* ptr)
 {
 	backwardPtr = ptr;
 }
 
-
-// set the pointer to the block
+/* 	Seeter Function. Sets the forward pointer to the block passed in.
+*/
 void Wire::setForwardPtr(Block* ptr)
 {
 	forwardPtr = ptr;
 }
 
-
-
-// move origin (first) point of the wire
+/* 	Move origin (first) point of the wire
+*/
 void Wire::movePoint1(int x, int y)
 {
 	x1 = x;
 	y1 = y;
 }
 
-
+/*	Getter Function. Returns the an array containing 
+	the x an y coordinates of each end of the wire. If 
+	you pass in a 1, it will return the x and y coordinates 
+	of the point connected to block output. If you pass in 
+	a 2, it will return the x and y coordinates of the point 
+	connected to block input.
+*/
 short *Wire::getPointXY(int point)
 {
 	if (point == 1)
@@ -105,19 +110,16 @@ short *Wire::getPointXY(int point)
 		return NULL;
 }
 
-
-// move the pivot (second) point of the wire
+/* 	Move the pivot (second) point of the wire
+*/
 void Wire::movePoint2(int x, int y)
 {
 	x2 = x;
 	y2 = y;
 }
 
-
-
-
-
-// draw a single wire
+/* 	Draw a single wire
+*/
 void Wire::draw(SDL_Renderer* renderer)
 {
 	SDL_SetRenderDrawColor(renderer, 100, 100, 100, 255);
@@ -125,6 +127,9 @@ void Wire::draw(SDL_Renderer* renderer)
 
 }
 
+/* 	Delete preparations. This functions prepares to delete everything
+	from the vectors and window.
+*/
 void Wire::deletePrep()
 {
 	if (forwardPtr != NULL && forwardPtr->getPortPtr(1) == this)
@@ -144,8 +149,10 @@ void Wire::deletePrep()
 		backwardPtr->setPortPtr(2, NULL);
 	}
 }
-
-
+	
+/*	This function is unused at the moment. We will potentially use this to
+	delete wires. 
+*/
 int Wire::onWire()
 {
 	int length;
@@ -156,7 +163,9 @@ int Wire::onWire()
 	return -1;
 }
 
-
+/*	Returns the backward pointer of the wire. This function is used to determine
+	the equation of the final logic circuit.
+*/
 Block * Wire::getBackwardPtr()
 {
     return backwardPtr;
