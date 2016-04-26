@@ -73,6 +73,12 @@ class Window {
 		// Data Memebers for Input/Output Labels
 		SDL_Texture* aTexture;
 		SDL_Rect aLabel;
+		SDL_Texture* bTexture;
+		SDL_Rect bLabel;
+		SDL_Texture* cTexture;
+		SDL_Rect cLabel;
+		SDL_Texture* zTexture;
+		SDL_Rect zLabel;
 
 		vector<Block*> blocks;
 		Block* outputPtr;
@@ -102,7 +108,10 @@ class Window {
 };
 
 
-/* 	Constructor
+/* 	Constructor. The constructor initializes all static drawings and images.
+	It also needs to initialize all SDL Rectangles where we want to render
+	textures like the equation and the labesl for all of our inputs, hence
+	its length.
 */
 Window::Window()
 {
@@ -112,13 +121,18 @@ Window::Window()
 	window = NULL;
 	renderer = NULL;
 
-	// Initialize Variables for Title and Text
+	// Initialize Variables for Title and Equation Text
 	titleText = NULL;
 	titleHeight = 100;
 	titleWidth = 650;
 	font = NULL;
 	equationText = NULL;
+
+	// Initialize Variables for Input/Output Label Text
 	aTexture = NULL;
+	bTexture = NULL;
+	cTexture = NULL;
+	zTexture = NULL;
 
 	action = 0;				// type of drawing action: wire, gate, or input
 	borderSize=10;			// border size between canvases
@@ -168,6 +182,21 @@ Window::Window()
 	aLabel.y = 265;
 	aLabel.w = 10;
 	aLabel.h = 15;
+
+	bLabel.x = 25;
+	bLabel.y = 345;
+	bLabel.w = 10;
+	bLabel.h = 15;
+
+	cLabel.x = 25;
+	cLabel.y = 415;
+	cLabel.w = 10;
+	cLabel.h = 15;
+
+	zLabel.x = 695;
+	zLabel.y = 370;
+	zLabel.w = 10;
+	zLabel.h = 15; 
 
 	// Sets 3 Static Input Blocks
 	Block* Bptr;
@@ -277,7 +306,6 @@ void Window::draw()
 	ptr -> draw(renderer);
 	delete ptr;
 
-
 	ptr = new NotGate(staticNOTx,staticNOTy);
 	ptr -> draw(renderer);
 	delete ptr;
@@ -290,12 +318,16 @@ void Window::draw()
 	//Draw image
 	SDL_RenderCopy( renderer, titleText, NULL, &title);
 
-	//Draw text
+	//Draw Text (Equation Text, Input/Output Labels)
 	loadFromFile();
 	
 	SDL_RenderCopy( renderer, equationText, NULL, &equation);
 	SDL_RenderCopy( renderer, aTexture, NULL, &aLabel );
+	SDL_RenderCopy( renderer, bTexture, NULL, &bLabel );
+	SDL_RenderCopy( renderer, cTexture, NULL, &cLabel );
+	SDL_RenderCopy( renderer, zTexture, NULL, &zLabel );
 
+	// Render to screen 
 	SDL_RenderPresent(renderer); // draws it
 	SDL_Delay(40); // 40 default
 	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
@@ -310,7 +342,15 @@ void Window::draw()
 	}
 }
 
+/*	loadFromFile Function. This function loads all images needed in our
+	SDL Window from our working directory. Right now this is just our 
+	title image, which says "Logic Circuit Simulator." We also use this 
+	function to render text to the screen. This includes the finished
+	equation once a circuit is complete, and the labels "a" "b" "c" and
+	"z" for the input/output boxes.
+*/
 void Window::loadFromFile() {
+
 	SDL_Surface* loadedSurface = IMG_Load("Title.bmp");
 	if( loadedSurface == NULL )
 	{
@@ -335,25 +375,41 @@ void Window::loadFromFile() {
 	SDL_Color backgroundColor = { 255, 255, 255, 255 };
 	SDL_Color textColor = { 0, 0, 0, 255 };
 	string equationString;
-	if (!equationOutputted)
-	{
+	if (!equationOutputted) {
 		equationString = "";
 	}
-	else
-	{
+	else {
 		equationString = outputPtr->getEquation();
-
 	}
+
+	// Equation Text
 	SDL_Surface* surface1 = TTF_RenderText_Solid( font, equationString.c_str(), textColor);
 	equationText = SDL_CreateTextureFromSurface( renderer, surface1 );
 
+	// Input/Output Labels
 	SDL_Surface* surface2 = TTF_RenderText_Solid( font, "a", textColor );
 	aTexture = SDL_CreateTextureFromSurface( renderer, surface2 );
 
+	SDL_Surface* surface3 = TTF_RenderText_Solid( font, "b", textColor );
+	bTexture = SDL_CreateTextureFromSurface( renderer, surface3 );
+
+	SDL_Surface* surface4 = TTF_RenderText_Solid( font, "c", textColor );
+	cTexture = SDL_CreateTextureFromSurface( renderer, surface4 );
+
+	SDL_Surface* surface5 = TTF_RenderText_Solid( font, "z", textColor );
+	zTexture = SDL_CreateTextureFromSurface( renderer, surface5 );
+
+	// Free all Surfaces and call QueryTexture SDL function for all textures
 	SDL_FreeSurface( surface1 );
 	SDL_FreeSurface( surface2 );
+	SDL_FreeSurface( surface3 );
+	SDL_FreeSurface( surface4 );
+	SDL_FreeSurface( surface5 );
 	SDL_QueryTexture( equationText, NULL, NULL, &equation.w, &equation.h);
 	SDL_QueryTexture( aTexture, NULL, NULL, &aLabel.w, &aLabel.h );
+	SDL_QueryTexture( bTexture, NULL, NULL, &bLabel.w, &bLabel.h );
+	SDL_QueryTexture( cTexture, NULL, NULL, &cLabel.w, &cLabel.h );
+	SDL_QueryTexture( zTexture, NULL, NULL, &zLabel.w, &zLabel.h );
 
 }
 
@@ -453,8 +509,6 @@ int Window::eventHandler(SDL_Event e)
 				action = 0;
 			break;
 	}
-
-	//cout << "action: " << action;
 
 	// Performs appropriate action based on click event
 	switch (action)
