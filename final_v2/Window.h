@@ -5,9 +5,7 @@
 
 #include <SDL.h>
 #include "SDL2_gfxPrimitives.h"
-//#include <SDL2/SDL_image.h>
 #include "SDL_image.h"
-//#include <SDL2/SDL_ttf.h>
 #include "SDL_ttf.h"
 #include <string>
 #include <iostream>
@@ -72,6 +70,10 @@ class Window {
 		SDL_Texture* equationText;
 		SDL_Rect equation;
 
+		// Data Memebers for Input/Output Labels
+		SDL_Texture* aTexture;
+		SDL_Rect aLabel;
+
 		vector<Block*> blocks;
 		Block* outputPtr;
 		int equationOutputted;
@@ -109,11 +111,15 @@ Window::Window()
 	screen_height = 600;	// window height
 	window = NULL;
 	renderer = NULL;
+
+	// Initialize Variables for Title and Text
 	titleText = NULL;
 	titleHeight = 100;
 	titleWidth = 650;
 	font = NULL;
 	equationText = NULL;
+	aTexture = NULL;
+
 	action = 0;				// type of drawing action: wire, gate, or input
 	borderSize=10;			// border size between canvases
 	staticGateWidth=50;		// width of the static gates in the View Controller Canvas on right
@@ -156,6 +162,12 @@ Window::Window()
 	equation.y = 150;
 	equation.w = 100;
 	equation.h = 50;
+
+	// Initiaize Input/Output rectangles
+	aLabel.x = 25;
+	aLabel.y = 265;
+	aLabel.w = 10;
+	aLabel.h = 15;
 
 	// Sets 3 Static Input Blocks
 	Block* Bptr;
@@ -282,6 +294,7 @@ void Window::draw()
 	loadFromFile();
 	
 	SDL_RenderCopy( renderer, equationText, NULL, &equation);
+	SDL_RenderCopy( renderer, aTexture, NULL, &aLabel );
 
 	SDL_RenderPresent(renderer); // draws it
 	SDL_Delay(40); // 40 default
@@ -331,11 +344,16 @@ void Window::loadFromFile() {
 		equationString = outputPtr->getEquation();
 
 	}
-	SDL_Surface* solid = TTF_RenderText_Solid( font, equationString.c_str(), textColor);
-	equationText = SDL_CreateTextureFromSurface( renderer, solid );
+	SDL_Surface* surface1 = TTF_RenderText_Solid( font, equationString.c_str(), textColor);
+	equationText = SDL_CreateTextureFromSurface( renderer, surface1 );
 
-	SDL_FreeSurface( solid );
+	SDL_Surface* surface2 = TTF_RenderText_Solid( font, "a", textColor );
+	aTexture = SDL_CreateTextureFromSurface( renderer, surface2 );
+
+	SDL_FreeSurface( surface1 );
+	SDL_FreeSurface( surface2 );
 	SDL_QueryTexture( equationText, NULL, NULL, &equation.w, &equation.h);
+	SDL_QueryTexture( aTexture, NULL, NULL, &aLabel.w, &aLabel.h );
 
 }
 
