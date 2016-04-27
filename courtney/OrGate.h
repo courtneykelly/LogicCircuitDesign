@@ -20,7 +20,10 @@ class OrGate : public Gate
 		virtual int getValue();
 		virtual void draw(SDL_Renderer*);
 		virtual int onPort(int, int); // (xMouse, yMouse)
+		virtual int onBlock(int, int);
 		virtual void setValue();	// needed to change value of Inputs
+
+		virtual string getEquation();
 		
 	private:
 		// for drawing:
@@ -39,7 +42,7 @@ class OrGate : public Gate
 // constructor
 OrGate::OrGate(double xTopLeft, double yTopLeft) : Gate()
 {
-	setPortPtr(0, NULL);
+	//setPortPtr(0, NULL);
 	setPortPtr(1, NULL);
 	setPortPtr(2, NULL);
 
@@ -86,8 +89,8 @@ int OrGate::getValue()
 	int right;
 	if (getPortPtr(1) == NULL || getPortPtr(2) == NULL)
 		return -1;
-	left = getIn1()->getValue();
-	right = getIn2()->getValue();
+	left = getPortPtr(1)->getValue();
+	right = getPortPtr(2)->getValue();
 	if (left == -1 || right == -1)
 		return -1;
 	else
@@ -139,12 +142,12 @@ void OrGate::draw(SDL_Renderer* renderer)
 
 	// lines, to represent ports
 	boxRGBA(renderer, x+12, y, x-staticGateWidth/3, 
-			y+2*staticLineLength, 255, 0, 50, 255);
+			y+2*staticLineLength, 0, 0, 0, 255);
 	boxRGBA(renderer, x+12, y+staticGateHeight-2*staticLineLength, x-staticGateWidth/3, 
-			y+staticGateHeight, 255, 0, 50, 255);
+			y+staticGateHeight, 0, 0, 0, 255);
 	boxRGBA(renderer, x + staticGateWidth + radius + (staticGateWidth/3), 
 			y+(staticGateHeight/2)-(staticLineLength), x + staticGateWidth + radius,
-			y+(staticGateHeight/2)+(staticLineLength),255, 0, 50, 255);
+			y+(staticGateHeight/2)+(staticLineLength), 0, 0, 0, 255);
 
 	// draw body of OR gate as a single polygon
 	filledPolygonRGBA(renderer, xPoints, yPoints, numPoints, 255, 0, 50, 255);
@@ -162,7 +165,6 @@ void OrGate::draw(SDL_Renderer* renderer)
 
 int OrGate::onPort(int xMouse, int yMouse)
 {
-
 	short* outPort = getPortXY(0);
 	short* inPort1 = getPortXY(1);
 	short* inPort2 = getPortXY(2);
@@ -178,19 +180,42 @@ int OrGate::onPort(int xMouse, int yMouse)
 }
 
 
+int OrGate::onBlock(int xClick, int yClick)
+{
+	if (yClick >= y && yClick <= y+staticGateHeight) // in vertical bounds
+	{
+		if (xClick >= x && xClick <= x+staticGateWidth) // in horizontal bounds
+		{
+			return 1;
+		}
+	}
+	return 0;
+}
+
+
 void OrGate::updatePortXY()
 {
-	setInPort1(x-10, y);
-	setInPort2(x-10, y+staticGateHeight);
-	setOutPort(x+staticGateWidth+40, y + (staticGateHeight/2));
+	setInPort1(x-18, y+1);
+	setInPort2(x-18, y+staticGateHeight-1);
+	setOutPort(x+staticGateWidth+45, y + (staticGateHeight/2));
+
 }
 
 /* 	setValue function. Not needed in this class, but since virtual
 	function, needs implementation.
 */
-	void OrGate::setValue()
-	{
+void OrGate::setValue()
+{
 
-	}
+}
+
+string OrGate::getEquation()
+{
+    string equation;
+    
+    equation = "(" + ( getWire1()->getBackwardPtr() )->getEquation() + "+" + ( getWire2()->getBackwardPtr() )->getEquation() + ")";
+
+    return equation;
+}
 
 #endif

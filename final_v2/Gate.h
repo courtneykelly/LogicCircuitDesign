@@ -55,9 +55,11 @@ class Gate : public Block
 
 };
 
-
-
-// returns a pointer to the port of the int specified.
+/*	Getter Function. Returns a pointer to the port of the 
+	int specified. Integers 1 and 2 are the only valid options.
+	They return pointers to the two input wires on that gate, 
+	in1 and in2. 
+*/
 Wire *Gate::getPortPtr(int port)
 {
 	switch (port)
@@ -78,7 +80,11 @@ Wire *Gate::getPortPtr(int port)
 	}
 }	
 
-
+/*	Setter Function. This function sets the in1, in2, and out private
+	data members. When a wire is connected to an Input port on
+	a gate, this function is called to set the in1 pointer to
+	the wire that is connected to it.
+*/
 void Gate::setPortPtr(int port, Wire* ptr)
 {
 	switch (port)
@@ -94,7 +100,12 @@ void Gate::setPortPtr(int port, Wire* ptr)
 	}
 }
 
-
+/*	Getter Function. Returns an array with the x and y coordinates 
+	of the port requested. If a 0 is passed, the coordinates of the
+	out port are returned. If a 1 is passed, the coordinates of the 
+	1st (top) in port are returned. If a 2 is passed, the coordinates
+	of the 2nd (bottom) in port are returned.
+*/
 short *Gate::getPortXY(int port)
 {
 	if (port == 0)
@@ -103,52 +114,53 @@ short *Gate::getPortXY(int port)
 		return inPort1;
 	else if (port == 2)
 		return inPort2;
-	else
-	{
+	else {
 		cout << "port " << port << " does not exist" << endl;
 		return NULL;
 	}
 }
 
-
-
-
+/*	Setter Function. Sets the x and y coordinates of the output port
+	to the values passed into the function.	
+*/
 void Gate::setOutPort(short x, short y)
 {
 	outPort[0] = x;
 	outPort[1] = y;
 }
 
+/*	Setter Function. Sets the x and y coordinates of the 1st input
+	port to the values passed into the function.	
+*/
 void Gate::setInPort1(short x, short y)
 {
 	inPort1[0] = x;
 	inPort1[1] = y;
 }
 
+/*	Setter Function. Sets the x and y coordinates of the 2nd input 
+	port to the values passed into the function.	
+*/
 void Gate::setInPort2(short x, short y)
 {
 	inPort2[0] = x;
 	inPort2[1] = y;
 }
 
-
+/*	Movement Function. When you click and drag any of the gates on
+	the logic canvas, you want the wires that are attached to it 
+	follow the movement of that gate. This function makes sure that
+	if any wires are attached to the output port, or input ports 
+	they stay attached, no matter where the gate moves.
+*/
 void Gate::bringWires()
 {
 	int i;
-	for (i = 0; i < out.size(); i++)
-	{
+	for (i = 0; i < out.size(); i++) {
 		out[i]->movePoint1(getPortXY(0)[0], getPortXY(0)[1]);
 	}
 
-	/*
-	if (getPortPtr(0) != NULL) // if pointer is conected
-	{
-		// then move wire to match ports
-		getPortPtr(0)->movePoint1(getPortXY(0)[0], getPortXY(0)[1]);
-	}
-	*/
-	for (i = 1; i <=2; i++)
-	{
+	for (i = 1; i <=2; i++) {
 		if (getPortPtr(i) != NULL)
 		{
 			getPortPtr(i)->movePoint2(getPortXY(i)[0], getPortXY(i)[1]);
@@ -156,11 +168,17 @@ void Gate::bringWires()
 	}
 }
 
+/*	Getter Function. Returns in1, a pointer to the wire connected
+	to the first input port.
+*/
 Wire * Gate::getWire1()
 {
     return in1;
 }
 
+/*	Getter Function. Returns in2, a pointer to the wire connected
+	to the second input port.
+*/
 Wire * Gate::getWire2()
 {
     return in2;

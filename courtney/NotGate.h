@@ -24,8 +24,10 @@ class NotGate : public Gate
 		virtual int getValue();
 		virtual void draw(SDL_Renderer*);
 		virtual int onPort(int, int); // (xMouse, yMouse)
+		virtual int onBlock(int, int);
 		virtual void setValue();	// needed to change value of Inputs
 
+		virtual string getEquation();
 		
 	private:
 		int value;
@@ -48,7 +50,7 @@ class NotGate : public Gate
 // constructor
 NotGate::NotGate(double xTopLeft, double yTopLeft) : Gate()
 {
-	setPortPtr(0, NULL);
+	//setPortPtr(0, NULL);
 	setPortPtr(1, NULL);
 	setPortPtr(2, NULL);
 
@@ -118,13 +120,12 @@ void NotGate::draw(SDL_Renderer* renderer)
 
 	// draw lines
 	boxRGBA( renderer, x, y+(staticGateHeight/2-staticLineLength), x-staticGateWidth/3, 
-			y+(staticGateHeight/2)+staticLineLength, 255, 0, 50, 255 );
+			y+(staticGateHeight/2)+staticLineLength, 0, 0, 0, 255 );
 	boxRGBA( renderer, x+(2*staticGateWidth/3)+(staticGateWidth/3)-5, y+(staticGateHeight/2-staticLineLength), 
-			x+(2*staticGateWidth/3)-10, y+(staticGateHeight/2)+staticLineLength, 255, 0, 50, 255 );
+			x+(2*staticGateWidth/3)-10, y+(staticGateHeight/2)+staticLineLength, 0, 0, 0, 255 );
 	// draw triangle
 	filledTrigonRGBA( renderer, x, y+(staticGateHeight/4), x+(2*staticGateWidth/3), 
 			y+(staticGateHeight/2), x, y+(3*staticGateHeight/4), 255, 0, 50, 255);
-
 
 	// draw ports (temporary)
 	short* outPort = getPortXY(0);
@@ -149,19 +150,39 @@ int NotGate::onPort(int xMouse, int yMouse)
 		return -1;
 }
 
+int NotGate::onBlock(int xClick, int yClick)
+{
+	if (yClick >= y && yClick <= y+staticGateHeight) { 		// in vertical bounds 
+		if (xClick >= x && xClick <= x+staticGateWidth) {	// in horizontal bounds
+			return 1;
+		}
+	}
+	return 0;
+}
+
+
 void NotGate::updatePortXY()
 {
-	setInPort1(x, y + (staticGateHeight/2));
-	setOutPort(x+staticGateWidth, y + (staticGateHeight/2));
+	setInPort1(x-18, y + (staticGateHeight/2));
+	setOutPort(x+staticGateWidth-4, y + (staticGateHeight/2));
 }
 
 /* 	setValue function. Not needed in this class, but since virtual
 	function, needs implementation.
-*/
-	void NotGate::setValue()
-	{
+ */
+void NotGate::setValue()
+{
 
-	}
+}
+
+string NotGate::getEquation()
+{
+    string equation;
+    
+    equation = "(" + ( getWire1()->getBackwardPtr() )->getEquation() + ")'";
+
+    return equation;
+}
 
 
 #endif
