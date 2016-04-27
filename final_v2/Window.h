@@ -465,7 +465,6 @@ void Window::loadFromFile() {
 */
 int Window::eventHandler(SDL_Event e)
 {
-
 	switch(e.type)
 	{
 		case SDL_QUIT:
@@ -510,17 +509,19 @@ int Window::eventHandler(SDL_Event e)
 							action=3;
 							break;
 						}
+					
 					if(gateDetection(i, e)) {
-						if(blocks[i]->getx() == 50){
-							action = 0;
-							break;
-						}
+						//if(blocks[i]->getx() == 50){
+						//	action = 0;
+						//	break;
+						//}
 						blockNum = i;
 						dx = e.motion.x - blocks[i]->getx();
 						dy = e.motion.y - blocks[i]->gety();
 						action = 2;
 						break;
 					}
+
 				}
 				if (action == 0)
 				{
@@ -830,17 +831,25 @@ bool Window::staticNotGateDetection( SDL_Event event )
 	of pointers and pass in the block number we are looking at, along with the SDL event. It 
 	sees if the SDL click event corresponds to one of the blocks on the logic canvas. If 
 	this is true, we'll return true in order to enable movement of that block.
-*/
+ */
 bool Window::gateDetection( int blockNum, SDL_Event event )
 {
 	double blockX = blocks[blockNum]->getx();
 	double blockY = blocks[blockNum]->gety();
 
-	if((event.motion.x>blockX) && (event.motion.x<(blockX + highlightBoxWidth))){
-		if ( (event.motion.y>blockY) && (event.motion.y < (blockY + highlightBoxHeight))) {
-			return true;
-		}
+
+	if (blocks[blockNum]->onBlock(event.motion.x, event.motion.y))
+	{
+		return true;
 	}
+
+	/*
+	   if((event.motion.x>blockX) && (event.motion.x<(blockX + highlightBoxWidth))){
+	   if ( (event.motion.y>blockY) && (event.motion.y < (blockY + highlightBoxHeight))) {
+	   return true;
+	   }
+	   }
+	*/
 
 	return false;
 }
