@@ -469,7 +469,6 @@ void Window::loadFromFile() {
 */
 int Window::eventHandler(SDL_Event e)
 {
-	cout << "event handler" << endl;
 	switch(e.type)
 	{
 		case SDL_QUIT:
@@ -514,7 +513,7 @@ int Window::eventHandler(SDL_Event e)
 
 					if (inputDetection(i, e)) {
 							blockNum=i;
-							action=3;
+							changeInputValue(i);
 							break;
 						}
 					
@@ -568,10 +567,8 @@ int Window::eventHandler(SDL_Event e)
 		case 2:
 			moveBlock(blockNum);
 			break;
-		case 3:
-			changeInputValue(blockNum);
-			break;
 		default:
+			action = 0;
 			break;
 	}
 
@@ -658,7 +655,6 @@ void Window::moveBlock(int i)
 	int x;
 	int y;
 
-	cout << "move block" << endl;
 	// move block
 	SDL_GetMouseState(&x,&y);
 	blocks[i]->setx(x - dx);
@@ -913,7 +909,6 @@ void Window::clearAll()
 	{
 		deleteWire(i);
 	}
-	cout << "blocks.size(): " << blocks.size() << endl;
 
 	// delete all locks
 	for (i = blocks.size()-1; i>=0; i--)
@@ -921,7 +916,6 @@ void Window::clearAll()
 		delete blocks[i];
 		blocks.erase(blocks.begin()+i);
 	}
-	cout << "made it" << endl;
 
 	action = 0;
 

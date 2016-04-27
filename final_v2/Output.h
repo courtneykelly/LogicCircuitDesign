@@ -110,7 +110,7 @@ void Output::draw(SDL_Renderer* renderer)
 
 	// draw port in1
 	short* outPort = getPortXY(1);
-	circleRGBA(renderer, inPort1[0], inPort1[1], 10, 0, 0, 255, 255);
+	circleRGBA(renderer, inPort1[0], inPort1[1], 10, 0, 255, 0, 255);
 
 	boxRGBA( renderer, x-10, y+14, x, y+16, 0, 0, 0, 255);
 

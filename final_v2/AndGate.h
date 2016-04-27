@@ -185,8 +185,6 @@ void AndGate::draw(SDL_Renderer* renderer)
 	// draw body of AND gate as a single polygon
 	filledPolygonRGBA(renderer, xPoints, yPoints, numPoints, 255, 0, 50, 255);
 
-	boxRGBA(renderer, x, y, x+staticGateHeight, y+staticGateWidth, 0, 100, 0, 255);
-
 	short* outPort = getPortXY(0);
 	short* inPort1 = getPortXY(1);
 	short* inPort2 = getPortXY(2);
@@ -195,6 +193,7 @@ void AndGate::draw(SDL_Renderer* renderer)
 	circleRGBA(renderer, inPort1[0], inPort1[1], 10, 0, 255, 0, 255);
 	circleRGBA(renderer, inPort2[0], inPort2[1], 10, 0, 255, 0, 255);
 }
+
 
 /*	OnPort Function. This function uses the Pythagoreon Theorem
 	to detect if the mouse in on a port of a particular gate.
@@ -218,15 +217,13 @@ int AndGate::onPort(int xMouse, int yMouse)
 	return -1;
 }
 
+
 int AndGate::onBlock(int xClick, int yClick)
 {
-
 	if (yClick >= y && yClick <= y+staticGateWidth) // in vertical bounds
 	{
-		cout << "on y" << endl;
 		if (xClick >= x && xClick <= x+staticGateHeight) // in horizontal bounds
 		{
-			cout << "on x" << endl;
 			return 1;
 		}
 	}
