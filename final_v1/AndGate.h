@@ -195,7 +195,7 @@ void AndGate::draw(SDL_Renderer* renderer)
 	circleRGBA(renderer, inPort2[0], inPort2[1], 10, 0, 255, 0, 255);
 }
 
-/*	OnPort Function. This function uses the Pythagoreon Theorem
+/*	Boolean Function. This function uses the Pythagoreon Theorem
 	to detect if the mouse in on a port of a particular gate.
 	This is useful when drawing wires, so our program only
 	draws them in appropriate places and then can "click into
@@ -217,6 +217,11 @@ int AndGate::onPort(int xMouse, int yMouse)
 	return -1;
 }
 
+/*	Boolean Function. This function returns true when the x and y values passed
+	into the function (usually a mouse click coordinates) are within the bounds 
+	of the AND gate. This allows for the clicking and dragging of all AND gates
+	on the logic canvas.
+*/
 int AndGate::onBlock(int xClick, int yClick)
 {
 	if (yClick >= y && yClick <= y+staticGateHeight) // in vertical bounds
@@ -233,9 +238,7 @@ int AndGate::onBlock(int xClick, int yClick)
 /*	UpdatePort Function. This function updates the location 
 	of the ports. This is called every time the value of 
 	x and y is changed. 
-
 */
-
 void AndGate::updatePortXY()
 {
 	setInPort1(x-18, y+15);

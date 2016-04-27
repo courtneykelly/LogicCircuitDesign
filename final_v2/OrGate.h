@@ -188,6 +188,12 @@ void OrGate::draw(SDL_Renderer* renderer)
 	
 }
 
+/*	OnPort Function. This function uses the Pythagoreon Theorem
+	to detect if the mouse in on a port of a particular gate.
+	This is useful when drawing wires, so our program only
+	draws them in appropriate places and then can "click into
+	place" if you get close to the port.
+ */
 int OrGate::onPort(int xMouse, int yMouse)
 {
 	short* outPort = getPortXY(0);
@@ -204,7 +210,11 @@ int OrGate::onPort(int xMouse, int yMouse)
 	return -1;
 }
 
-
+/*	Boolean Function. This function returns true when the x and y values passed
+	into the function (usually a mouse click coordinates) are within the bounds 
+	of the OR gate. This allows for the clicking and dragging of all OR gates
+	on the logic canvas.
+*/
 int OrGate::onBlock(int xClick, int yClick)
 {
 	if (yClick >= y && yClick <= y+staticGateHeight) // in vertical bounds
@@ -217,7 +227,10 @@ int OrGate::onBlock(int xClick, int yClick)
 	return 0;
 }
 
-
+/*	UpdatePort Function. This function updates the location 
+	of the ports. This is called every time the value of 
+	x and y is changed. 
+*/
 void OrGate::updatePortXY()
 {
 	setInPort1(x-18, y+1);
