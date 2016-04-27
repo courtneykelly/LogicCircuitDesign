@@ -153,12 +153,7 @@ void NotGate::draw(SDL_Renderer* renderer)
 	filledTrigonRGBA( renderer, x, y+(staticGateHeight/4), x+(2*staticGateWidth/3), 
 			y+(staticGateHeight/2), x, y+(3*staticGateHeight/4), 255, 0, 50, 255);	
 	
-	circleRGBA(renderer, x, y, 2, 0, 255, 0, 255);
-	circleRGBA(renderer, x+(2*staticGateWidth/3), y+(3*staticGateHeight/4), 2, 0, 255, 0, 255);
-
-
-
-	// draw ports (temporary)
+	// draw ports
 	short* outPort = getPortXY(0);
 	short* inPort1 = getPortXY(1);
 
@@ -194,15 +189,12 @@ int NotGate::onPort(int xMouse, int yMouse)
 */
 int NotGate::onBlock(int xClick, int yClick)
 {
-	cout << "x:" << x << endl;
-	cout << "y:" << y << endl;
 
 	if (yClick >= y && yClick <= y+(3*staticGateHeight/4)) // in vertical bounds
 	{
-		cout << "within y" << endl;
 		if (xClick >= x && xClick <= x+(2*staticGateWidth/3)) // in horizontal bounds
 		{
-			cout << "within x" << endl;
+
 			return 1;
 		}
 	}
