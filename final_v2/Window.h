@@ -494,11 +494,7 @@ int Window::eventHandler(SDL_Event e)
 			else if (clearDetection( e )){
 				clearAll();
 			}
-			// This "else if" handles clicks within the logic canvas. These types of actions
-			// could be a wire draw, moving one of the gates on the canvas, or changing
-			// the value of one of the input blocks
-			else if( isInCanvasX( e.motion.x ) && isInCanvasY( e.motion.y ) )
-			{	
+
 				// determine if on wire
 				for (int j = 0; j < wires.size(); j++)
 				{
@@ -519,10 +515,7 @@ int Window::eventHandler(SDL_Event e)
 						}
 					
 					if(gateDetection(i, e)) {
-						//if(blocks[i]->getx() == 50){
-						//	action = 0;
-						//	break;
-						//}
+
 						blockNum = i;
 						dx = e.motion.x - blocks[i]->getx();
 						dy = e.motion.y - blocks[i]->gety();
@@ -533,19 +526,13 @@ int Window::eventHandler(SDL_Event e)
 				}
 				if (action == 0)
 				{
-					//for (int i = 0; i < blocks.size(); i++)
-					//{
-					//	int port = blocks[i]->onPort(x, y);
-					//	if (port == 0)
-					//	{
+
 					makeWire();
 					action = 1;
 					break;
-					//	}
 
-					//}
 				}
-			}
+
 			break;
 
 		case SDL_MOUSEBUTTONUP:
