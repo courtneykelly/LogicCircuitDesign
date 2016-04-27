@@ -23,6 +23,8 @@
 
 #define PI 3.14159265
 
+
+
 class Window {
 
 	public:
@@ -609,7 +611,6 @@ void Window::makeBlock(int i)
 		Bptr = new NotGate(x,y);	// create new pointer and call NOT gate constructor
 	}
 
-
 	blocks.push_back(Bptr);		// push the new point into the vector of pointers for the blocks
 	action = 0;
 }
@@ -650,6 +651,7 @@ void Window::moveBlock(int i)
 	int x;
 	int y;
 
+	cout << "move block" << endl;
 	// move block
 	SDL_GetMouseState(&x,&y);
 	blocks[i]->setx(x - dx);
