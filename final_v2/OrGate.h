@@ -124,8 +124,16 @@ int OrGate::getValue()
  */
 void OrGate::draw(SDL_Renderer* renderer)
 {
-	// Change color to blue
-    SDL_SetRenderDrawColor( renderer, 0, 0, 255, 255 );
+
+	// draw ports
+
+	short* outPort = getPortXY(0);
+	short* inPort1 = getPortXY(1);
+	short* inPort2 = getPortXY(2);
+
+	circleRGBA(renderer, outPort[0], outPort[1], 10, 0, 255, 0, 255);
+	circleRGBA(renderer, inPort1[0], inPort1[1], 10, 0, 255, 0, 255);
+	circleRGBA(renderer, inPort2[0], inPort2[1], 10, 0, 255, 0, 255);
 
     // Set Trigonometry Values for drawing Half Circle
 	double step = 2;					// step size= 2 degrees
@@ -145,12 +153,15 @@ void OrGate::draw(SDL_Renderer* renderer)
 		yPoints[i] = yCenter + radius*sin(theta);	// get y value based on theta, yCenter, and radius
 		theta += step*PI/180;						// increment theta by step size, convert to radians
 	}
+	
+	xPoints[91] = x;
+	yPoints[91] = y+staticGateHeight;
+	xPoints[92] = x+30;							// these points are for the rectangle
+	yPoints[92] = y+staticGateHeight;			// attached to the semi circle
+	xPoints[93] = x+30;
+	yPoints[93] = y;
 
-	xPoints[91] = x;							// these points are for the rectangle
-	yPoints[91] = y+staticGateHeight;			// attached to the semi circle
-	xPoints[92] = x+(staticGateWidth);
-	yPoints[92] = y+staticGateHeight;
-
+/*
 	theta = 270*PI/180;						// reset theta
 	xCenter = x + staticGateWidth;			// reset xCenter
 	yCenter = y + (staticGateHeight/2);		// reset yCenter
@@ -164,6 +175,7 @@ void OrGate::draw(SDL_Renderer* renderer)
 
 	xPoints[numPoints-1] = x+(staticGateWidth);
 	yPoints[numPoints-1] = y;
+*/
 
 	// lines, to represent ports
 	boxRGBA(renderer, x+12, y, x-staticGateWidth/3, 
@@ -175,18 +187,15 @@ void OrGate::draw(SDL_Renderer* renderer)
 			y+(staticGateHeight/2)+(staticLineLength), 0, 0, 0, 255);
 
 	// draw body of OR gate as a single polygon
-	filledPolygonRGBA(renderer, xPoints, yPoints, numPoints, 255, 0, 50, 255);
+	filledPolygonRGBA(renderer, xPoints, yPoints, 94, 255, 0, 50, 255);
 
-	short* outPort = getPortXY(0);
-	short* inPort1 = getPortXY(1);
-	short* inPort2 = getPortXY(2);
+	// draw
+	filledPieRGBA(renderer, x+30, y+staticGateHeight-1, staticGateHeight-1, 270, 330, 255, 0, 50, 255);	
+	filledPieRGBA(renderer, x+30, y+1, staticGateHeight, 30, 90, 255, 0, 50, 255);	
 
-	circleRGBA(renderer, outPort[0], outPort[1], 10, 0, 255, 0, 255);
-	circleRGBA(renderer, inPort1[0], inPort1[1], 10, 0, 255, 0, 255);
-	circleRGBA(renderer, inPort2[0], inPort2[1], 10, 0, 255, 0, 255);
-
-	
+	//boxRGBA(renderer, x, y, x+staticGateWidth-8, y+staticGateHeight, 0, 50, 0, 255);
 }
+
 
 /*	OnPort Function. This function uses the Pythagoreon Theorem
 	to detect if the mouse in on a port of a particular gate.
