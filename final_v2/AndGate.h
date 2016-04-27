@@ -196,23 +196,27 @@ int AndGate::onPort(int xMouse, int yMouse)
 
 int AndGate::onBlock(int xClick, int yClick)
 {
-	if (yClick >= y && yClick <= y+staticGateHeight) // in vertical bounds
+	// if in rectangle:
+	if (yClick >= y && yClick <= y+staticGateHeight && xClick >= x && xClick <= x+staticGateWidth) // in horizontal bounds
 	{
-		if (xClick >= x && xClick <= x+staticGateWidth) // in horizontal bounds
-		{
-			return 1;
-		}
+		return 1;
 	}
-
-
-	return 0;
+	// if in circle: (pythagorean theorem)
+	else if (sqrt(pow(x+staticGateWidth-xClick, 2) + pow(y+staticGateHeight/2-yClick, 2)) <= staticGateHeight/2)
+	{
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
 }
 
 /*	UpdatePort Function. This function updates the location 
 	of the ports. This is called every time the value of 
 	x and y is changed. 
 
-*/
+ */
 
 void AndGate::updatePortXY()
 {

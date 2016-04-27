@@ -1,7 +1,7 @@
 /* 	logicCircuitDesign
 	Window.h
 	contains all of the information for the window
-*/
+ */
 
 #include <SDL.h>
 #include "SDL2_gfxPrimitives.h"
@@ -128,7 +128,7 @@ class Window {
 	It also needs to initialize all SDL Rectangles where we want to render
 	textures like the equation and the labesl for all of our inputs, hence
 	its length.
-*/
+ */
 Window::Window()
 {
 	// Initialize Important Variables for Window dimensions
@@ -258,7 +258,7 @@ Window::Window()
 /* 	Destructor
 	Destroys everything in the window, this function is called during 
 	an exit click event in order to exit the window.
-*/
+ */
 Window::~Window()
 {
 	SDL_DestroyRenderer (renderer);
@@ -271,7 +271,7 @@ Window::~Window()
 
 
 /* 	Initilaizes the window and renderer
-*/
+ */
 int Window::init()
 {
 	// Error handling, if for some reason SDL couldn't initialize 
@@ -327,7 +327,7 @@ int Window::init()
 	the View Controller box itself, and the logic canvas box. This function 
 	needs to be constantly called in our main as everything changes as the 
 	user interacts with it, but our background stays the same.
-*/
+ */
 void Window::draw()
 {
 	// Change color to blue
@@ -356,7 +356,7 @@ void Window::draw()
 
 	//Draw Text (Equation Text, Input/Output Labels)
 	loadFromFile();
-	
+
 	SDL_RenderCopy( renderer, equationText, NULL, &equation);
 	SDL_RenderCopy( renderer, aTexture, NULL, &aLabel );
 	SDL_RenderCopy( renderer, bTexture, NULL, &bLabel );
@@ -374,7 +374,7 @@ void Window::draw()
 	// Outputs equation to stdout
 	if ( outputPtr->getValue() != -1 && equationOutputted == 0)
 	{
-	    equationOutputted = 1;
+		equationOutputted = 1;
 
 	}
 
@@ -386,7 +386,7 @@ void Window::draw()
 	function to render text to the screen. This includes the finished
 	equation once a circuit is complete, and the labels "a" "b" "c" and
 	"z" for the input/output boxes.
-*/
+ */
 void Window::loadFromFile() {
 
 	SDL_Surface* loadedSurface = IMG_Load("Title.bmp");
@@ -504,24 +504,24 @@ int Window::eventHandler(SDL_Event e)
 				}
 			}
 
-				// determine if on input or gate block
-				for(int i = 0; i < blocks.size(); i++) {
+			// determine if on input or gate block
+			for(int i = 0; i < blocks.size(); i++) {
 
-					if (inputDetection(i, e)) {
-						blockNum=i;
-						changeInputValue(i);
-						//break;
-					}
-
-					if(gateDetection(i, e)) {
-						blockNum = i;
-						dx = e.motion.x - blocks[i]->getx();
-						dy = e.motion.y - blocks[i]->gety();
-						action = 2;
-						break;
-					}
-
+				if (inputDetection(i, e)) {
+					blockNum=i;
+					changeInputValue(i);
+					//break;
 				}
+
+				if(gateDetection(i, e)) {
+					blockNum = i;
+					dx = e.motion.x - blocks[i]->getx();
+					dy = e.motion.y - blocks[i]->gety();
+					action = 2;
+					break;
+				}
+
+			}
 			if (action == 0)
 			{
 
@@ -534,16 +534,15 @@ int Window::eventHandler(SDL_Event e)
 				}
 			}
 
-	}
 
-	break;
+			break;
 
-case SDL_MOUSEBUTTONUP:
-if (action == 1)
-{
-	action = 0;
-	moveWire();
-}
+		case SDL_MOUSEBUTTONUP:
+			if (action == 1)
+			{
+				action = 0;
+				moveWire();
+			}
 			else
 				action = 0;
 			break;
@@ -568,7 +567,7 @@ if (action == 1)
 
 
 /* 	Push back a new wire to vector wires
-*/
+ */
 void Window::makeWire()
 {
 	int x;
@@ -583,7 +582,7 @@ void Window::makeWire()
 /*	Pushback a new Gate based on it's type, which is passed as an integer 
 	to the function. 0 is a new AND gate, 1 is a new OR gate, and 2 is a 
 	new NOT gate.
-*/
+ */
 void Window::makeBlock(int i)
 {
 	int x, y;
@@ -614,7 +613,7 @@ void Window::makeBlock(int i)
 	the endpoint of that wire follow the x and y position of the mouse to create
 	the click and drag effect. It will then snap the wire into a port position or 
 	delete it if it's in an incorrect position.
-*/
+ */
 void Window::moveWire()
 {
 	int x;
@@ -629,7 +628,7 @@ void Window::moveWire()
 		{	
 			// If wire is not on two valid ports, it deletes the wire from the wires vector
 			delete wires.back();
-		    wires.pop_back();
+			wires.pop_back();
 
 		}
 	}
@@ -641,7 +640,7 @@ void Window::moveWire()
 	follow the x and y coordinates of the mouse. It also calls
 	the bringWires function to make sure if there is a wire
 	attached to a port oin the gate you're moving, it follows.
-*/
+ */
 void Window::moveBlock(int i)
 {
 	int x;
@@ -656,7 +655,7 @@ void Window::moveBlock(int i)
 	newY = y - dy;
 
 	/* Detect whether new x and y values are in canvas and snaps them back individually 
-		to the edge of the canvas if they are outside of it
+	   to the edge of the canvas if they are outside of it
 	 */
 
 	if ( isInCanvasX( newX ) )
@@ -696,7 +695,7 @@ void Window::moveBlock(int i)
 	exact position of the port, once you were in circle range of that port.
 	It also connects the pointers to and from the wires so that the equations
 	and results can be evaluated.
-*/
+ */
 int Window::snapWire(int x, int y)
 {
 	int connections = 0; // number of snaps
@@ -781,7 +780,7 @@ int Window::snapWire(int x, int y)
 
 /*	This function will erase a wire. This happens when you click and drag a 
 	wire to an incorrect port, or to no port at all.	
-*/
+ */
 void Window::deleteWire(int wireNum)
 {
 	delete wires[wireNum];
@@ -791,7 +790,7 @@ void Window::deleteWire(int wireNum)
 
 /*	This function loops through our blocks vector of pointers to gates objects,
 	input objects, and output objects.
-*/
+ */
 void Window::drawBlocks()
 {
 	for(int i = 0; i < blocks.size(); i++)
@@ -804,7 +803,7 @@ void Window::drawBlocks()
 	This vector stores all the wires that are currently drawn on the 
 	screen. We call this function in main, so it constantly redraws the wires.
 	This is to handle when we move wires, or click and drag them, etc.
-*/
+ */
 void Window::drawWires()
 {
 	for (int i = 0; i < wires.size(); i++)
@@ -817,7 +816,7 @@ void Window::drawWires()
 /*	This function returns true if the user clicked on the static AND gate in 
 	the view controller. We use this function, so if the user clicks on a static 
 	AND gate, then a new one will be drawn on the logic canvas.
-*/
+ */
 bool Window::staticAndGateDetection( SDL_Event event) 
 {
 	if ( (event.motion.x>staticANDx) && (event.motion.x<(staticANDx+highlightBoxWidth)) ) {
@@ -831,7 +830,7 @@ bool Window::staticAndGateDetection( SDL_Event event)
 /*	This function returns true if the user clicked on the static OR gate in 
 	the view controller. We use this function, so if the user clicks on a static 
 	OR gate, then a new one will be drawn on the logic canvas.
-*/
+ */
 bool Window::staticOrGateDetection( SDL_Event event ) 
 {
 	if ( (event.motion.x>staticORx) && (event.motion.x<(staticORx+highlightBoxWidth)) ) {
@@ -845,7 +844,7 @@ bool Window::staticOrGateDetection( SDL_Event event )
 /*	This function returns true if the user clicked on the static NOT gate in 
 	the view controller. We use this function, so if the user clicks on a static 
 	NOT gate, then a new one will be drawn on the logic canvas.
-*/
+ */
 bool Window::staticNotGateDetection( SDL_Event event ) 
 {
 
@@ -869,9 +868,6 @@ bool Window::gateDetection( int blockNum, SDL_Event event )
 	int y;
 	SDL_GetMouseState(&x, &y);
 
-	cout << "xClick:" << x << endl;
-	cout << "yClick:" << y << endl;
-	
 	if (blocks[blockNum]->onBlock(x, y))
 	{
 		return true;
@@ -882,7 +878,7 @@ bool Window::gateDetection( int blockNum, SDL_Event event )
 
 /*	This function is not used in the Window class, but it needed to be implemented
 	because it is a virtual function.
-*/
+ */
 bool Window::wireDetection( int wireNum)
 {
 	return false;
@@ -891,7 +887,7 @@ bool Window::wireDetection( int wireNum)
 /*	Boolean Function. This function will return true is the x and y coordindates
 	of the mouse at the time of a click event correspond to the coordinates of
 	the Clear box, emualting a button click.
-*/
+ */
 bool Window::clearDetection( SDL_Event event )
 {
 	if ((event.motion.x > clear.x ) && (event.motion.x < (clear.x + clear.w))) {
@@ -938,7 +934,7 @@ void Window::changeInputValue( int i )
 /*	Erase Function. This function provies the action for our "CLEAR"
 	button on the window. When pressed it will delete all the AND, OR,
 	and NOT gates, as well as the any wires on the logic canvas. 
-*/
+ */
 void Window::clearAll()
 {
 	int i;
@@ -976,7 +972,7 @@ void Window::clearAll()
 
 /* 	This function detects whether the x value passed to it is within 
 	the bounds of the x values of the canvas
-*/
+ */
 bool Window::isInCanvasX( int x )
 {
 	if(x > logicCanvas.x + .55*staticGateWidth && x < (logicCanvas.x+logicCanvas.w - 2.1*staticGateWidth) )
@@ -988,10 +984,10 @@ bool Window::isInCanvasX( int x )
 		return false;
 	}
 }
-	
+
 /* 	This function detects whether the y value passed to it is within 
 	the bounds of the y values of the canvas
-*/
+ */
 bool Window::isInCanvasY( int y )
 {
 	if( y > logicCanvas.y && y < (logicCanvas.y+logicCanvas.h - staticGateHeight) )  
