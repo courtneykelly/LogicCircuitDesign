@@ -71,29 +71,48 @@ NotGate::~NotGate()
 {
 }
 
-
+/*	Getter Function. Returns the private data member x 
+	so it can be accessed outside the class
+ */
 double NotGate::getx()
 {
 	return x;
 }
 
+/*	Getter Function. Returns the private data member y 
+	so it can be accessed outside the class
+ */
 double NotGate::gety()
 {
 	return y;
 }
 
+/* 	Setter Function. Takes in the new x value and updates
+	private data member x. This was the draw function will
+	place the NOT gate in the appropriate location. This function
+	is useful when clicking and dragging the NOT gate, you can 
+	constantly update its position and ports.
+ */
 void NotGate::setx(double newX)
 {
 	x = newX;
 	updatePortXY();
 }
 
+/*	Setter Function. Takes in the new y values and updates the 
+	private data member y. Same use a description for gety()
+	function.
+ */
 void NotGate::sety(double newY)
 {
 	y = newY;
 	updatePortXY();
 }
 
+/*	Returns the value of the NOT gate based on the values
+	of it's one input. For an NOT gate it will simply change 
+	the value to it's negation. (so from 0 to 1, or 1 to 0)
+ */
 int NotGate::getValue()
 {	
 	int input;
@@ -115,6 +134,11 @@ int NotGate::getValue()
 	}
 }
 
+/*	Draw Function. This virtual function is very specific 
+	to this NOT gate class. It takes in the renderer and
+	draws the gate all based on the x and y private data
+	members, which are continually changing.
+ */
 void NotGate::draw(SDL_Renderer* renderer)
 {
 	// Change color to blue
@@ -143,6 +167,12 @@ void NotGate::draw(SDL_Renderer* renderer)
 
 }
 
+/*	OnPort Function. This function uses the Pythagoreon Theorem
+	to detect if the mouse in on a port of a particular gate.
+	This is useful when drawing wires, so our program only
+	draws them in appropriate places and then can "click into
+	place" if you get close to the port.
+ */
 int NotGate::onPort(int xMouse, int yMouse)
 {
 
@@ -157,6 +187,11 @@ int NotGate::onPort(int xMouse, int yMouse)
 		return -1;
 }
 
+/*	Boolean Function. This function returns true when the x and y values passed
+	into the function (usually a mouse click coordinates) are within the bounds 
+	of the NOT gate. This allows for the clicking and dragging of all NOT gates
+	on the logic canvas.
+*/
 int NotGate::onBlock(int xClick, int yClick)
 {
 	cout << "x:" << x << endl;
@@ -174,7 +209,10 @@ int NotGate::onBlock(int xClick, int yClick)
 	return 0;
 }
 
-
+/*	UpdatePort Function. This function updates the location 
+	of the ports. This is called every time the value of 
+	x and y is changed. 
+*/
 void NotGate::updatePortXY()
 {
 
