@@ -58,37 +58,44 @@ Wire::~Wire()
 {
 }
 
-// evaluate function with:
+/* 	Getter Function. Evaluate function with the value
+	of the gate that the backward pointer of the wire
+	points to.
+*/
 int Wire::getValue()
 {
 	return (backwardPtr->getValue());
 }
 
-
-
-// set the pointer to the block
+/* 	Setter Function. Sets the pointer to the block passed
+	to the function to the private data member backwardPtr.
+*/
 void Wire::setBackwardPtr(Block* ptr)
 {
 	backwardPtr = ptr;
 }
 
-
-// set the pointer to the block
+/* 	Setter Function. Sets the pointer to the block passed
+	to the function to the private data member forwardPtr.
+*/
 void Wire::setForwardPtr(Block* ptr)
 {
 	forwardPtr = ptr;
 }
 
-
-
-// move origin (first) point of the wire
+/* 	Move origin (first) point of the wire
+*/
 void Wire::movePoint1(int x, int y)
 {
 	x1 = x;
 	y1 = y;
 }
 
-
+/*	Getter Function. Returns an array to the (x,y) coordingates
+	of the endpoints of the wire. If a 1 is passed, then starting
+	point of the wire is returned. If a 2 is passed, then the ending
+	point of the wire is returned.
+*/
 short *Wire::getPointXY(int point)
 {
 	if (point == 1)
@@ -105,19 +112,16 @@ short *Wire::getPointXY(int point)
 		return NULL;
 }
 
-
-// move the pivot (second) point of the wire
+/* 	Movement Function. Moves the pivot (second) point of the wire
+*/
 void Wire::movePoint2(int x, int y)
 {
 	x2 = x;
 	y2 = y;
 }
 
-
-
-
-
-// draw a single wire
+/* 	Draw Function. Draws a single wire
+*/
 void Wire::draw(SDL_Renderer* renderer)
 {
 	SDL_SetRenderDrawColor(renderer, 100, 100, 100, 255);
@@ -125,6 +129,9 @@ void Wire::draw(SDL_Renderer* renderer)
 
 }
 
+/*	Utility Function. Prepares to delete all the wires
+	that are currently rendered to the screen.
+*/
 void Wire::deletePrep()
 {
 	if (forwardPtr != NULL && forwardPtr->getPortPtr(1) == this)
@@ -145,17 +152,9 @@ void Wire::deletePrep()
 	}
 }
 
-
-int Wire::onWire()
-{
-	int length;
-	length = sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2));
-
-	cout << "length: " << length << endl;
-
-	return -1;
-}
-
+/*	Getter Function. Returns the value of the backward pointer, which is a pointer
+	to the block where the wire originates from.
+*/
 Block * Wire::getBackwardPtr()
 {
     return backwardPtr;
