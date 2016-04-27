@@ -57,6 +57,8 @@ class Window {
 
 		void clearAll();
 
+		bool isInCanvasX( int );
+		bool isInCanvasY( int );
 
 	private:
 		double screen_width;
@@ -495,8 +497,7 @@ int Window::eventHandler(SDL_Event e)
 			// This "else if" handles clicks within the logic canvas. These types of actions
 			// could be a wire draw, moving one of the gates on the canvas, or changing
 			// the value of one of the input blocks
-			else if(e.motion.x>logicCanvas.x && e.motion.x<(logicCanvas.x+logicCanvas.w) 
-					&& e.motion.y>logicCanvas.y && e.motion.y<(logicCanvas.y+logicCanvas.h))
+			else if( isInCanvasX( e.motion.x ) && isInCanvasY( e.motion.y ) )
 			{	
 				// determine if on wire
 				for (int j = 0; j < wires.size(); j++)
@@ -654,11 +655,43 @@ void Window::moveBlock(int i)
 {
 	int x;
 	int y;
+	int newX;
+	int newY;
 
 	// move block
 	SDL_GetMouseState(&x,&y);
-	blocks[i]->setx(x - dx);
-	blocks[i]->sety(y - dy);
+
+	newX = x - dx;
+	newY = y - dy;
+
+	// Detect whether new x and y values are in canvas and adjust if they are
+
+	if ( isInCanvasX( newX ) )
+	{	
+		blocks[i]->setx( newX );
+	}
+	else if ( newX <= logicCanvas.x + .55*staticGateWidth )
+	{
+		blocks[i]->setx( logicCanvas.x + .55*staticGateWidth );
+	}
+	else if ( newX >= (logicCanvas.x+logicCanvas.w - 2.1*staticGateWidth) )
+	{
+		blocks[i]->setx( logicCanvas.x+logicCanvas.w - 2.1*staticGateWidth );
+	}
+
+
+	if ( isInCanvasY( newY ) )
+	{
+		blocks[i]->sety( newY );
+	}
+	else if ( newY <= logicCanvas.y )
+	{
+		blocks[i]->sety( logicCanvas.y );
+	} 
+	else if ( newY >= ( logicCanvas.y+logicCanvas.h - staticGateHeight ) )
+	{
+		blocks[i]->sety( logicCanvas.y+logicCanvas.h - staticGateHeight );
+	}
 
 	// move wires
 	blocks[i]->bringWires();
@@ -937,4 +970,27 @@ void Window::clearAll()
 	equationOutputted = 0;
 }
 
+bool Window::isInCanvasX( int x )
+{
+	if(x > logicCanvas.x + .55*staticGateWidth && x < (logicCanvas.x+logicCanvas.w - 2.1*staticGateWidth) )
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+bool Window::isInCanvasY( int y )
+{
+	if( y > logicCanvas.y && y < (logicCanvas.y+logicCanvas.h - staticGateHeight) )  
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
 
