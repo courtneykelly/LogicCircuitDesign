@@ -48,6 +48,7 @@ class Window {
 		bool gateDetection( int, SDL_Event );
 
 		bool wireDetection( int );
+		bool clearDetection( SDL_Event );
 
 		bool inputDetection( int, SDL_Event );
 		void changeInputValue( int );
@@ -485,6 +486,9 @@ int Window::eventHandler(SDL_Event e)
 			else if (staticNotGateDetection( e )) {
 				makeBlock(2); //2 = NOT
 			}
+			else if (clearDetection( e )){
+				clearAll();
+			}
 			// This "else if" handles clicks within the logic canvas. These types of actions
 			// could be a wire draw, moving one of the gates on the canvas, or changing
 			// the value of one of the input blocks
@@ -862,6 +866,15 @@ bool Window::wireDetection( int wireNum)
 	return false;
 }
 
+bool Window::clearDetection( SDL_Event event )
+{
+	if ((event.motion.x > clear.x ) && (event.motion.x < (clear.x + clear.w))) {
+		if ((event.motion.y > clear.y) && (event.motion.y < (clear.y + clear.h))) {
+			return true;
+		}
+	}
+	return false;
+}
 /*	This function detects if one of the input blocks has been clicked. This is 
 	necessary because if one of the input blocks has been clicked then 
 	we need to change its value. 
@@ -890,11 +903,11 @@ void Window::changeInputValue( int i )
 void Window::clearAll()
 {
 	int i;
-	for (i = wires.size()-1; i--; i>=0)
+	for (i = wires.size()-1; i>=0; i--)
 	{
 		deleteWire(i);
 	}
-	for (i = blocks.size()-1; i--; i>=0)
+	for (i = blocks.size()-1; i>=4; i--)
 	{
 		delete blocks[i];
 		blocks.erase(blocks.begin()+i);
