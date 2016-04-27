@@ -84,7 +84,7 @@ Wire *Input::getPortPtr(int port)
 	}
 }	
 
-/*	Setter Function. For the Input class, when a wire is created front an Input
+/*	Setter Function. For the Input class, when a wire is created from an Input
 	out port, a pointer to that wire is created and passed to this function. 
 	The pointer is then added to the out vector (a vector containing pointers to
 	all wires stemming from the output port). Again since this is the Input class

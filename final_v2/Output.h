@@ -48,7 +48,8 @@ class Output : public Block
 };
 
 
-// constructor
+/* 	Constructor
+*/
 Output::Output(double xPos, double yPos, char variable, int val) : Block()
 {
 	x = xPos;			// 710
@@ -60,12 +61,17 @@ Output::Output(double xPos, double yPos, char variable, int val) : Block()
 }
 
 
-// deconstructor
+/* Deconstructor
+*/
 Output::~Output()
 {
-
 }
 
+/*	Getter Function. Returns a pointer to the port of the 
+	int specified. Integers 1 is the only valid option because
+	the Output gate only has 1 input port. It returns a pointer
+	to the wire connected to its input port. 
+*/
 Wire *Output::getPortPtr(int port)
 {
 	switch (port)
@@ -78,7 +84,11 @@ Wire *Output::getPortPtr(int port)
 	}
 }	
 
-
+/*	Setter Function. When a wire is connected to the input port 
+	of an Output gate, a pointer to that wire is created and 
+	passed to this function. It is then set to the in1 private
+	data member.
+*/
 void Output::setPortPtr(int port, Wire* ptr)
 {
 	switch (port)

@@ -47,7 +47,8 @@ class NotGate : public Gate
 };
 
 
-// constructor
+/* 	Constructor
+*/
 NotGate::NotGate(double xTopLeft, double yTopLeft) : Gate()
 {
 	//setPortPtr(0, NULL);
@@ -64,7 +65,8 @@ NotGate::NotGate(double xTopLeft, double yTopLeft) : Gate()
 	updatePortXY();
 }
 
-// destructor
+/* Deconstructor
+*/
 NotGate::~NotGate()
 {
 }
