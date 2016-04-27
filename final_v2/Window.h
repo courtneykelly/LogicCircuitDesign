@@ -527,9 +527,13 @@ int Window::eventHandler(SDL_Event e)
 				if (action == 0)
 				{
 
-					makeWire();
-					action = 1;
-					break;
+					if ( e.motion.x > logicCanvas.x && e.motion.x < (logicCanvas.x + logicCanvas.w)
+							&& e.motion.y > logicCanvas.y && e.motion.y < (logicCanvas.y + logicCanvas.h) )
+					{
+						makeWire();
+						action = 1;
+						break;
+					}
 
 				}
 
