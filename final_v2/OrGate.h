@@ -61,28 +61,48 @@ OrGate::~OrGate()
 {
 }
 
+/*	Getter Function. Returns the private data member x 
+	so it can be accessed outside the class
+ */
 double OrGate::getx()
 {
 	return x;
 }
 
+/*	Getter Function. Returns the private data member y 
+	so it can be accessed outside the class
+ */
 double OrGate::gety()
 {
 	return y;
 }
 
+/* 	Setter Function. Takes in the new x value and updates
+	private data member x. This was the draw function will
+	place the OR gate in the appropriate location. This function
+	is useful when clicking and dragging the OR gate, you can 
+	constantly update its position and ports.
+ */
 void OrGate::setx(double newX)
 {
 	x = newX;
 	updatePortXY();
 }
 
+/*	Setter Function. Takes in the new y values and updates the 
+	private data member y. Same use a description for gety()
+	function.
+ */
 void OrGate::sety(double newY)
 {
 	y = newY;
 	updatePortXY();
 }
 
+/*	Returns the value of the OR gate based on the values
+	of it's two inputs. For an OR gate it will only 
+	return false if both of the input values are 0.
+ */
 int OrGate::getValue()
 {
 	int left;
@@ -97,6 +117,11 @@ int OrGate::getValue()
 		return (left > 0 || right > 0);
 }
 
+/*	Draw Function. This virtual function is very specific 
+	to this OR gate class. It takes in the renderer and
+	draws the gate all based on the x and y private data
+	members, which are continually changing.
+ */
 void OrGate::draw(SDL_Renderer* renderer)
 {
 	// Change color to blue
