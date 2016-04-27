@@ -190,7 +190,7 @@ int NotGate::onPort(int xMouse, int yMouse)
 int NotGate::onBlock(int xClick, int yClick)
 {
 
-	if (yClick >= y && yClick <= y+(3*staticGateHeight/4)) // in vertical bounds
+	if (yClick >= y+(staticGateHeight/4) && yClick <= y+(3*staticGateHeight/4)) // in vertical bounds
 	{
 		if (xClick >= x && xClick <= x+(2*staticGateWidth/3)) // in horizontal bounds
 		{
@@ -199,6 +199,7 @@ int NotGate::onBlock(int xClick, int yClick)
 		}
 	}
 	return 0;
+
 }
 
 /*	UpdatePort Function. This function updates the location 

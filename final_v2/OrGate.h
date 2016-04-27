@@ -127,43 +127,14 @@ void OrGate::draw(SDL_Renderer* renderer)
 	// Change color to blue
     SDL_SetRenderDrawColor( renderer, 0, 0, 255, 255 );
 
-    // Set Trigonometry Values for drawing Half Circle
-	double step = 2;					// step size= 2 degrees
-	int numPoints = int(180/step*2 + 4);	// number of points based on step size
-	short xPoints[numPoints];			
-	short yPoints[numPoints];
 
-	double theta = 270*PI/180;					// start theta=270 degrees and convert to radians
-	double xCenter = x;							// x value of center point for semi circle
-	double yCenter = y + staticGateHeight/2;	// y value of center point for semi circle
-	double radius = staticGateHeight/2;			// radius of semi circle
+	double radius = staticGateHeight/2;
 
-	xPoints[0] = x;
-	yPoints[0] = y;	
-	for (int i=1; i<=(180/step); i++) {				// loop through number of points
-		xPoints[i] = xCenter + radius*cos(theta);	// get x value based on theta, xCenter, and radius
-		yPoints[i] = yCenter + radius*sin(theta);	// get y value based on theta, yCenter, and radius
-		theta += step*PI/180;						// increment theta by step size, convert to radians
-	}
+	boxRGBA(renderer, x, y, x+staticGateWidth, y+staticGateHeight, 255, 0, 50, 255);
 
-	xPoints[91] = x;							// these points are for the rectangle
-	yPoints[91] = y+staticGateHeight;			// attached to the semi circle
-	xPoints[92] = x+(staticGateWidth);
-	yPoints[92] = y+staticGateHeight;
+	filledCircleRGBA(renderer, x+staticGateWidth, y+staticGateHeight/2, staticGateHeight/2, 255, 0, 50, 255);
 
-	theta = 270*PI/180;						// reset theta
-	xCenter = x + staticGateWidth;			// reset xCenter
-	yCenter = y + (staticGateHeight/2);		// reset yCenter
-	radius = staticGateHeight/2;			// reset radius
-
-	for (int i=(numPoints-2); i>(92); i--) {			// loop through number of points
-		xPoints[i] = xCenter + radius*cos(theta);		// get x value based on theta, xCenter, and radius
-		yPoints[i] = yCenter + radius*sin(theta);		// get y value based on theta, yCenter, and radius
-		theta += step*PI/180;							// increment theta by step size, convert to radians
-	}
-
-	xPoints[numPoints-1] = x+(staticGateWidth);
-	yPoints[numPoints-1] = y;
+	filledCircleRGBA( renderer, x, y+staticGateHeight/2, staticGateHeight/2, 255, 255, 255, 255);
 
 	// lines, to represent ports
 	boxRGBA(renderer, x+12, y, x-staticGateWidth/3, 
@@ -173,9 +144,6 @@ void OrGate::draw(SDL_Renderer* renderer)
 	boxRGBA(renderer, x + staticGateWidth + radius + (staticGateWidth/3), 
 			y+(staticGateHeight/2)-(staticLineLength), x + staticGateWidth + radius,
 			y+(staticGateHeight/2)+(staticLineLength), 0, 0, 0, 255);
-
-	// draw body of OR gate as a single polygon
-	filledPolygonRGBA(renderer, xPoints, yPoints, numPoints, 255, 0, 50, 255);
 
 	short* outPort = getPortXY(0);
 	short* inPort1 = getPortXY(1);
@@ -217,14 +185,21 @@ int OrGate::onPort(int xMouse, int yMouse)
 */
 int OrGate::onBlock(int xClick, int yClick)
 {
-	if (yClick >= y && yClick <= y+staticGateHeight) // in vertical bounds
+	if (yClick >= y && yClick <= y+staticGateHeight && xClick >= x && xClick <= x+staticGateWidth) // in horizontal bounds
 	{
-		if (xClick >= x && xClick <= x+staticGateWidth) // in horizontal bounds
-		{
+		if(sqrt(pow(x-xClick, 2) + pow(y+staticGateHeight/2-yClick, 2)) > staticGateHeight/2) {
 			return 1;
 		}
 	}
-	return 0;
+	// if in circle: (pythagorean theorem)
+	else if (sqrt(pow(x+staticGateWidth-xClick, 2) + pow(y+staticGateHeight/2-yClick, 2)) <= staticGateHeight/2)
+	{
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
 }
 
 /*	UpdatePort Function. This function updates the location 
