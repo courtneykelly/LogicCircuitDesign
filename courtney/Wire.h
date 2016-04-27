@@ -18,6 +18,9 @@ class Wire
 
 		void setBackwardPtr(Block*);
 		void setForwardPtr(Block*);
+
+		Block *getBackwardPtr();
+
 		void movePoint1(int, int);
 		void movePoint2(int, int);
 		short *getPointXY(int);
@@ -27,8 +30,8 @@ class Wire
 		int onWire();
 
 	private:
-		Block* forwardPtr;
-		Block* backwardPtr;
+		Block* forwardPtr; // points to the right to block input
+		Block* backwardPtr; // points to the left to block ouput
 		int value;
 
 		// wire coordinates:
@@ -124,20 +127,20 @@ void Wire::draw(SDL_Renderer* renderer)
 
 void Wire::deletePrep()
 {
-	if (forwardPtr != NULL && forwardPtr->getPortPtr(0) == this)
+	if (forwardPtr != NULL && forwardPtr->getPortPtr(1) == this)
 	{
-		cout << "Setting reference within 'out' to forward pointer to NULL" << endl;
+		cout << "Setting reference within 'in1' to forward pointer to NULL" << endl;
 		forwardPtr->setPortPtr(0, NULL);
 	}
 
-	if (backwardPtr != NULL && backwardPtr->getPortPtr(1) == this)
+	if (forwardPtr != NULL && backwardPtr->getPortPtr(2) == this)
 	{
-		cout << "Setting reference to backward pointer within 'in1' to NULL" << endl;
+		cout << "Setting reference to pointer within 'in0' to NULL" << endl;
 		backwardPtr->setPortPtr(1, NULL);
 	}
-	else if (backwardPtr != NULL && backwardPtr->getPortPtr(2) == this)
+	else if (backwardPtr != NULL && backwardPtr->getPortPtr(0) == this)
 	{
-		cout << "Setting reference to backward pointer within 'in2' to NULL" << endl;
+		cout << "Setting reference to pointer within 'out' to NULL" << endl;
 		backwardPtr->setPortPtr(2, NULL);
 	}
 }
@@ -151,6 +154,11 @@ int Wire::onWire()
 	cout << "length: " << length << endl;
 
 	return -1;
+}
+
+Block * Wire::getBackwardPtr()
+{
+    return backwardPtr;
 }
 
 

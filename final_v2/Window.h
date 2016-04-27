@@ -468,7 +468,7 @@ void Window::loadFromFile() {
 	the program. The user performs an SDL event such as a click, or a
 	drag, and we call the appropriate function for our prgram to react 
 	accordingly. 
-*/
+ */
 int Window::eventHandler(SDL_Event e)
 {
 	switch(e.type)
@@ -477,7 +477,7 @@ int Window::eventHandler(SDL_Event e)
 			return 1; // quits
 			break;
 		case SDL_MOUSEBUTTONDOWN:		// If the user clicks down without releasing
-			
+
 			double blockX, blockY;
 
 			// Checks if mouse is inside one of the static gates
@@ -504,26 +504,27 @@ int Window::eventHandler(SDL_Event e)
 				}
 			}
 
-			// determine if on input or gate block
-			for(int i = 0; i < blocks.size(); i++) {
+				// determine if on input or gate block
+				for(int i = 0; i < blocks.size(); i++) {
 
-				if (inputDetection(i, e)) {
-					blockNum=i;
-					changeInputValue(i);
-					//break;
+					if (inputDetection(i, e)) {
+						blockNum=i;
+						changeInputValue(i);
+						//break;
+					}
+
+					if(gateDetection(i, e)) {
+						blockNum = i;
+						dx = e.motion.x - blocks[i]->getx();
+						dy = e.motion.y - blocks[i]->gety();
+						action = 2;
+						break;
+					}
+
 				}
-
-				if(gateDetection(i, e)) {
-					blockNum = i;
-					dx = e.motion.x - blocks[i]->getx();
-					dy = e.motion.y - blocks[i]->gety();
-					action = 2;
-					break;
-				}
-
-			}
 			if (action == 0)
 			{
+
 				if ( e.motion.x > logicCanvas.x && e.motion.x < (logicCanvas.x + logicCanvas.w)
 						&& e.motion.y > logicCanvas.y && e.motion.y < (logicCanvas.y + logicCanvas.h) )
 				{
@@ -533,14 +534,16 @@ int Window::eventHandler(SDL_Event e)
 				}
 			}
 
-			break;
+	}
 
-		case SDL_MOUSEBUTTONUP:
-			if (action == 1)
-			{
-				action = 0;
-				moveWire();
-			}
+	break;
+
+case SDL_MOUSEBUTTONUP:
+if (action == 1)
+{
+	action = 0;
+	moveWire();
+}
 			else
 				action = 0;
 			break;
@@ -621,11 +624,12 @@ void Window::moveWire()
 
 	if (action != 1)
 	{
-		// set wire
+		// Snaps wire to ports
 		if (!snapWire(x, y))
 		{	
+			// If wire is not on two valid ports, it deletes the wire from the wires vector
 			delete wires.back();
-		    wires.pop_back(); // deletes last wire
+		    wires.pop_back();
 
 		}
 	}
@@ -651,7 +655,9 @@ void Window::moveBlock(int i)
 	newX = x - dx;
 	newY = y - dy;
 
-	// Detect whether new x and y values are in canvas and adjust if they are
+	/* Detect whether new x and y values are in canvas and snaps them back individually 
+		to the edge of the canvas if they are outside of it
+	 */
 
 	if ( isInCanvasX( newX ) )
 	{	
@@ -680,7 +686,7 @@ void Window::moveBlock(int i)
 		blocks[i]->sety( logicCanvas.y+logicCanvas.h - staticGateHeight );
 	}
 
-	// move wires
+	// move wires to stay connected to their ports
 	blocks[i]->bringWires();
 
 }
@@ -882,7 +888,10 @@ bool Window::wireDetection( int wireNum)
 	return false;
 }
 
-
+/*	Boolean Function. This function will return true is the x and y coordindates
+	of the mouse at the time of a click event correspond to the coordinates of
+	the Clear box, emualting a button click.
+*/
 bool Window::clearDetection( SDL_Event event )
 {
 	if ((event.motion.x > clear.x ) && (event.motion.x < (clear.x + clear.w))) {
@@ -926,6 +935,10 @@ void Window::changeInputValue( int i )
 	//cout << blocks[i]->getValue() << endl;
 }
 
+/*	Erase Function. This function provies the action for our "CLEAR"
+	button on the window. When pressed it will delete all the AND, OR,
+	and NOT gates, as well as the any wires on the logic canvas. 
+*/
 void Window::clearAll()
 {
 	int i;
@@ -961,6 +974,9 @@ void Window::clearAll()
 	equationOutputted = 0;
 }
 
+/* 	This function detects whether the x value passed to it is within 
+	the bounds of the x values of the canvas
+*/
 bool Window::isInCanvasX( int x )
 {
 	if(x > logicCanvas.x + .55*staticGateWidth && x < (logicCanvas.x+logicCanvas.w - 2.1*staticGateWidth) )
@@ -972,7 +988,10 @@ bool Window::isInCanvasX( int x )
 		return false;
 	}
 }
-
+	
+/* 	This function detects whether the y value passed to it is within 
+	the bounds of the y values of the canvas
+*/
 bool Window::isInCanvasY( int y )
 {
 	if( y > logicCanvas.y && y < (logicCanvas.y+logicCanvas.h - staticGateHeight) )  

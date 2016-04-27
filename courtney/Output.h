@@ -1,9 +1,8 @@
 #ifndef OUTPUT_H
-#define OUTPUT_H
+#define	OUTPUT_H
 
 #include <iostream>   // for using cout
 #include "Block.h"
-#include "Wire.h"
 
 using namespace std;
 
@@ -27,9 +26,15 @@ class Output : public Block
 		virtual void setInPort2(short, short);
 
 		virtual int onPort(int, int);
+		virtual int onBlock(int, int);
 
 		virtual void bringWires();
-		virtual void setValue();	// needed to change value of Inputs
+
+		virtual void setValue();
+
+		virtual string getEquation();
+
+		Wire* getWire1();
 
 	private:
 		double x;
@@ -37,38 +42,45 @@ class Output : public Block
 		char name;
 		int value;
 
-		Wire* out; // pointer
+		Wire* in1; // pointer
 
 		short inPort1[2]; // (x, y)
-		short inPort2[2];
 };
 
 
-// constructor
+/* 	Constructor
+*/
 Output::Output(double xPos, double yPos, char variable, int val) : Block()
 {
 	x = xPos;			// 710
 	y = yPos;			// 350
 	name = variable;
 	value = val;
-	setInPort1(x, y+15);
+	setInPort1(x-10, y+15);
+	setPortPtr(1, NULL);
 }
 
 
-// deconstructor
+/* Deconstructor
+*/
 Output::~Output()
 {
 
 }
 
+/*	Getter Function. Returns a pointer to the port of the 
+	int specified. Integers 1 is the only valid option because
+	the Output gate only has 1 input port. It returns a pointer
+	to the wire connected to its input port. 
+*/
 Wire *Output::getPortPtr(int port)
 {
 	switch (port)
 	{
 		case 1:
-			return out; break;
+			return in1; break;
 		default:
-			cout << "Invalid port call to getPortPtr. (only port=1)" << endl;
+			cout << "Invalid port call to getPortPtr. (only port=0)" << endl;
 			return NULL;
 	}
 }	
@@ -79,22 +91,38 @@ void Output::setPortPtr(int port, Wire* ptr)
 	switch (port)
 	{
 		case 1:
-			out = ptr; break;
+			in1 = ptr; break;
 		default:
-			cout << "Invalid port call to setPortPtr. (only port=1)" << endl;
+			cout << "Invalid port call to setPortPtr. (only port=1 valid)" << endl;
 	}
 }
 
 int Output::getValue()
 {
-	return value;
+	if (getPortPtr(1) != NULL)
+	{
+		return (getPortPtr(1)->getValue());
+	}
+	else
+	{
+		return -1;
+	}
 }
 
 void Output::draw(SDL_Renderer* renderer)
 {
-	short* InPort = getPortXY(1);
-	circleRGBA(renderer, InPort[0], InPort[1], 10, 0, 255, 0, 255);
+	// hello!
+	// must first get the value by running getValue() before displaying the number
+	
 
+	// draw port in1
+	short* outPort = getPortXY(1);
+	circleRGBA(renderer, inPort1[0], inPort1[1], 10, 0, 0, 255, 255);
+
+	boxRGBA( renderer, x-10, y+14, x, y+16, 0, 0, 0, 255);
+
+
+	// Set Output Box Rectangles
 	SDL_Rect outerBox;
 	SDL_Rect zero;
 
@@ -113,15 +141,17 @@ void Output::draw(SDL_Renderer* renderer)
 
 	SDL_RenderDrawRect( renderer, &outerBox );
 
-	if (value == 0) {
+
+	if (getValue() == 0) {
 		SDL_RenderDrawRect( renderer, &zero );
 	}
-	else if (value == 1) {
+	else if (getValue() == 1) {
 		SDL_RenderDrawLine( renderer, x+15, y+8, x+15, y+22 );
 	}
-	else {
-		cout << "Error Drawing static inputs, value not 0 or 1" << endl;
-	}
+	//else {
+	//	cout << "Error Drawing static outputs, value not 0 or 1" << endl;
+	//}
+		
 }
 
 double Output::getx()
@@ -155,18 +185,19 @@ short *Output::getPortXY(int port)
 
 void Output::setOutPort(short x, short y)
 {
-	cout << "Input does not have setOutPort implementation" << endl;
+	cout << "Output does not have setOutPort implementation" << endl;
 }
 
 void Output::setInPort1(short x, short y)
 {
 	inPort1[0] = x;
 	inPort1[1] = y;
+
 }
 
 void Output::setInPort2(short x, short y)
 {
-	cout << "Input does not have setInPort2 implementation" << endl;
+	cout << "Input does not have setInPort1 implementation" << endl;
 }
 
 
@@ -175,9 +206,22 @@ int Output::onPort(int xMouse, int yMouse)
 {
 	// if on the 'out' port:
 	if (sqrt(pow(xMouse - inPort1[0], 2) + pow(yMouse - inPort1[1], 2)) < 10)
-		return 0; 
+		return 1; 
 	else
 		return -1;
+}
+
+int Output::onBlock(int xClick, int yClick)
+{
+	if (yClick >= y && yClick <= y+30) // in vertical bounds
+	{
+		if (xClick >= x && xClick <= x+30) // in horizontal bounds
+		{
+			cout << "on Output" << endl;
+			return 1;
+		}
+	}
+	return 0;
 }
 
 void Output::bringWires()
@@ -185,17 +229,29 @@ void Output::bringWires()
 	if (getPortPtr(1) != NULL) // if pointer is conected
 	{
 		// then move wire to match ports
-		getPortPtr(1)->movePoint1(getPortXY(1)[0], getPortXY(1)[1]);
+		getPortPtr(1)->movePoint2(getPortXY(1)[0], getPortXY(1)[1]);
 	}
+
 }
 
-/* 	setValue function. Not needed in this class, but since virtual
-	function, needs implementation.
-*/
-	void Output::setValue()
-	{
-		// Defualt is 0 will need to set output based on results of Logic Equation
-	}
+
+void Output::setValue()
+{
+}
+
+Wire* Output::getWire1()
+{
+    return in1;
+}
+
+string Output::getEquation()
+{
+    string equation;
+
+    equation = "z = " + ( getWire1()->getBackwardPtr() )->getEquation();
+
+    return equation;
+}
 
 
 #endif

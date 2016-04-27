@@ -41,7 +41,13 @@ class Block {
 		virtual string getEquation() = 0;
 };
 
-// constructor
+/*	This is the abstract base class and is at the top of our inheritance hierarchy.
+	The classes Gate.h, Input.h, and Output.h all inherit from this class.
+	Because it is abstract, it requires no implementation, but all virtual functions
+	must be pure virtual (=0)
+*/
+
+// Constructor
 Block::Block()
 {
 

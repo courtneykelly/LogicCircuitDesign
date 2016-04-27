@@ -42,7 +42,8 @@ class Wire
 };
 
 
-// constructor
+/* 	Constructor
+*/
 Wire::Wire(int x, int y)
 {
 	x1 = x;
@@ -51,12 +52,11 @@ Wire::Wire(int x, int y)
 	y2 = y;
 }
 
-
-// destructor
+/* 	Destructor
+*/
 Wire::~Wire()
 {
 }
-
 
 // evaluate function with:
 int Wire::getValue()
