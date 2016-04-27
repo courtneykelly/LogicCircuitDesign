@@ -413,6 +413,11 @@ void Window::loadFromFile() {
 	SDL_Color backgroundColor = { 255, 255, 255, 255 };
 	SDL_Color textColor = { 0, 0, 0, 255 };
 	string equationString;
+
+	/* Checks whether the circuit is fully connected. If there
+	   is not an equation to be outputted, then it sets the 
+	   equation string that is displayed to an empty string
+	*/
 	if (!equationOutputted) {
 		equationString = "";
 	}

@@ -225,6 +225,10 @@ void NotGate::setValue()
 
 }
 
+
+/* Returns string of equation representing the output of
+   this gate
+*/
 string NotGate::getEquation()
 {
     string equation;

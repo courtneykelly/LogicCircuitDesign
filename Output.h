@@ -300,6 +300,9 @@ Wire* Output::getWire1()
     return in1;
 }
 
+/* Returns equation of completed logic circuit by
+   traversing the circuit recursively
+*/
 string Output::getEquation()
 {
     string equation;

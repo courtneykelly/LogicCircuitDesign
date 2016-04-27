@@ -235,7 +235,9 @@ void AndGate::setValue()
 
 }
 
-
+/* Returns string of equation that represents the output
+   of this gate
+*/
 string AndGate::getEquation()
 {
     string equation = "(" + ( getWire1()->getBackwardPtr() )->getEquation() + ( getWire2()->getBackwardPtr() )->getEquation() + ")";

@@ -256,6 +256,9 @@ void OrGate::setValue()
 
 }
 
+/* Returns string of equation representing the output of
+   this gate
+*/
 string OrGate::getEquation()
 {
     string equation;
