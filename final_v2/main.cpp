@@ -30,10 +30,8 @@ int main()
 	*/
 	while (!quit)
 	{
-
 		screen.drawWires();
 		screen.drawBlocks();	// AND, OR, and NOT Gates
-
 		screen.draw(); // draws, delays, then clears
 
 		while (SDL_PollEvent( &e ) != 0 )	// Handles the quit event 

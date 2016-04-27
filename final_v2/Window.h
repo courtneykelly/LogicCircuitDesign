@@ -243,7 +243,7 @@ Window::Window()
 	blocks.push_back(Bptr);
 
 	// Sets Static Output Block
-	Bptr = new Output(690, 350, 'z', 0);
+	Bptr = new Output(690, 350, 'z', -1);
 	outputPtr = Bptr;		    // sets outputPtr
 	blocks.push_back(Bptr);
 
@@ -375,6 +375,7 @@ void Window::draw()
 	    equationOutputted = 1;
 
 	}
+
 }
 
 /*	loadFromFile Function. This function loads all images needed in our
@@ -468,6 +469,7 @@ void Window::loadFromFile() {
 */
 int Window::eventHandler(SDL_Event e)
 {
+	cout << "event handler" << endl;
 	switch(e.type)
 	{
 		case SDL_QUIT:
@@ -643,7 +645,8 @@ void Window::moveWire()
 		}
 	}
 }
-	
+
+
 /*	This function moves the gate you're clicking on.
 	Once you click on it the position of the gate will
 	follow the x and y coordinates of the mouse. It also calls
@@ -868,6 +871,7 @@ bool Window::wireDetection( int wireNum)
 	return false;
 }
 
+
 bool Window::clearDetection( SDL_Event event )
 {
 	if ((event.motion.x > clear.x ) && (event.motion.x < (clear.x + clear.w))) {
@@ -909,12 +913,34 @@ void Window::clearAll()
 	{
 		deleteWire(i);
 	}
-	cout << "blocks.size(): " << endl;
-	for (i = blocks.size()-1; i>=3; i--)
+	cout << "blocks.size(): " << blocks.size() << endl;
+
+	// delete all locks
+	for (i = blocks.size()-1; i>=0; i--)
 	{
 		delete blocks[i];
 		blocks.erase(blocks.begin()+i);
 	}
+	cout << "made it" << endl;
+
+	action = 0;
+
+	Block* Bptr;
+	Bptr = new Input(50, 275, 'a', 0);
+	blocks.push_back(Bptr);
+
+	Bptr = new Input(50, 350, 'b', 0);
+	blocks.push_back(Bptr);
+
+	Bptr = new Input(50, 425, 'c', 0);
+	blocks.push_back(Bptr);
+
+	// Sets Static Output Block
+	Bptr = new Output(690, 350, 'z', -1);
+	outputPtr = Bptr;		    // sets outputPtr
+	blocks.push_back(Bptr);
+
+	equationOutputted = 0;
 }
 
 
