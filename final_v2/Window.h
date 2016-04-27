@@ -909,7 +909,8 @@ void Window::clearAll()
 	{
 		deleteWire(i);
 	}
-	for (i = blocks.size()-1; i>=4; i--)
+	cout << "blocks.size(): " << endl;
+	for (i = blocks.size()-1; i>=3; i--)
 	{
 		delete blocks[i];
 		blocks.erase(blocks.begin()+i);
