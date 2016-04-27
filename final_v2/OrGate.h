@@ -167,16 +167,10 @@ void OrGate::draw(SDL_Renderer* renderer)
 	yCenter = y + (staticGateHeight/2);		// reset yCenter
 	radius = staticGateHeight/2;			// reset radius
 
-	for (int i=(numPoints-2); i>(92); i--) {			// loop through number of points
-		xPoints[i] = xCenter + radius*cos(theta);		// get x value based on theta, xCenter, and radius
-		yPoints[i] = yCenter + radius*sin(theta);		// get y value based on theta, yCenter, and radius
-		theta += step*PI/180;							// increment theta by step size, convert to radians
-	}
+	filledCircleRGBA(renderer, x+staticGateWidth, y+staticGateHeight/2, staticGateHeight/2, 255, 0, 50, 255);
 
-	xPoints[numPoints-1] = x+(staticGateWidth);
-	yPoints[numPoints-1] = y;
+	filledCircleRGBA( renderer, x, y+staticGateHeight/2, staticGateHeight/2, 255, 255, 255, 255);
 */
-
 	// lines, to represent ports
 	boxRGBA(renderer, x+12, y, x-staticGateWidth/3, 
 			y+2*staticLineLength, 0, 0, 0, 255);
@@ -193,7 +187,6 @@ void OrGate::draw(SDL_Renderer* renderer)
 	filledPieRGBA(renderer, x+30, y+staticGateHeight-1, staticGateHeight-1, 270, 330, 255, 0, 50, 255);	
 	filledPieRGBA(renderer, x+30, y+1, staticGateHeight, 30, 90, 255, 0, 50, 255);	
 
-	//boxRGBA(renderer, x, y, x+staticGateWidth-8, y+staticGateHeight, 0, 50, 0, 255);
 }
 
 
@@ -226,14 +219,21 @@ int OrGate::onPort(int xMouse, int yMouse)
 */
 int OrGate::onBlock(int xClick, int yClick)
 {
-	if (yClick >= y && yClick <= y+staticGateHeight) // in vertical bounds
+	if (yClick >= y && yClick <= y+staticGateHeight && xClick >= x && xClick <= x+staticGateWidth) // in horizontal bounds
 	{
-		if (xClick >= x && xClick <= x+staticGateWidth) // in horizontal bounds
-		{
+		if(sqrt(pow(x-xClick, 2) + pow(y+staticGateHeight/2-yClick, 2)) > staticGateHeight/2) {
 			return 1;
 		}
 	}
-	return 0;
+	// if in circle: (pythagorean theorem)
+	else if (sqrt(pow(x+staticGateWidth-xClick, 2) + pow(y+staticGateHeight/2-yClick, 2)) <= staticGateHeight/2)
+	{
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
 }
 
 /*	UpdatePort Function. This function updates the location 
