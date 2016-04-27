@@ -47,7 +47,8 @@ class Input : public Block
 };
 
 
-// constructor
+/* 	Constructor
+*/
 Input::Input(double xPos, double yPos, char variable, int val) : Block()
 {
 	x = xPos;
@@ -57,13 +58,19 @@ Input::Input(double xPos, double yPos, char variable, int val) : Block()
 	setOutPort(x+40, y+15); 
 }
 
-
-// deconstructor
+/* 	Deconstructor
+*/
 Input::~Input()
 {
 
 }
 
+/*	Getter Function. This function does not do anything in the Input class,
+	but since it is a virtual function of the base class Block, it requires
+	implementation. It should return a pointer to the wires connected to the
+	input ports, but this is the Input.h class, and the input blocks do not
+	have input ports, only output ports!
+*/
 Wire *Input::getPortPtr(int port)
 {
 	switch (port)
@@ -77,7 +84,13 @@ Wire *Input::getPortPtr(int port)
 	}
 }	
 
-
+/*	Setter Function. For the Input class, when a wire is created front an Input
+	out port, a pointer to that wire is created and passed to this function. 
+	The pointer is then added to the out vector (a vector containing pointers to
+	all wires stemming from the output port). Again since this is the Input class
+	there are only output ports (case 0) and no input ports, hence only one case
+	in the switch statement.
+*/
 void Input::setPortPtr(int port, Wire* ptr)
 {
 	switch (port)
@@ -89,11 +102,17 @@ void Input::setPortPtr(int port, Wire* ptr)
 	}
 }
 
+/*	Getter Function. Returns the value on the Input Gate (a, b, or c), which 
+	is either 1 or 0 at any given time.
+*/
 int Input::getValue()
 {
 	return value;
 }
 
+/*	Virtual draw function. Draws the Input Gate according to the x and y values
+	passed upon initialization. 
+*/
 void Input::draw(SDL_Renderer* renderer)
 {
 	// draw port
@@ -131,23 +150,46 @@ void Input::draw(SDL_Renderer* renderer)
 	}
 }
 
+/*	Getter Function. Returns the x coordinate of the Input Gate.
+*/
 double Input::getx()
 {
 	return x;
 }
+
+/*	Getter Function. Returns the y coordinate of the Input Gate.
+*/
 double Input::gety()
 {
 	return y;
 }
+
+/* 	Setter Function. Sets the x coordinate of the of the input 
+	gate. This function has no functionality because the x value
+	is set in the Constructor, but requires implementation 
+	because it is a virtual function from the abstract base class
+	Block
+*/
 void Input::setx(double)
 {
-
 }
+
+/* 	Setter Function. Sets the y coordinate of the of the input 
+	gate. This function has no functionality because the x value
+	is set in the Constructor, but requires implementation 
+	because it is a virtual function from the abstract base class
+	Block
+*/
 void Input::sety(double) 
 {
-
 }
 
+/*	Getter Function. Returns the array containing the x and y 
+	coordinates of the port passed. This is the Input class, so 
+	there is only an output port. 0 is the integer corresponding 
+	to the output port, so if 0 is passed the coordinates of the
+	output port are returned.
+*/
 short *Input::getPortXY(int port)
 {
 	if (port == 0)
@@ -159,25 +201,39 @@ short *Input::getPortXY(int port)
 	}
 }
 
-
+/*	Setter Function. Sets the coordinates of the output port
+	to the coordinates passed into the function.
+*/
 void Input::setOutPort(short x, short y)
 {
 	outPort[0] = x;
 	outPort[1] = y;
 }
 
+/*	Setter Function. This has no functionality because Input
+	gates do not have any input ports. But since this is a 
+	virtual function inherited from the base class Block, it
+	requires implementation.
+*/
 void Input::setInPort1(short x, short y)
 {
 	cout << "Input does not have setInPort1 implementation" << endl;
 }
 
+/*	Setter Function. This has no functionality because Input
+	gates do not have any input ports. But since this is a 
+	virtual function inherited from the base class Block, it
+	requires implementation.
+*/
 void Input::setInPort2(short x, short y)
 {
 	cout << "Input does not have setInPort1 implementation" << endl;
 }
 
-
-
+/*	Boolean Function. This function will return true if the x and 
+	y coordinates passed to it (the x and y coordinates of the mouse)
+	are on the output port of the input gate.
+*/
 int Input::onPort(int xMouse, int yMouse)
 {
 	// if on the 'out' port:
@@ -187,6 +243,11 @@ int Input::onPort(int xMouse, int yMouse)
 		return -1;
 }
 
+/*	Boolean Function. This function will return true if the x and 
+	y coordinates passed to it (the x and y coordinates of the mouse)
+	are on the actual input gate. This function is necessary to change 
+	the value of the input gate with a click.
+*/
 int Input::onBlock(int xClick, int yClick)
 {
 	if (yClick >= y && yClick <= y+30) // in vertical bounds
@@ -199,6 +260,12 @@ int Input::onBlock(int xClick, int yClick)
 	return 0;
 }
 
+/*	Movement Function. When you move any of the gates with wires that
+	are connected to the Input gates, you want the wires to stay 
+	connected to the Input gate no matter there the other gate moves.
+	This function does just that. It makes sure the a and y coordinates of the 
+	wires coming out of its output port stay in place.
+*/
 void Input::bringWires()
 {
 	int i;
@@ -206,13 +273,6 @@ void Input::bringWires()
 	{
 		out[i]->movePoint1(getPortXY(0)[0], getPortXY(0)[1]);
 	}
-	/*
-	if (getPortPtr(0) != NULL) // if pointer is conected
-	{
-		// then move wire to match ports
-		getPortPtr(0)->movePoint1(getPortXY(0)[0], getPortXY(0)[1]);
-	}
-	*/
 }
 
 /* 	setValue function. Not needed in this class, but since virtual
@@ -228,6 +288,10 @@ void Input::setValue()
 	}
 }
 
+/*	Getter Function. Returns the name of the Input Gate (either a, b, 
+	or c). This function is used when constructing the equation of
+	the logic circuit.
+*/
 string Input::getEquation()
 {
     string equation(1, name);

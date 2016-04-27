@@ -58,7 +58,6 @@ Wire::~Wire()
 {
 }
 
-
 // evaluate function with:
 int Wire::getValue()
 {

@@ -896,7 +896,10 @@ bool Window::wireDetection( int wireNum)
 	return false;
 }
 
-
+/*	Boolean Function. This function will return true is the x and y coordindates
+	of the mouse at the time of a click event correspond to the coordinates of
+	the Clear box, emualting a button click.
+*/
 bool Window::clearDetection( SDL_Event event )
 {
 	if ((event.motion.x > clear.x ) && (event.motion.x < (clear.x + clear.w))) {
@@ -931,6 +934,10 @@ void Window::changeInputValue( int i )
 	//cout << blocks[i]->getValue() << endl;
 }
 
+/*	Erase Function. This function provies the action for our "CLEAR"
+	button on the window. When pressed it will delete all the AND, OR,
+	and NOT gates, as well as the any wires on the logic canvas. 
+*/
 void Window::clearAll()
 {
 	int i;

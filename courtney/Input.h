@@ -58,7 +58,6 @@ Input::Input(double xPos, double yPos, char variable, int val) : Block()
 	setOutPort(x+40, y+15); 
 }
 
-
 /* 	Deconstructor
 */
 Input::~Input()
