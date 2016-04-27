@@ -495,47 +495,49 @@ int Window::eventHandler(SDL_Event e)
 				clearAll();
 			}
 
-				// determine if on wire
-				for (int j = 0; j < wires.size(); j++)
+			// determine if on wire
+			for (int j = 0; j < wires.size(); j++)
+			{
+				if (wireDetection(j))
 				{
-					if (wireDetection(j))
-					{
+					break;
+				}
+			}
+
+			// determine if on input or gate block
+			for(int i = 0; i < blocks.size(); i++) {
+				blocks[i]->onBlock(e.motion.x, e.motion.y);
+
+				if (inputDetection(i, e)) {
+						blockNum=i;
+						changeInputValue(i);
 						break;
 					}
+				
+				if(gateDetection(i, e)) {
+
+					blockNum = i;
+					dx = e.motion.x - blocks[i]->getx();
+					dy = e.motion.y - blocks[i]->gety();
+					action = 2;
+					break;
 				}
 
-				// determine if on input or gate block
-				for(int i = 0; i < blocks.size(); i++) {
-					blocks[i]->onBlock(e.motion.x, e.motion.y);
+			}
+			
+			if (action == 0) // Detects create wire action
+			{
+				// Verifies that the click is in the logic canvas before creating wire
 
-					if (inputDetection(i, e)) {
-							blockNum=i;
-							changeInputValue(i);
-							break;
-						}
-					
-					if(gateDetection(i, e)) {
-
-						blockNum = i;
-						dx = e.motion.x - blocks[i]->getx();
-						dy = e.motion.y - blocks[i]->gety();
-						action = 2;
-						break;
-					}
-
-				}
-				if (action == 0)
+				if ( e.motion.x > logicCanvas.x && e.motion.x < (logicCanvas.x + logicCanvas.w)
+						&& e.motion.y > logicCanvas.y && e.motion.y < (logicCanvas.y + logicCanvas.h) )
 				{
-
-					if ( e.motion.x > logicCanvas.x && e.motion.x < (logicCanvas.x + logicCanvas.w)
-							&& e.motion.y > logicCanvas.y && e.motion.y < (logicCanvas.y + logicCanvas.h) )
-					{
-						makeWire();
-						action = 1;
-						break;
-					}
-
+					makeWire();
+					action = 1;
+					break;
 				}
+
+			}
 
 			break;
 
@@ -625,11 +627,12 @@ void Window::moveWire()
 
 	if (action != 1)
 	{
-		// set wire
+		// Snaps wire to ports
 		if (!snapWire(x, y))
 		{	
+			// If wire is not on two valid ports, it deletes the wire from the wires vector
 			delete wires.back();
-		    wires.pop_back(); // deletes last wire
+		    wires.pop_back();
 
 		}
 	}
@@ -655,7 +658,9 @@ void Window::moveBlock(int i)
 	newX = x - dx;
 	newY = y - dy;
 
-	// Detect whether new x and y values are in canvas and adjust if they are
+	/* Detect whether new x and y values are in canvas and snaps them back individually 
+		to the edge of the canvas if they are outside of it
+	 */
 
 	if ( isInCanvasX( newX ) )
 	{	
@@ -684,7 +689,7 @@ void Window::moveBlock(int i)
 		blocks[i]->sety( logicCanvas.y+logicCanvas.h - staticGateHeight );
 	}
 
-	// move wires
+	// move wires to stay connected to their ports
 	blocks[i]->bringWires();
 
 }
@@ -961,6 +966,9 @@ void Window::clearAll()
 	equationOutputted = 0;
 }
 
+/* 	This function detects whether the x value passed to it is within 
+	the bounds of the x values of the canvas
+*/
 bool Window::isInCanvasX( int x )
 {
 	if(x > logicCanvas.x + .55*staticGateWidth && x < (logicCanvas.x+logicCanvas.w - 2.1*staticGateWidth) )
@@ -972,7 +980,10 @@ bool Window::isInCanvasX( int x )
 		return false;
 	}
 }
-
+	
+/* 	This function detects whether the y value passed to it is within 
+	the bounds of the y values of the canvas
+*/
 bool Window::isInCanvasY( int y )
 {
 	if( y > logicCanvas.y && y < (logicCanvas.y+logicCanvas.h - staticGateHeight) )  
