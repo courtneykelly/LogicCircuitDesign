@@ -37,6 +37,8 @@ class Block {
 
 		virtual void bringWires() = 0;
 		virtual void setValue() = 0;	// needed to change value of Inputs
+
+		virtual string getEquation() = 0;
 };
 
 // constructor

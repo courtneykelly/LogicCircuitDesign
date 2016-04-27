@@ -153,9 +153,9 @@ int NotGate::onPort(int xMouse, int yMouse)
 
 int NotGate::onBlock(int xClick, int yClick)
 {
-	if (yClick >= y && yClick <= y+staticGateHeight) // in vertical bounds
+	if (yClick >= y && yClick <= y+(3*staticGateHeight/4)) // in vertical bounds
 	{
-		if (xClick >= x && xClick <= x+staticGateWidth) // in horizontal bounds
+		if (xClick >= x && xClick <= x+(2*staticGateWidth/3)) // in horizontal bounds
 		{
 			return 1;
 		}

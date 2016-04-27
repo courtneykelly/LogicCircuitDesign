@@ -22,6 +22,8 @@ class OrGate : public Gate
 		virtual int onPort(int, int); // (xMouse, yMouse)
 		virtual int onBlock(int, int);
 		virtual void setValue();	// needed to change value of Inputs
+
+		virtual string getEquation();
 		
 	private:
 		// for drawing:
@@ -184,7 +186,6 @@ int OrGate::onBlock(int xClick, int yClick)
 	{
 		if (xClick >= x && xClick <= x+staticGateWidth) // in horizontal bounds
 		{
-			cout << "on OrGate" << endl;
 			return 1;
 		}
 	}
@@ -203,9 +204,18 @@ void OrGate::updatePortXY()
 /* 	setValue function. Not needed in this class, but since virtual
 	function, needs implementation.
 */
-	void OrGate::setValue()
-	{
+void OrGate::setValue()
+{
 
-	}
+}
+
+string OrGate::getEquation()
+{
+    string equation;
+    
+    equation = "(" + ( getWire1()->getBackwardPtr() )->getEquation() + "+" + ( getWire2()->getBackwardPtr() )->getEquation() + ")";
+
+    return equation;
+}
 
 #endif
