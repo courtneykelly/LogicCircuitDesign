@@ -495,47 +495,43 @@ int Window::eventHandler(SDL_Event e)
 				clearAll();
 			}
 
-				// determine if on wire
-				for (int j = 0; j < wires.size(); j++)
+			// determine if on wire
+			for (int j = 0; j < wires.size(); j++)
+			{
+				if (wireDetection(j))
 				{
-					if (wireDetection(j))
-					{
-						break;
-					}
+					break;
+				}
+			}
+
+			// determine if on input or gate block
+			for(int i = 0; i < blocks.size(); i++) {
+
+				if (inputDetection(i, e)) {
+					blockNum=i;
+					changeInputValue(i);
+					//break;
 				}
 
-				// determine if on input or gate block
-				for(int i = 0; i < blocks.size(); i++) {
-					blocks[i]->onBlock(e.motion.x, e.motion.y);
-
-					if (inputDetection(i, e)) {
-							blockNum=i;
-							changeInputValue(i);
-							break;
-						}
-					
-					if(gateDetection(i, e)) {
-
-						blockNum = i;
-						dx = e.motion.x - blocks[i]->getx();
-						dy = e.motion.y - blocks[i]->gety();
-						action = 2;
-						break;
-					}
-
+				if(gateDetection(i, e)) {
+					blockNum = i;
+					dx = e.motion.x - blocks[i]->getx();
+					dy = e.motion.y - blocks[i]->gety();
+					action = 2;
+					break;
 				}
-				if (action == 0)
+
+			}
+			if (action == 0)
+			{
+				if ( e.motion.x > logicCanvas.x && e.motion.x < (logicCanvas.x + logicCanvas.w)
+						&& e.motion.y > logicCanvas.y && e.motion.y < (logicCanvas.y + logicCanvas.h) )
 				{
-
-					if ( e.motion.x > logicCanvas.x && e.motion.x < (logicCanvas.x + logicCanvas.w)
-							&& e.motion.y > logicCanvas.y && e.motion.y < (logicCanvas.y + logicCanvas.h) )
-					{
-						makeWire();
-						action = 1;
-						break;
-					}
-
+					makeWire();
+					action = 1;
+					break;
 				}
+			}
 
 			break;
 
@@ -863,22 +859,17 @@ bool Window::staticNotGateDetection( SDL_Event event )
  */
 bool Window::gateDetection( int blockNum, SDL_Event event )
 {
-	double blockX = blocks[blockNum]->getx();
-	double blockY = blocks[blockNum]->gety();
+	int x;
+	int y;
+	SDL_GetMouseState(&x, &y);
 
-
-	if (blocks[blockNum]->onBlock(event.motion.x, event.motion.y))
+	cout << "xClick:" << x << endl;
+	cout << "yClick:" << y << endl;
+	
+	if (blocks[blockNum]->onBlock(x, y))
 	{
 		return true;
 	}
-
-	/*
-	   if((event.motion.x>blockX) && (event.motion.x<(blockX + highlightBoxWidth))){
-	   if ( (event.motion.y>blockY) && (event.motion.y < (blockY + highlightBoxHeight))) {
-	   return true;
-	   }
-	   }
-	*/
 
 	return false;
 }
@@ -904,22 +895,31 @@ bool Window::clearDetection( SDL_Event event )
 /*	This function detects if one of the input blocks has been clicked. This is 
 	necessary because if one of the input blocks has been clicked then 
 	we need to change its value. 
-*/
+ */
+
 bool Window::inputDetection( int blockNum, SDL_Event event ) 
 {
-	double blockX = blocks[blockNum]->getx();
-	double blockY = blocks[blockNum]->gety();
+	if (blockNum > 2)
+	{
+		return false;
+	}
+	else
+	{
+		double blockX = blocks[blockNum]->getx();
+		double blockY = blocks[blockNum]->gety();
 
-	if((event.motion.x>blockX) && (event.motion.x<(blockX+30))){
-		if ( (event.motion.y>blockY) && (event.motion.y < (blockY+30))) {
-			return true;
+		if((event.motion.x>blockX) && (event.motion.x<(blockX+30))){
+			if ( (event.motion.y>blockY) && (event.motion.y < (blockY+30))) {
+				return true;
+			}
 		}
 	}
+	return false;
 }
 
 /*	This function changes the value of the input blocks by calling 
 	the set value funtion of the Input.h class.
-*/
+ */
 void Window::changeInputValue( int i )
 {
 	blocks[i]->setValue();
