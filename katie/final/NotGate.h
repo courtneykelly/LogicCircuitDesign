@@ -27,6 +27,7 @@ class NotGate : public Gate
 		virtual int onBlock(int, int);
 		virtual void setValue();	// needed to change value of Inputs
 
+		virtual string getEquation();
 		
 	private:
 		int value;
@@ -152,11 +153,10 @@ int NotGate::onPort(int xMouse, int yMouse)
 
 int NotGate::onBlock(int xClick, int yClick)
 {
-	if (yClick >= y && yClick <= y+staticGateHeight) // in vertical bounds
+	if (yClick >= y && yClick <= y+(3*staticGateHeight/4)) // in vertical bounds
 	{
-		if (xClick >= x && xClick <= x+staticGateWidth) // in horizontal bounds
+		if (xClick >= x && xClick <= x+(2*staticGateWidth/3)) // in horizontal bounds
 		{
-			cout << "on NotGate" << endl;
 			return 1;
 		}
 	}
@@ -181,6 +181,15 @@ void NotGate::updatePortXY()
 void NotGate::setValue()
 {
 
+}
+
+string NotGate::getEquation()
+{
+    string equation;
+    
+    equation = "(" + ( getWire1()->getBackwardPtr() )->getEquation() + ")'";
+
+    return equation;
 }
 
 

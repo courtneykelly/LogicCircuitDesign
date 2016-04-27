@@ -18,6 +18,9 @@ class Wire
 
 		void setBackwardPtr(Block*);
 		void setForwardPtr(Block*);
+
+		Block *getBackwardPtr();
+
 		void movePoint1(int, int);
 		void movePoint2(int, int);
 		short *getPointXY(int);
@@ -151,6 +154,11 @@ int Wire::onWire()
 	cout << "length: " << length << endl;
 
 	return -1;
+}
+
+Block * Wire::getBackwardPtr()
+{
+    return backwardPtr;
 }
 
 

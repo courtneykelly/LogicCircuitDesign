@@ -32,6 +32,10 @@ class Output : public Block
 
 		virtual void setValue();
 
+		virtual string getEquation();
+
+		Wire* getWire1();
+
 	private:
 		double x;
 		double y;
@@ -226,6 +230,20 @@ void Output::bringWires()
 
 void Output::setValue()
 {
+}
+
+Wire* Output::getWire1()
+{
+    return in1;
+}
+
+string Output::getEquation()
+{
+    string equation;
+
+    equation = "z = " + ( getWire1()->getBackwardPtr() )->getEquation();
+
+    return equation;
 }
 
 

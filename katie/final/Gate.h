@@ -32,6 +32,10 @@ class Gate : public Block
 		// value of gate
 		virtual int getValue() = 0;
 		virtual void setValue() = 0;	// needed to change value of Inputs	
+
+		// ptrs to Input wires
+		Wire * getWire1();
+		Wire * getWire2();
 		
 		virtual void draw(SDL_Renderer*) = 0;
 		virtual int onPort(int, int) = 0;
@@ -150,6 +154,16 @@ void Gate::bringWires()
 			getPortPtr(i)->movePoint2(getPortXY(i)[0], getPortXY(i)[1]);
 		}
 	}
+}
+
+Wire * Gate::getWire1()
+{
+    return in1;
+}
+
+Wire * Gate::getWire2()
+{
+    return in2;
 }
 
 

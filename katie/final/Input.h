@@ -33,6 +33,8 @@ class Input : public Block
 		virtual void bringWires();
 		virtual void setValue();	// needed to change value of Inputs
 
+		virtual string getEquation();
+
 	private:
 		double x;
 		double y;
@@ -224,6 +226,13 @@ void Input::setValue()
 	else {
 		value = 1;
 	}
+}
+
+string Input::getEquation()
+{
+    string equation(1, name);
+
+    return equation;
 }
 
 
