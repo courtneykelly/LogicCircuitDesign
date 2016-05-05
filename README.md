@@ -35,7 +35,15 @@ We decided to switch from using the Notre Dame student machines (linux) to our o
 Compilation Instructions
 ------------------------
 
-Compiling can be tricky. Once you use Homebrew or the package manager of your choice to install the needed libraries, you need to find out where they are stored on your computer in order to compile our program. Since we are using SDL2, you need the path to the SDL2 include file (cflag). This is usually stored in /usr/local/include, and passed to the compiler with the -I (include flag) followed by the path as such: -I/usr/local/include/SDL2 -D_THREAD_SAFE. You then need to link the path to where all your local libraries are stored. This is usually: /usr/local/lib. Your local libraries folder should contain all the libraries you used Homebrew (or other package manager) to install. You need to link this path and the appropriate libraries with the -L (library linker flag) followed by all of the libraries you want to include when you compile. The command is as such: -L/usr/local/lib -lSDL2 -lSDL2_gfx -lSDL2_image -lSDL2_ttf. Once you combine these compiler commands with g++, your main.cpp, and your object flags, you should have a fully working compilation. Our final compiler command was: 
+Compiling can be tricky. Once you use Homebrew or the package manager of your choice to install the needed libraries, you need to find out where they are stored on your computer in order to compile our program. Since we are using SDL2, you need the path to the SDL2 include file (cflag). This is usually stored in /usr/local/include, and passed to the compiler with the -I (include flag) followed by the path as such: 
+
+	-I/usr/local/include/SDL2 -D_THREAD_SAFE. 
+
+You then need to link the path to where all your local libraries are stored. This is usually: **/usr/local/lib**. Your local libraries folder should contain all the libraries you used Homebrew (or other package manager) to install. You need to link this path and the appropriate libraries with the -L (library linker flag) followed by all of the libraries you want to include when you compile. The command is as such: 
+
+	-L/usr/local/lib -lSDL2 -lSDL2_gfx -lSDL2_image -lSDL2_ttf 
+
+Once you combine these compiler commands with g++, your main.cpp, and your object flags, you should have a fully working compilation. Our final compiler command was: 
 
 	g++ main.cpp -w -L/usr/local/lib -lSDL2 -lSDL2_gfx -lSDL2_image -lSDL2_ttf -I/usr/local/include/SDL2 -D_THREAD_SAFE  -o project
 
