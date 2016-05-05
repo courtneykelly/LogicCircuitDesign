@@ -37,10 +37,11 @@ Compilation Instructions
 
 Compiling can be tricky. Once you use Homebrew or the package manager of your choice to install the needed libraries, you need to find out where they are stored on your computer in order to compile our program. Since we are using SDL2, you need the path to the SDL2 include file (cflag). This is usually stored in /usr/local/include, and passed to the compiler with the -I (include flag) followed by the path as such: -I/usr/local/include/SDL2 -D_THREAD_SAFE. You then need to link the path to where all your local libraries are stored. This is usually: /usr/local/lib. Your local libraries folder should contain all the libraries you used Homebrew (or other package manager) to install. You need to link this path and the appropriate libraries with the -L (library linker flag) followed by all of the libraries you want to include when you compile. The command is as such: -L/usr/local/lib -lSDL2 -lSDL2_gfx -lSDL2_image -lSDL2_ttf. Once you combine these compiler commands with g++, your main.cpp, and your object flags, you should have a fully working compilation. Our final compiler command was: 
 
-g++ main.cpp -w -L/usr/local/lib -lSDL2 -lSDL2_gfx -lSDL2_image -lSDL2_ttf -I/usr/local/include/SDL2 -D_THREAD_SAFE  -o project
+	g++ main.cpp -w -L/usr/local/lib -lSDL2 -lSDL2_gfx -lSDL2_image -lSDL2_ttf -I/usr/local/include/SDL2 -D_THREAD_SAFE  -o project
 
 If this compilation doesn’t work and all the include files and libraries are linked correctly during compilation, the error is probably in your headers: 
-        #include <SDL.h>
+    
+    #include <SDL.h>
 	#include "SDL2_gfxPrimitives.h"
 	#include "SDL_image.h"
 	#include "SDL_ttf.h"
@@ -57,9 +58,9 @@ Known bugs
 
 We don’t have many known bugs, but they are listed as follows:
 
-	1. The NOT gate out port has some troubles. Our other gates are detected 		according to their size, but the NOT gate is detected with a box around the 	triangle. So you can click outside the body of the NOT gate and it will still 	move the gate. This is inconsistent with our other two gates, where you can 	only click on the body.
+	1. The NOT gate out port has some troubles. Our other gates are detected according to their size, but the NOT gate is detected with a box around the triangle. So you can click outside the body of the NOT gate and it will still move the gate. This is inconsistent with our other two gates, where you can only click on the body.
 
-	2. If you have a very large logic circuit, the equation corresponding to it 	will also be very large. If it is too large, instead of resizing the equation 	to fit the window, the equation will run off the screen and not display the 	whole thing.
+	2. If you have a very large logic circuit, the equation corresponding to it will also be very large. If it is too large, instead of resizing the equation to fit the window, the equation will run off the screen and not display the whole thing.
 
 Additional Info
 ---------------
