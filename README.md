@@ -65,11 +65,11 @@ Known bugs
 ----------
 
 We don’t have many known bugs, but they are listed as follows:
-	1. The NOT gate out port has some troubles. Our other gates are detected according to their size, but the NOT gate is detected with a box around the triangle. So you can click outside the body of the NOT gate and it will still move the gate. This is inconsistent with our other two gates, where you can only click on the body.
-
-	2. If you have a very large logic circuit, the equation corresponding to it will also be very large. If it is too large, instead of resizing the equation to fit the window, the equation will run off the screen and not display the whole thing.
-
-	3. You cannot make a Flip Flop! Unfortunately, it will crash our program.
+	<ol>
+	<li> The NOT gate out port has some troubles. Our other gates are detected according to their size, but the NOT gate is detected with a box around the triangle. So you can click outside the body of the NOT gate and it will still move the gate. This is inconsistent with our other two gates, where you can only click on the body. </li>
+	<li> If you have a very large logic circuit, the equation corresponding to it will also be very large. If it is too large, instead of resizing the equation to fit the window, the equation will run off the screen and not display the whole thing. </li>
+	<li> You cannot make a Flip Flop! Unfortunately, it will crash our program. </li>
+	</ol>
 
 Additional Info
 ---------------
